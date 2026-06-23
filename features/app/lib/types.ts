@@ -3,4 +3,5 @@ export type organization = {
     name: string;
     slug: string;
     logoUrl: string;
+    isRoot: boolean;
 };

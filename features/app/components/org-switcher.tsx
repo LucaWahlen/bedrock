@@ -4,11 +4,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { SidebarMenuButton } from "@/features/shared/components/ui/sidebar";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import Image from "next/image"
-import { Skeleton } from "@/features/shared/components/ui/skeleton";
-import { organization } from "../types";
+import { organization } from "../lib/types";
 
 interface OrganizationSwitcherProps {
-    organizations?: organization[];
+    organizations: organization[];
     currentOrganization?: organization;
     onOrganizationChange: (org: organization) => void;
 }
@@ -17,18 +16,13 @@ export function OrganizationSwitcher({ organizations, currentOrganization, onOrg
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg" disabled={!organizations}>
-                    {organizations ? (<>
-                        {currentOrganization ? (<>
-                            <Image src={currentOrganization.logoUrl} alt={currentOrganization.name} className="size-8 rounded-md" width={32} height={32} priority />
-                            <span className="font-semibold truncate">{currentOrganization.name}</span>
-                        </>) : (<>
-                            <span className="font-semibold truncate">Select Organization</span>
-                        </>)}
-                    </>) : (<>
-                        <Skeleton className="size-8 rounded-md" />
-                        <Skeleton className="h-4 w-24 rounded-md" />
-                    </>)}
+                <SidebarMenuButton size="lg">
+                    {currentOrganization ? (<>
+                        <Image src={currentOrganization.logoUrl} alt={currentOrganization.name} className="size-8 rounded-md" width={32} height={32} priority />
+                        <span className="font-semibold truncate">{currentOrganization.name}</span>
+                    </>) : (
+                        <span className="font-semibold truncate">Select Organization</span>
+                    )}
                     <ChevronsUpDown className="ml-auto" />
                 </SidebarMenuButton>
             </DropdownMenuTrigger>

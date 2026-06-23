@@ -2,18 +2,17 @@
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@/features/shared/components/ui/sidebar";
 import { OrganizationSwitcher } from "./org-switcher";
-import { organization } from "../types";
-import { useState } from "react";
+import { organization } from "../lib/types";
 import { useParams, useRouter } from "next/navigation";
 
-export function AppSidebar() {
+interface AppSidebarProps {
+    organizations: organization[];
+}
+
+export function AppSidebar({ organizations }: AppSidebarProps) {
     const params = useParams();
     const router = useRouter();
-    const [organizations] = useState<organization[] | undefined>([
-        { id: "bedrock", name: "Bedrock", slug: "bedrock", logoUrl: "https://cdn.lucawahlen.com/bedrock-logo.svg" },
-        { id: "atlas-cluster", name: "Atlas Cluster", slug: "atlas-cluster", logoUrl: "https://avatars.githubusercontent.com/u/246841153?s=200&v=4" }
-    ]);
-    const currentOrganization = organizations?.find(org => org.slug === params?.slug);
+    const currentOrganization = organizations.find(org => org.slug === params?.slug);
 
     return (
         <Sidebar>
