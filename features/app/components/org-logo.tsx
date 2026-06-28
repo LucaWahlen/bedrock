@@ -1,0 +1,66 @@
+import Image from "next/image";
+
+const AVATAR_VARIANTS = [
+    { bg: "bg-blue-100 dark:bg-blue-900/60",       text: "!text-blue-700 dark:!text-blue-300" },
+    { bg: "bg-violet-100 dark:bg-violet-900/60",   text: "!text-violet-700 dark:!text-violet-300" },
+    { bg: "bg-pink-100 dark:bg-pink-900/60",       text: "!text-pink-700 dark:!text-pink-300" },
+    { bg: "bg-green-100 dark:bg-green-900/60",     text: "!text-green-700 dark:!text-green-300" },
+    { bg: "bg-orange-100 dark:bg-orange-900/60",   text: "!text-orange-700 dark:!text-orange-300" },
+    { bg: "bg-sky-100 dark:bg-sky-900/60",         text: "!text-sky-700 dark:!text-sky-300" },
+    { bg: "bg-teal-100 dark:bg-teal-900/60",       text: "!text-teal-700 dark:!text-teal-300" },
+    { bg: "bg-fuchsia-100 dark:bg-fuchsia-900/60", text: "!text-fuchsia-700 dark:!text-fuchsia-300" },
+    { bg: "bg-rose-100 dark:bg-rose-900/60",       text: "!text-rose-700 dark:!text-rose-300" },
+    { bg: "bg-indigo-100 dark:bg-indigo-900/60",   text: "!text-indigo-700 dark:!text-indigo-300" },
+];
+
+function hashSlug(slug: string): number {
+    let hash = 0;
+    for (let i = 0; i < slug.length; i++) {
+        hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+    }
+    return hash;
+}
+
+function getInitials(name: string) {
+    const words = name.trim().split(/\s+/);
+    if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+}
+
+interface OrgLogoProps {
+    logoUrl?: string | null;
+    name: string;
+    slug: string;
+    size: number;
+}
+
+export function OrgLogo({ logoUrl, name, slug, size }: OrgLogoProps) {
+    const sizeClass = size >= 32 ? "size-8" : "size-6";
+    const fontSize = size >= 32 ? 12 : 10;
+
+    if (logoUrl) {
+        return (
+            <Image
+                src={logoUrl}
+                alt={name}
+                className={`${sizeClass} rounded-md`}
+                width={size}
+                height={size}
+                priority={size >= 32}
+            />
+        );
+    }
+
+    const variant = AVATAR_VARIANTS[hashSlug(slug) % AVATAR_VARIANTS.length];
+
+    return (
+        <div
+            className={`${sizeClass} ${variant.bg} rounded-md flex items-center justify-center shrink-0`}
+            style={{ fontSize }}
+        >
+            <span className={`font-semibold leading-none ${variant.text}`}>
+                {getInitials(name)}
+            </span>
+        </div>
+    );
+}
