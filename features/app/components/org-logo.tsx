@@ -13,10 +13,10 @@ const AVATAR_VARIANTS = [
     { bg: "bg-indigo-100 dark:bg-indigo-900/60",   text: "!text-indigo-700 dark:!text-indigo-300" },
 ];
 
-function hashSlug(slug: string): number {
+function hashId(id: string): number {
     let hash = 0;
-    for (let i = 0; i < slug.length; i++) {
-        hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+    for (let i = 0; i < id.length; i++) {
+        hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
     }
     return hash;
 }
@@ -30,13 +30,17 @@ function getInitials(name: string) {
 interface OrgLogoProps {
     logoUrl?: string | null;
     name: string;
-    slug: string;
-    size: number;
+    id: string;
+    variant: "md" | "sm";
 }
 
-export function OrgLogo({ logoUrl, name, slug, size }: OrgLogoProps) {
-    const sizeClass = size >= 32 ? "size-8" : "size-6";
-    const fontSize = size >= 32 ? 12 : 10;
+const VARIANT_STYLES = {
+    md: { sizeClass: "size-8", fontSize: 12, imageSize: 32, priority: true },
+    sm: { sizeClass: "size-6", fontSize: 10, imageSize: 24, priority: false },
+};
+
+export function OrgLogo({ logoUrl, name, id, variant }: OrgLogoProps) {
+    const { sizeClass, fontSize, imageSize, priority } = VARIANT_STYLES[variant];
 
     if (logoUrl) {
         return (
@@ -44,21 +48,21 @@ export function OrgLogo({ logoUrl, name, slug, size }: OrgLogoProps) {
                 src={logoUrl}
                 alt={name}
                 className={`${sizeClass} rounded-md`}
-                width={size}
-                height={size}
-                priority={size >= 32}
+                width={imageSize}
+                height={imageSize}
+                priority={priority}
             />
         );
     }
 
-    const variant = AVATAR_VARIANTS[hashSlug(slug) % AVATAR_VARIANTS.length];
+    const color = AVATAR_VARIANTS[hashId(id) % AVATAR_VARIANTS.length];
 
     return (
         <div
-            className={`${sizeClass} ${variant.bg} rounded-md flex items-center justify-center shrink-0`}
+            className={`${sizeClass} ${color.bg} rounded-md flex items-center justify-center shrink-0`}
             style={{ fontSize }}
         >
-            <span className={`font-semibold leading-none ${variant.text}`}>
+            <span className={`font-semibold leading-none ${color.text}`}>
                 {getInitials(name)}
             </span>
         </div>

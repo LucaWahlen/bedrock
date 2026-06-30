@@ -18,7 +18,7 @@ export function OrganizationSwitcher({ organizations, currentOrganization, onOrg
             <DropdownMenuTrigger asChild>
                 <SidebarMenuButton size="lg">
                     {currentOrganization ? (<>
-                        <OrgLogo logoUrl={currentOrganization.logoUrl} name={currentOrganization.name} slug={currentOrganization.slug} size={32} />
+                        <OrgLogo logoUrl={currentOrganization.logoUrl} name={currentOrganization.name} id={currentOrganization.id} variant="md" />
                         <span className="font-semibold truncate">{currentOrganization.name}</span>
                     </>) : (
                         <span className="font-semibold truncate">Select Organization</span>
@@ -31,7 +31,7 @@ export function OrganizationSwitcher({ organizations, currentOrganization, onOrg
                     <DropdownMenuLabel>Organizations</DropdownMenuLabel>
                     {organizations?.map((org) => (
                         <DropdownMenuItem key={org.id} onClick={() => onOrganizationChange(org)} className="h-10">
-                            <OrgLogo logoUrl={org.logoUrl} name={org.name} slug={org.slug} size={24} />
+                            <OrgLogo logoUrl={org.logoUrl} name={org.name} id={org.id} variant="sm" />
                             <span className="truncate">{org.name}</span>
                             {currentOrganization?.id === org.id && <Check className="ml-auto" />}
                         </DropdownMenuItem>
@@ -39,7 +39,9 @@ export function OrganizationSwitcher({ organizations, currentOrganization, onOrg
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="h-10 text-sidebar-ring">
-                    <Plus />
+                    <div className="size-6 bg-sidebar-accent rounded-md flex items-center justify-center">
+                        <Plus className="text-primary"/>
+                    </div>
                     <span>Create Organization</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
