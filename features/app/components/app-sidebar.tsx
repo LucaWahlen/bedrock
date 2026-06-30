@@ -1,25 +1,20 @@
 "use client";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@/features/shared/components/ui/sidebar";
-import { OrganizationSwitcher } from "./org-switcher";
+import { OrgSwitcher } from "./org-switcher";
 import { organization } from "../lib/types";
-import { useParams, useRouter } from "next/navigation";
 
 interface AppSidebarProps {
-    organizations: organization[];
+    organizationsPromise: Promise<organization[]>;
 }
 
-export function AppSidebar({ organizations }: AppSidebarProps) {
-    const params = useParams();
-    const router = useRouter();
-    const currentOrganization = organizations.find(org => org.slug === params?.slug);
-
+export function AppSidebar({ organizationsPromise }: AppSidebarProps) {
     return (
         <Sidebar>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <OrganizationSwitcher organizations={organizations} currentOrganization={currentOrganization} onOrganizationChange={(org) => router.push(`/org/${org.slug}`)} />
+                        <OrgSwitcher organizationsPromise={organizationsPromise} />
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
@@ -28,12 +23,9 @@ export function AppSidebar({ organizations }: AppSidebarProps) {
                     <SidebarMenuItem>
                     </SidebarMenuItem>
                 </SidebarMenu>
-
             </SidebarContent>
             <SidebarFooter>
-
             </SidebarFooter>
-            
         </Sidebar>
-    )
+    );
 }
