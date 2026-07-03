@@ -37,7 +37,7 @@ export function OrgSwitcherContent({
           {currentOrganization ? (
             <>
               <OrgLogo
-                logoUrl={currentOrganization.logoUrl}
+                logo={currentOrganization.logo}
                 name={currentOrganization.name}
                 id={currentOrganization.id}
                 variant="md"
@@ -62,7 +62,7 @@ export function OrgSwitcherContent({
               className="h-10"
             >
               <OrgLogo
-                logoUrl={org.logoUrl}
+                logo={org.logo}
                 name={org.name}
                 id={org.id}
                 variant="sm"

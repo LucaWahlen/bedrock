@@ -2,6 +2,6 @@ export type organization = {
   id: string
   name: string
   slug: string
-  logoUrl?: string | null
+  logo?: string | null
   isRoot: boolean
 }

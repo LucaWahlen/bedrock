@@ -58,7 +58,7 @@ function getInitials(name: string) {
 }
 
 interface OrgLogoProps {
-  logoUrl?: string | null
+  logo?: string | null
   name: string
   id: string
   variant: "md" | "sm"
@@ -69,13 +69,13 @@ const VARIANT_STYLES = {
   sm: { sizeClass: "size-6", fontSize: 10, imageSize: 24, priority: false },
 }
 
-export function OrgLogo({ logoUrl, name, id, variant }: OrgLogoProps) {
+export function OrgLogo({ logo, name, id, variant }: OrgLogoProps) {
   const { sizeClass, fontSize, imageSize, priority } = VARIANT_STYLES[variant]
 
-  if (logoUrl) {
+  if (logo) {
     return (
       <Image
-        src={logoUrl}
+        src={logo}
         alt={name}
         className={`${sizeClass} rounded-md`}
         width={imageSize}
