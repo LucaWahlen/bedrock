@@ -62,6 +62,7 @@ interface OrgLogoProps {
   name: string
   id: string
   variant: "md" | "sm"
+  priority?: boolean
 }
 
 const VARIANT_STYLES = {
@@ -69,8 +70,13 @@ const VARIANT_STYLES = {
   sm: { sizeClass: "size-6", fontSize: 10, imageSize: 24, priority: false },
 }
 
-export function OrgLogo({ logo, name, id, variant }: OrgLogoProps) {
-  const { sizeClass, fontSize, imageSize, priority } = VARIANT_STYLES[variant]
+export function OrgLogo({ logo, name, id, variant, priority }: OrgLogoProps) {
+  const {
+    sizeClass,
+    fontSize,
+    imageSize,
+    priority: defaultPriority,
+  } = VARIANT_STYLES[variant]
 
   if (logo) {
     return (
@@ -80,7 +86,7 @@ export function OrgLogo({ logo, name, id, variant }: OrgLogoProps) {
         className={`${sizeClass} rounded-md`}
         width={imageSize}
         height={imageSize}
-        priority={priority}
+        priority={priority ?? defaultPriority}
       />
     )
   }

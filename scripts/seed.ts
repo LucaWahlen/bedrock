@@ -1,4 +1,4 @@
-import { auth } from "@/features/shared/lib/auth"
+import { auth } from "@/features/auth/lib/auth"
 import { db } from "@/features/shared/lib/db"
 import { organization, member } from "@/features/shared/lib/schema"
 import { eq } from "drizzle-orm"
