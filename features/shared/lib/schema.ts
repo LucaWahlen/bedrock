@@ -89,6 +89,8 @@ export const organization = pgTable(
     createdAt: timestamp("created_at").notNull(),
     metadata: text("metadata"),
     isRoot: boolean("is_root").default(false).notNull(),
+    color: text("color"),
+    backgroundImage: text("background_image"),
   },
   (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)],
 );

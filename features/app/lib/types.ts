@@ -4,4 +4,6 @@ export type organization = {
   slug: string
   logo?: string | null
   isRoot: boolean
+  color?: string | null
+  backgroundImage?: string | null
 }
