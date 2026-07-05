@@ -1,7 +1,7 @@
-import { organization } from "../../../app/lib/types"
-import { OrgLogo } from "../../../app/components/org-logo"
 import Image from "next/image"
-import { LoginForm } from "./form"
+
+import { organization, OrgLogo } from "@/features/app"
+import { LoginForm } from "@/features/auth/components/login-page/form"
 
 export function LoginPage({ organization }: { organization?: organization }) {
   return (

@@ -2,5 +2,5 @@ import { z } from "zod"
 
 export const loginSchema = z.object({
   email: z.email(),
-  password: z.string().min(1, 'Password cannot be empty')
+  password: z.string().min(1, "Password cannot be empty"),
 })

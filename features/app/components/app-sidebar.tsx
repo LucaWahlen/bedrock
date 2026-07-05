@@ -1,30 +1,27 @@
 "use client"
 
+import { ChevronDown, Terminal } from "lucide-react"
+
+import { OrgSwitcher } from "@/features/app/components/org-switcher"
+import { organization } from "@/features/app/lib/types"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/features/shared/components/ui/collapsible"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/features/shared/components/ui/sidebar"
-import { OrgSwitcher } from "./org-switcher"
-import { organization } from "../lib/types"
-import { ChevronDown, Plus, Terminal } from "lucide-react"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/features/shared/components/ui/collapsible"
 
 interface AppSidebarProps {
   organizationsPromise: Promise<organization[]>

@@ -1,9 +1,10 @@
 "use client"
 
 import { Suspense } from "react"
-import { organization } from "../../lib/types"
-import { OrgSwitcherContent } from "./content"
-import { OrgSwitcherSkeleton } from "./skeleton"
+
+import { OrgSwitcherContent } from "@/features/app/components/org-switcher/content"
+import { OrgSwitcherSkeleton } from "@/features/app/components/org-switcher/skeleton"
+import { organization } from "@/features/app/lib/types"
 
 interface OrgSwitcherProps {
   organizationsPromise: Promise<organization[]>

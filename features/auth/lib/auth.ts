@@ -1,7 +1,8 @@
-import { betterAuth } from "better-auth/minimal"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { db } from "../../shared/lib/db"
+import { betterAuth } from "better-auth/minimal"
 import { organization } from "better-auth/plugins"
+
+import { db } from "@/features/shared/lib/db"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

@@ -1,5 +1,13 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
+import { Controller, useForm } from "react-hook-form"
+import * as z from "zod"
+
+import { organization } from "@/features/app"
+import { authClient } from "@/features/auth/lib/client"
+import { loginSchema } from "@/features/auth/schemas/login"
 import { Button } from "@/features/shared/components/ui/button"
 import {
   Field,
@@ -10,13 +18,6 @@ import {
 } from "@/features/shared/components/ui/field"
 import { Input } from "@/features/shared/components/ui/input"
 import { cn } from "@/features/shared/lib/utils"
-import { authClient } from "@/features/auth/lib/client"
-import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
-import { loginSchema } from "../../schemas/login"
-import * as z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { organization } from "@/features/app/lib/types"
 
 export function LoginForm({
   organization,
@@ -36,9 +37,9 @@ export function LoginForm({
     await authClient.signIn.email(data, {
       onSuccess: async () => {
         if (organization) {
-          const { error } = await authClient.organization.getFullOrganization(
-            { query: { organizationSlug: organization.slug } }
-          )
+          const { error } = await authClient.organization.getFullOrganization({
+            query: { organizationSlug: organization.slug },
+          })
           if (error) {
             await authClient.signOut()
             form.setError("root", {

@@ -1,0 +1,99 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "react",
+    "import",
+    "nextjs",
+    "jsx-a11y"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "node": true
+  },
+  "ignorePatterns": [
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "drizzle/**",
+    "features/shared/components/ui/**"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "regex": "^\\.\\.?/",
+            "message": "Use \"@/...\" path aliases instead of relative imports."
+          },
+          {
+            "group": ["@/features/*/**", "!@/features/shared/**"],
+            "message": "Import other features through their public \"index.ts\" (e.g. \"@/features/app\"), not their internals. \"@/features/shared\" is exempt and may be imported at any depth."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["features/app/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^\\.\\.?/",
+                "message": "Use \"@/...\" path aliases instead of relative imports."
+              },
+              {
+                "group": [
+                  "@/features/*/**",
+                  "!@/features/shared/**",
+                  "!@/features/app/**"
+                ],
+                "message": "Import other features through their public \"index.ts\", not their internals. \"@/features/shared\" is exempt."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["features/auth/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^\\.\\.?/",
+                "message": "Use \"@/...\" path aliases instead of relative imports."
+              },
+              {
+                "group": [
+                  "@/features/*/**",
+                  "!@/features/shared/**",
+                  "!@/features/auth/**"
+                ],
+                "message": "Import other features through their public \"index.ts\", not their internals. \"@/features/shared\" is exempt."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

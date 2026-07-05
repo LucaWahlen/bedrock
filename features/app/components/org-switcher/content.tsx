@@ -1,6 +1,11 @@
 "use client"
 
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 import { use } from "react"
+
+import { OrgLogo } from "@/features/app/components/org-logo"
+import { organization } from "@/features/app/lib/types"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,10 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/features/shared/components/ui/dropdown-menu"
 import { SidebarMenuButton } from "@/features/shared/components/ui/sidebar"
-import { Check, ChevronsUpDown, Plus } from "lucide-react"
-import { organization } from "../../lib/types"
-import { OrgLogo } from "../org-logo"
-import { useParams, useRouter } from "next/navigation"
 
 interface OrgSwitcherContentProps {
   organizationsPromise: Promise<organization[]>

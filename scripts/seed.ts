@@ -1,7 +1,8 @@
-import { auth } from "@/features/auth/lib/auth"
+import { eq } from "drizzle-orm"
+
+import { auth } from "@/features/auth"
 import { db } from "@/features/shared/lib/db"
 import { organization, member } from "@/features/shared/lib/schema"
-import { eq } from "drizzle-orm"
 
 const EMAIL = "admin@example.com"
 const PASSWORD = "admin123"

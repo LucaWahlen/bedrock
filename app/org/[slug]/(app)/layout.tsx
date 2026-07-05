@@ -1,7 +1,8 @@
-import { SidebarProvider } from "@/features/shared/components/ui/sidebar"
-import { AppSidebar } from "@/features/app/components/app-sidebar"
 import { headers } from "next/headers"
-import { auth } from "@/features/auth/lib/auth"
+
+import { AppSidebar } from "@/features/app"
+import { auth } from "@/features/auth"
+import { SidebarProvider } from "@/features/shared/components/ui/sidebar"
 
 export default async function OrgLayout({
   children,

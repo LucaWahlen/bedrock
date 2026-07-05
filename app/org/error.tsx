@@ -1,8 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import { Button } from "@/features/shared/components/ui/button"
 import Link from "next/link"
+
+import { Button } from "@/features/shared/components/ui/button"
 
 export default function OrgError() {
   return (
