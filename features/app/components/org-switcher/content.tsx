@@ -33,26 +33,30 @@ export function OrgSwitcherContent({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton size="lg">
-          {currentOrganization ? (
-            <>
-              <OrgLogo
-                logo={currentOrganization.logo}
-                name={currentOrganization.name}
-                id={currentOrganization.id}
-                variant="md"
-              />
+      <DropdownMenuTrigger
+        render={
+          <SidebarMenuButton size="lg">
+            {currentOrganization ? (
+              <>
+                <OrgLogo
+                  logo={currentOrganization.logo}
+                  name={currentOrganization.name}
+                  id={currentOrganization.id}
+                  variant="md"
+                />
+                <span className="truncate font-semibold">
+                  {currentOrganization.name}
+                </span>
+              </>
+            ) : (
               <span className="truncate font-semibold">
-                {currentOrganization.name}
+                Select Organization
               </span>
-            </>
-          ) : (
-            <span className="truncate font-semibold">Select Organization</span>
-          )}
-          <ChevronsUpDown className="ml-auto" />
-        </SidebarMenuButton>
-      </DropdownMenuTrigger>
+            )}
+            <ChevronsUpDown className="ml-auto" />
+          </SidebarMenuButton>
+        }
+      />
       <DropdownMenuContent align="start" side="right">
         <DropdownMenuGroup>
           <DropdownMenuLabel>Organizations</DropdownMenuLabel>

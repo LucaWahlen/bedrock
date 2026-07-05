@@ -27,23 +27,25 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton size="lg">
-          <OrgLogo
-            logo={currentUser.image}
-            name={currentUser.name}
-            id={currentUser.email}
-            variant="md"
-          />
-          <div className="flex flex-col truncate text-left">
-            <span className="truncate font-semibold">{currentUser.name}</span>
-            <span className="truncate text-xs text-sidebar-foreground/70">
-              {currentUser.email}
-            </span>
-          </div>
-          <ChevronsUpDown className="ml-auto" />
-        </SidebarMenuButton>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <SidebarMenuButton size="lg">
+            <OrgLogo
+              logo={currentUser.image}
+              name={currentUser.name}
+              id={currentUser.email}
+              variant="md"
+            />
+            <div className="flex flex-col truncate text-left">
+              <span className="truncate font-semibold">{currentUser.name}</span>
+              <span className="truncate text-xs text-sidebar-foreground/70">
+                {currentUser.email}
+              </span>
+            </div>
+            <ChevronsUpDown className="ml-auto" />
+          </SidebarMenuButton>
+        }
+      />
       <DropdownMenuContent align="start" side="right">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="p-0 font-normal">
