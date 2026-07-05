@@ -21,9 +21,7 @@ export default function OrgError() {
           <Button className="w-full" onClick={() => window.location.reload()}>
             Reload page
           </Button>
-          <Button className="w-full" variant="outline" asChild>
-            <Link href="/">Go to home</Link>
-          </Button>
+          <Button className="w-full" variant="outline" render={<Link href="/">Go to home</Link>} />
         </div>
       </div>
     </div>
