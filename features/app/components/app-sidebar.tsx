@@ -3,7 +3,8 @@
 import { ChevronDown, Terminal } from "lucide-react"
 
 import { OrgSwitcher } from "@/features/app/components/org-switcher"
-import { organization } from "@/features/app/lib/types"
+import { UserMenu } from "@/features/app/components/user-menu"
+import { organization, user } from "@/features/app/lib/types"
 import {
   Collapsible,
   CollapsibleContent,
@@ -25,9 +26,13 @@ import {
 
 interface AppSidebarProps {
   organizationsPromise: Promise<organization[]>
+  userPromise: Promise<user>
 }
 
-export function AppSidebar({ organizationsPromise }: AppSidebarProps) {
+export function AppSidebar({
+  organizationsPromise,
+  userPromise,
+}: AppSidebarProps) {
   return (
     <Sidebar>
       <SidebarHeader>
@@ -146,7 +151,13 @@ export function AppSidebar({ organizationsPromise }: AppSidebarProps) {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <UserMenu userPromise={userPromise} />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

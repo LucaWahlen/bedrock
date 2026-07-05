@@ -48,8 +48,11 @@ export function LoginForm({
             return
           }
         }
-        router.push(organization ? `/org/${organization.slug}` : "/")
-        router.refresh()
+        if (organization) {
+          router.push(`/org/${organization.slug}`)
+        } else {
+          router.refresh()
+        }
       },
       onError: (ctx) => {
         form.setError("root", { message: ctx.error.message })
