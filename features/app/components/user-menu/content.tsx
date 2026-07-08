@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronsUpDown, LogOut } from "lucide-react"
+import { ChevronsUpDown, LogOut, Monitor, Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 import { useParams } from "next/navigation"
 import { use } from "react"
 
@@ -12,6 +13,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/features/shared/components/ui/dropdown-menu"
@@ -24,6 +27,7 @@ interface UserMenuContentProps {
 export function UserMenuContent({ userPromise }: UserMenuContentProps) {
   const currentUser = use(userPromise)
   const params = useParams()
+  const { theme, setTheme } = useTheme()
 
   return (
     <DropdownMenu>
@@ -68,15 +72,35 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          variant="destructive"
-          onClick={() => {
-            window.location.href = `/org/${params?.slug}/logout`
-          }}
-        >
-          <LogOut />
-          Log out
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Theme</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+            <DropdownMenuRadioItem value="system">
+              <Monitor />
+              System
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="light">
+              <Sun />
+              Light
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="dark">
+              <Moon />
+              Dark
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => {
+              window.location.href = `/org/${params?.slug}/logout`
+            }}
+          >
+            <LogOut />
+            Log out
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
