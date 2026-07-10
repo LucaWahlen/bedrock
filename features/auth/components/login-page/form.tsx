@@ -17,7 +17,9 @@ import {
   FieldSeparator,
 } from "@/features/shared/components/ui/field"
 import { Input } from "@/features/shared/components/ui/input"
+import { PasswordInput } from "@/features/shared/components/ui/password-input"
 import { cn } from "@/features/shared/lib/utils"
+import Link from "next/link"
 
 export function LoginForm({
   organization,
@@ -99,17 +101,16 @@ export function LoginForm({
             <Field data-invalid={fieldState.invalid}>
               <div className="flex items-center">
                 <FieldLabel htmlFor="login-form-password">Password</FieldLabel>
-                <a
+                <Link
                   href="#"
                   className="ml-auto text-sm underline-offset-4 hover:underline"
                 >
                   Forgot your password?
-                </a>
+                </Link>
               </div>
-              <Input
+              <PasswordInput
                 {...field}
                 id="login-form-password"
-                type="password"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
