@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm"
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 
 import { LoginPage } from "@/features/auth"
 import { db } from "@/features/shared/lib/db"
@@ -16,7 +16,13 @@ export default async function Page({
   })
 
   if (!currentOrganization) {
-    notFound()
+    const rootOrganization = await db.query.organization.findFirst({
+      where: eq(organization.isRoot, true),
+    })
+
+    if (rootOrganization) {
+      redirect(`/org/${rootOrganization.slug}/login`)
+    }
   }
 
   return <LoginPage organization={currentOrganization} />

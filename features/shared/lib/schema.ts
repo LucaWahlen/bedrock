@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { relations, sql } from "drizzle-orm"
 import {
   pgTable,
   text,
@@ -92,7 +92,12 @@ export const organization = pgTable(
     color: text("color"),
     backgroundImage: text("background_image"),
   },
-  (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)]
+  (table) => [
+    uniqueIndex("organization_slug_uidx").on(table.slug),
+    uniqueIndex("organization_single_root_uidx")
+      .on(table.isRoot)
+      .where(sql`${table.isRoot} = true`),
+  ]
 )
 
 export const member = pgTable(
