@@ -5,7 +5,7 @@ import { useTheme } from "next-themes"
 import { useParams } from "next/navigation"
 import { use } from "react"
 
-import { OrgLogo } from "@/features/app/components/org-logo"
+import { IdentityAvatar } from "@/features/app/components/identity-avatar"
 import { user } from "@/features/app/lib/types"
 import {
   DropdownMenu,
@@ -34,7 +34,7 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
       <DropdownMenuTrigger
         render={
           <SidebarMenuButton size="lg">
-            <OrgLogo
+            <IdentityAvatar
               logo={currentUser.image}
               name={currentUser.name}
               id={currentUser.email}
@@ -54,7 +54,7 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
         <DropdownMenuGroup>
           <DropdownMenuLabel className="p-0 font-normal">
             <div className="flex items-center gap-2 px-1.5 py-1.5">
-              <OrgLogo
+              <IdentityAvatar
                 logo={currentUser.image}
                 name={currentUser.name}
                 id={currentUser.email}

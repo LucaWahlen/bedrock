@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import { organization, OrgLogo } from "@/features/app"
+import { IdentityAvatar, organization } from "@/features/app"
 import { LoginForm } from "@/features/auth/components/login-page/form"
 
 export function LoginPage({ organization }: { organization?: organization }) {
@@ -10,12 +10,12 @@ export function LoginPage({ organization }: { organization?: organization }) {
         <div className="flex justify-center gap-2 md:justify-start">
           <div className="flex items-center gap-2 font-medium">
             {organization && (
-              <OrgLogo
+              <IdentityAvatar
                 logo={organization.logo}
                 name={organization.name}
                 id={organization.id}
                 variant="sm"
-                priority
+                eager
               />
             )}
             {organization?.name}
@@ -33,9 +33,9 @@ export function LoginPage({ organization }: { organization?: organization }) {
             organization?.backgroundImage ??
             process.env.DEFAULT_BACKGROUND_IMAGE_URL!
           }
-          alt="Image"
+          alt=""
           fill
-          priority
+          loading="eager"
           sizes="50vw"
           unoptimized
           className="object-cover"

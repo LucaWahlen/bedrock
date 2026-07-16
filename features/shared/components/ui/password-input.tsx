@@ -3,6 +3,7 @@
 import { Eye, EyeOff } from "lucide-react"
 import * as React from "react"
 
+import { Button } from "@/features/shared/components/ui/button"
 import { Input } from "@/features/shared/components/ui/input"
 import { cn } from "@/features/shared/lib/utils"
 
@@ -14,21 +15,18 @@ function PasswordInput({
 
   return (
     <div className={cn("relative", className)}>
-      <Input
-        type={visible ? "text" : "password"}
-        className="pr-8"
-        {...props}
-      />
-      <button
+      <Input type={visible ? "text" : "password"} className="pr-8" {...props} />
+      <Button
         type="button"
+        variant="ghost"
+        size="icon-sm"
         onClick={() => setVisible((v) => !v)}
-        tabIndex={-1}
         aria-label={visible ? "Hide password" : "Show password"}
         aria-pressed={visible}
-        className="absolute inset-y-0 right-0 flex w-8 items-center justify-center text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
+        className="absolute inset-y-0 right-0 my-auto text-muted-foreground hover:bg-transparent dark:hover:bg-transparent"
       >
-        {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-      </button>
+        {visible ? <EyeOff /> : <Eye />}
+      </Button>
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { Check, ChevronsUpDown, Plus } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { use } from "react"
 
-import { OrgLogo } from "@/features/app/components/org-logo"
+import { IdentityAvatar } from "@/features/app/components/identity-avatar"
 import { organization } from "@/features/app/lib/types"
 import {
   DropdownMenu,
@@ -38,7 +38,7 @@ export function OrgSwitcherContent({
           <SidebarMenuButton size="lg">
             {currentOrganization ? (
               <>
-                <OrgLogo
+                <IdentityAvatar
                   logo={currentOrganization.logo}
                   name={currentOrganization.name}
                   id={currentOrganization.id}
@@ -66,7 +66,7 @@ export function OrgSwitcherContent({
               onClick={() => router.push(`/org/${org.slug}`)}
               className="h-10"
             >
-              <OrgLogo
+              <IdentityAvatar
                 logo={org.logo}
                 name={org.name}
                 id={org.id}

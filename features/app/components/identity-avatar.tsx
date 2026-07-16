@@ -57,25 +57,31 @@ function getInitials(name: string) {
   return name.slice(0, 2).toUpperCase()
 }
 
-interface OrgLogoProps {
+interface IdentityAvatarProps {
   logo?: string | null
   name: string
   id: string
   variant: "md" | "sm"
-  priority?: boolean
+  eager?: boolean
 }
 
 const VARIANT_STYLES = {
-  md: { sizeClass: "size-8", fontSize: 12, imageSize: 32, priority: true },
-  sm: { sizeClass: "size-6", fontSize: 10, imageSize: 24, priority: false },
+  md: { sizeClass: "size-8", fontSize: 12, imageSize: 32, eager: true },
+  sm: { sizeClass: "size-6", fontSize: 10, imageSize: 24, eager: false },
 }
 
-export function OrgLogo({ logo, name, id, variant, priority }: OrgLogoProps) {
+export function IdentityAvatar({
+  logo,
+  name,
+  id,
+  variant,
+  eager,
+}: IdentityAvatarProps) {
   const {
     sizeClass,
     fontSize,
     imageSize,
-    priority: defaultPriority,
+    eager: defaultEager,
   } = VARIANT_STYLES[variant]
 
   if (logo) {
@@ -86,7 +92,7 @@ export function OrgLogo({ logo, name, id, variant, priority }: OrgLogoProps) {
         className={`${sizeClass} rounded-md`}
         width={imageSize}
         height={imageSize}
-        priority={priority ?? defaultPriority}
+        loading={(eager ?? defaultEager) ? "eager" : "lazy"}
       />
     )
   }
