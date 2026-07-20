@@ -6,12 +6,17 @@ const ROOT_ORGANIZATION_SLUG = "bedrock"
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const orgMatch = pathname.match(/^\/org\/([^/]+)(\/.*)?$/)
 
-  if (!orgMatch) {
+  if (pathname === "/") {
     return NextResponse.redirect(
       new URL(`/org/${ROOT_ORGANIZATION_SLUG}`, request.url)
     )
+  }
+
+  const orgMatch = pathname.match(/^\/org\/([^/]+)(\/.*)?$/)
+
+  if (!orgMatch) {
+    return NextResponse.next()
   }
 
   const [, slug, rest = ""] = orgMatch
@@ -30,5 +35,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/", "/org/:path*"],
 }

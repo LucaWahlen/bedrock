@@ -24,6 +24,7 @@ export default function OrgError() {
           <Button
             className="w-full"
             variant="outline"
+            nativeButton={false}
             render={<Link href="/">Go to home</Link>}
           />
         </div>
