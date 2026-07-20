@@ -1,7 +1,7 @@
-import { headers } from "next/headers"
-import type { Metadata } from "next"
-import { notFound, redirect } from "next/navigation"
 import { and, eq } from "drizzle-orm"
+import type { Metadata } from "next"
+import { headers } from "next/headers"
+import { notFound, redirect } from "next/navigation"
 import { cache } from "react"
 
 import { AppSidebar } from "@/features/app"
@@ -32,10 +32,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function OrgLayout({
-  children,
-  params,
-}: OrgLayoutProps) {
+export default async function OrgLayout({ children, params }: OrgLayoutProps) {
   const { slug } = await params
   const requestHeaders = await headers()
 
@@ -55,9 +52,7 @@ export default async function OrgLayout({
     .select({ id: member.id })
     .from(member)
     .innerJoin(organization, eq(member.organizationId, organization.id))
-    .where(
-      and(eq(member.userId, session.user.id), eq(organization.slug, slug))
-    )
+    .where(and(eq(member.userId, session.user.id), eq(organization.slug, slug)))
     .limit(1)
 
   if (membership.length === 0) {

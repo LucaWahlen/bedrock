@@ -2,11 +2,7 @@ import { and, eq, sql } from "drizzle-orm"
 
 import { auth } from "@/features/auth"
 import { db } from "@/features/shared/lib/db"
-import {
-  member,
-  organization,
-  user,
-} from "@/features/shared/lib/schema"
+import { member, organization, user } from "@/features/shared/lib/schema"
 
 const INITIAL_ADMIN = {
   email: process.env.SEED_ADMIN_EMAIL || "admin@example.com",
