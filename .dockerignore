@@ -1,0 +1,19 @@
+# Only what the build needs. Never send local secrets to the build context.
+.env*
+.git
+.github
+.next
+.vscode
+.idea
+node_modules
+dist
+coverage
+docs
+tests
+*.md
+*.tsbuildinfo
+next-env.d.ts
+Dockerfile
+.dockerignore
+compose*.yaml
+deploy

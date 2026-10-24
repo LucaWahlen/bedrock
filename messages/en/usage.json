@@ -1,0 +1,245 @@
+{
+  "range": {
+    "label": "Time range",
+    "week": "Last 7 days",
+    "month": "Last 30 days",
+    "quarter": "Last 3 months",
+    "year": "Last 12 months",
+    "comparison": "Compared with the previous {period, number} days. Days are in UTC."
+  },
+  "cards": {
+    "signIns": {
+      "label": "Sign-ins",
+      "organization": "Successful sign-ins to this organization",
+      "instance": "Successful sign-ins across every organization"
+    },
+    "activeUsers": {
+      "label": "Daily active users",
+      "context": "Signed in or received a token, on an average day"
+    },
+    "weeklyActiveUsers": {
+      "label": "Weekly active users",
+      "context": "Distinct people in the last 7 days"
+    },
+    "stickiness": {
+      "label": "Stickiness",
+      "context": "Daily active users as a share of monthly ones"
+    },
+    "tokensIssued": {
+      "label": "Tokens issued",
+      "context": "Access tokens issued to your applications"
+    },
+    "successRate": {
+      "label": "Sign-in success rate",
+      "context": "{failures, plural, =0 {No failed attempts} one {# failed attempt} other {# failed attempts}} in the period"
+    },
+    "secondFactor": {
+      "label": "Second-factor adoption",
+      "organization": "{secured, number} of {total, number} members use a passkey or authenticator",
+      "instance": "{secured, number} of {total, number} accounts use a passkey or authenticator"
+    },
+    "newMembers": {
+      "label": "New members",
+      "context": "{removed, plural, =0 {Nobody left} one {# left} other {# left}}, {members, plural, one {# member} other {# members}} now"
+    },
+    "organizations": {
+      "label": "Organizations",
+      "context": "{created, plural, =0 {None created} one {# created} other {# created}} in the period"
+    },
+    "users": {
+      "label": "Users",
+      "context": "{created, plural, =0 {No new accounts} one {# new account} other {# new accounts}} in the period"
+    }
+  },
+  "comparison": {
+    "up": "Up {change} vs. previous period",
+    "down": "Down {change} vs. previous period",
+    "flat": "Unchanged vs. previous period",
+    "noEarlierData": "No earlier period to compare",
+    "noneBefore": "None in the previous period",
+    "nothingYet": "Nothing to measure yet",
+    "points": "{points} pts",
+    "new": "New"
+  },
+  "empty": {
+    "value": "–",
+    "notRolledUp": "Housekeeping hasn't rolled up a day of this period yet, and nothing has happened today."
+  },
+  "chart": {
+    "day": "Day",
+    "notRolledUp": "Not rolled up",
+    "notRecorded": "Not recorded"
+  },
+  "activity": {
+    "title": "Activity",
+    "description": "Sign-ins, active people and failed sign-ins per day",
+    "signIns": "Sign-ins",
+    "activeUsers": "Active users",
+    "failures": "Failed sign-ins",
+    "totals": {
+      "signIns": "Sign-ins",
+      "activeUsers": "Active users a day",
+      "failures": "Failed sign-ins"
+    },
+    "toggle": "Show {series} in the chart",
+    "caption": "Sign-ins, active users and failed sign-ins per day",
+    "empty": "No sign-ins in this period."
+  },
+  "methods": {
+    "title": "Sign-in methods",
+    "description": "How successful sign-ins were proven",
+    "total": "Sign-ins",
+    "password": "Password",
+    "twoFactor": "Password and second factor",
+    "passkey": "Passkey",
+    "caption": "Successful sign-ins by method",
+    "method": "Method",
+    "count": "Sign-ins",
+    "share": "Share",
+    "empty": "No successful sign-ins in this period."
+  },
+  "failures": {
+    "title": "Failed sign-ins",
+    "description": "Refused attempts by reason",
+    "reasons": {
+      "invalidCredentials": "Wrong email or password",
+      "secondFactor": "Wrong second-factor code",
+      "passkey": "Passkey not accepted",
+      "rateLimited": "Too many attempts",
+      "disabled": "Account disabled",
+      "notMember": "Not a member",
+      "suspended": "Organization suspended",
+      "other": "Other"
+    },
+    "caption": "Failed sign-ins by reason",
+    "reason": "Reason",
+    "count": "Attempts",
+    "empty": "No failed sign-ins in this period."
+  },
+  "secondFactor": {
+    "title": "Second-factor adoption",
+    "organization": "Members with a passkey or authenticator, at the end of each day",
+    "instance": "Accounts with a passkey or authenticator, at the end of each day",
+    "series": "Adoption",
+    "caption": "Second-factor adoption per day",
+    "empty": "Housekeeping records adoption once a day, and hasn't for any day of this period yet."
+  },
+  "engagement": {
+    "title": "Engagement",
+    "description": "Distinct people active over a day, 7 days and 30 days",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "caption": "Daily, weekly and monthly active users per day",
+    "empty": "Nobody was active in this period."
+  },
+  "heatmap": {
+    "title": "When people sign in",
+    "description": "Successful sign-ins by weekday and hour, in UTC",
+    "fewer": "Fewer",
+    "more": "More",
+    "cell": "{weekday}, {hour}: {count, plural, =0 {no sign-ins} one {# sign-in} other {# sign-ins}}",
+    "busiest": "Busiest: {weekday}, {hour}",
+    "hint": "Point at a cell for its count",
+    "caption": "Successful sign-ins by weekday and UTC hour",
+    "weekday": "Weekday",
+    "empty": "No successful sign-ins in this period."
+  },
+  "applications": {
+    "title": "Applications",
+    "description": "Tokens issued and people served, by application",
+    "link": "Applications",
+    "application": "Application",
+    "tokens": "Tokens",
+    "change": "Change",
+    "users": "Users a day",
+    "share": "Share",
+    "trend": "Tokens per day",
+    "deleted": "Deleted application",
+    "empty": "No tokens issued in this period."
+  },
+  "growth": {
+    "title": "Member growth",
+    "description": "People joining and leaving per day",
+    "joined": "Joined",
+    "removed": "Left or removed",
+    "caption": "Members joining and leaving per day",
+    "empty": "Nobody joined or left in this period."
+  },
+  "invitations": {
+    "title": "Invitations",
+    "description": "Sent in the period, and what became of them",
+    "sent": "Sent",
+    "accepted": "Accepted",
+    "open": "Still open",
+    "revoked": "Revoked",
+    "expired": "Expired",
+    "acceptance": "{rate} accepted",
+    "truncated": "Audit events are kept for {days, number} days, so earlier invitations are not counted.",
+    "empty": "No invitations sent in this period."
+  },
+  "roles": {
+    "title": "Roles",
+    "description": "Members by role, as of now",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "caption": "Members by role",
+    "role": "Role",
+    "count": "Members",
+    "empty": "No members yet."
+  },
+  "organizationStatus": {
+    "title": "Organizations by status",
+    "description": "Every organization as of now, deleted ones until they are purged",
+    "total": "Organizations",
+    "active": "Active",
+    "suspended": "Suspended",
+    "deleted": "Deleted",
+    "caption": "Organizations by status",
+    "status": "Status",
+    "count": "Organizations",
+    "share": "Share",
+    "empty": "No organizations yet."
+  },
+  "topOrganizations": {
+    "title": "Most active organizations",
+    "description": "Ranked by daily active users",
+    "link": "Organizations",
+    "rank": "Rank",
+    "organization": "Organization",
+    "activeUsers": "Users a day",
+    "signIns": "Sign-ins",
+    "change": "Change",
+    "tokens": "Tokens",
+    "trend": "Sign-ins per day",
+    "suspended": "Suspended",
+    "empty": "No organization had any activity in this period."
+  },
+  "userGrowth": {
+    "title": "New accounts",
+    "description": "Accounts created per day",
+    "series": "New accounts",
+    "caption": "Accounts created per day",
+    "empty": "No accounts were created in this period."
+  },
+  "trend": {
+    "empty": "No sign-ins in the last {period, number} days.",
+    "signIns": "Sign-ins",
+    "activeUsers": "Active users",
+    "day": "Day",
+    "notRecorded": "Not recorded"
+  },
+  "change": {
+    "noEarlierData": "No earlier data to compare",
+    "noneEither": "None in either period",
+    "noneBefore": "None the period before",
+    "noChange": "No change",
+    "points": "{points} pts",
+    "comparison": "<highlight>{change}</highlight> vs previous {period, number} days"
+  },
+  "coverage": {
+    "todayOnly": "No history yet: housekeeping hasn't run. The server runs it hourly unless `HOUSEKEEPING_ENABLED=false`.",
+    "partial": "{missing, plural, one {# day is} other {# days are}} missing: housekeeping hasn't run for them. The server runs it hourly unless `HOUSEKEEPING_ENABLED=false`."
+  }
+}

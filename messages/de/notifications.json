@@ -1,0 +1,115 @@
+{
+  "email": {
+    "accountFooter": "Dies ist ein automatischer Hinweis zu deinem Konto bei {organization}. Er wird jedes Mal verschickt, wenn das passiert, und braucht keine Antwort.",
+    "membershipFooter": "Dies ist ein automatischer Hinweis von {organization} zu deiner Mitgliedschaft. Er braucht keine Antwort."
+  },
+  "details": {
+    "when": "Zeitpunkt",
+    "time": "{time} UTC",
+    "device": "Gerät",
+    "browserOnOs": "{browser} unter {os}",
+    "osDevice": "{os}-Gerät",
+    "unknownDevice": "Unbekanntes Gerät",
+    "ipAddress": "IP-Adresse",
+    "unknown": "Unbekannt",
+    "newAddress": "Neue Adresse",
+    "passkey": "Passkey",
+    "signedInTo": "Angemeldet bei",
+    "reason": "Grund",
+    "organization": "Organisation"
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Mitglied"
+  },
+  "actions": {
+    "reviewSecurity": "Sicherheit überprüfen",
+    "reviewSessions": "Sitzungen überprüfen",
+    "signIn": "Anmelden",
+    "openOrganization": "{organization} öffnen",
+    "viewMembers": "Mitglieder ansehen"
+  },
+  "notYouWithoutAccess": "Falls du das nicht warst, wende dich sofort an deine Administratoren.",
+  "passwordChanged": {
+    "subject": "Dein Passwort wurde geändert",
+    "body": "Hallo {name}, das Passwort für dein Konto bei {organization} wurde gerade geändert.",
+    "otherSessionsRevoked": "Alle anderen Geräte, die bei deinem Konto angemeldet waren, wurden abgemeldet.",
+    "guidance": "Falls du das nicht warst, setze dein Passwort sofort über die Anmeldeseite zurück und wende dich an deine Administratoren."
+  },
+  "emailChangeRequested": {
+    "subject": "Für dein Konto wurde eine neue E-Mail-Adresse angefordert",
+    "body": "Hallo {name}, jemand, der bei deinem Konto bei {organization} angemeldet ist, möchte es auf eine neue E-Mail-Adresse umstellen.",
+    "pending": "Es ändert sich nichts, bis jemand den Bestätigungslink öffnet, der an die neue Adresse geschickt wurde.",
+    "guidance": "Falls du das nicht warst, ändere jetzt dein Passwort, damit die Anfrage nicht abgeschlossen werden kann, und wende dich an deine Administratoren."
+  },
+  "emailChanged": {
+    "subject": "Deine E-Mail-Adresse wurde geändert",
+    "body": "Hallo {name}, dein Konto bei {organization} verwendet diese Adresse nicht mehr. Anmeldung und künftige Hinweise laufen jetzt über die neue.",
+    "guidance": "Falls du das nicht warst, wende dich sofort an deine Administratoren: Mit dieser Adresse kannst du dich weder anmelden noch dein Passwort zurücksetzen."
+  },
+  "twoFactorEnabled": {
+    "subject": "Zwei-Faktor-Authentifizierung wurde aktiviert",
+    "body": "Hallo {name}, für dein Konto bei {organization} ist jetzt die Zwei-Faktor-Authentifizierung aktiv. Zum Anmelden brauchst du neben deinem Passwort einen Code aus deiner Authenticator-App.",
+    "guidance": "Falls du das nicht warst, kann sich jemand anderes als du anmelden: Ändere dein Passwort, überprüfe deine Zwei-Faktor-Einstellungen und wende dich an deine Administratoren."
+  },
+  "twoFactorDisabled": {
+    "subject": "Zwei-Faktor-Authentifizierung wurde deaktiviert",
+    "body": "Hallo {name}, die Zwei-Faktor-Authentifizierung für dein Konto bei {organization} wurde deaktiviert. Zum Anmelden reicht jetzt dein Passwort.",
+    "guidance": "Falls du das nicht warst, ändere dein Passwort, aktiviere die Zwei-Faktor-Authentifizierung wieder und wende dich an deine Administratoren."
+  },
+  "backupCodesRegenerated": {
+    "subject": "Neue Backup-Codes wurden erstellt",
+    "body": "Hallo {name}, für dein Konto bei {organization} wurden neue Backup-Codes erstellt. Deine bisherigen Backup-Codes funktionieren nicht mehr.",
+    "guidance": "Falls du das nicht warst, ändere dein Passwort, erstelle selbst neue Backup-Codes und wende dich an deine Administratoren."
+  },
+  "passkeyAdded": {
+    "subject": "Deinem Konto wurde ein Passkey hinzugefügt",
+    "body": "Hallo {name}, mit einem neuen Passkey kann man sich jetzt bei deinem Konto bei {organization} anmelden.",
+    "guidance": "Falls du das nicht warst, entferne den Passkey, ändere dein Passwort und wende dich an deine Administratoren."
+  },
+  "passkeyRemoved": {
+    "subject": "Ein Passkey wurde von deinem Konto entfernt",
+    "body": "Hallo {name}, mit einem Passkey kann man sich nicht mehr bei deinem Konto bei {organization} anmelden.",
+    "guidance": "Falls du das nicht warst, ändere dein Passwort, überprüfe deine Passkeys und wende dich an deine Administratoren."
+  },
+  "accountDeleted": {
+    "subject": "Dein Konto wurde gelöscht",
+    "body": "Hallo {name}, dein Konto bei {organization} wurde gelöscht, zusammen mit all seinen Mitgliedschaften in Organisationen. Das lässt sich nicht rückgängig machen."
+  },
+  "newSignIn": {
+    "subject": "Neue Anmeldung bei deinem Konto",
+    "body": "Hallo {name}, bei deinem Konto bei {organization} hat sich gerade jemand von einem Gerät angemeldet, das es in letzter Zeit nicht verwendet hat.",
+    "guidance": "Falls du das nicht warst, ändere dein Passwort, melde die Sitzungen ab, die du nicht erkennst, und wende dich an deine Administratoren."
+  },
+  "accountDisabled": {
+    "subject": "Dein Konto wurde deaktiviert",
+    "body": "Hallo {name}, ein Administrator hat dein Konto bei {organization} deaktiviert. Bis es wieder aktiviert ist, kannst du dich weder damit noch bei etwas anmelden, das es verwendet.",
+    "guidance": "Falls du das für einen Fehler hältst, wende dich an deine Administratoren."
+  },
+  "accountEnabled": {
+    "subject": "Dein Konto wurde wieder aktiviert",
+    "body": "Hallo {name}, ein Administrator hat dein Konto bei {organization} wieder aktiviert. Du kannst dich wie gewohnt anmelden.",
+    "guidance": "Falls du das nicht erwartet hast, wende dich an deine Administratoren."
+  },
+  "memberAdded": {
+    "subject": "Du wurdest zu {organization} hinzugefügt",
+    "body": "Hallo {name}, {actor} hat dich als {role} zu {organization} hinzugefügt. Melde dich mit deinem bestehenden Konto an, um loszulegen.",
+    "guidance": "Falls du das nicht erwartet hast, wende dich an einen Administrator von {organization}."
+  },
+  "memberRoleChanged": {
+    "subject": "Deine Rolle in {organization} wurde geändert",
+    "body": "Hallo {name}, {actor} hat deine Rolle in {organization} von {from} auf {to} geändert.",
+    "guidance": "Falls du das für einen Fehler hältst, wende dich an einen Administrator von {organization}."
+  },
+  "memberRemoved": {
+    "subject": "Du wurdest aus {organization} entfernt",
+    "body": "Hallo {name}, {actor} hat dich aus {organization} entfernt. Du kannst dich dort und bei den Anwendungen, auf die du darüber Zugriff hattest, nicht mehr anmelden.",
+    "guidance": "Falls du das für einen Fehler hältst, wende dich an einen Administrator von {organization}."
+  },
+  "invitationAccepted": {
+    "subject": "{invitee} hat deine Einladung zu {organization} angenommen",
+    "body": "Hallo {name}, {invitee} ({inviteeEmail}) hat deine Einladung angenommen und ist {organization} als {role} beigetreten.",
+    "guidance": "Falls du diese Person nicht eingeladen hast, überprüfe die Mitglieder von {organization}."
+  }
+}

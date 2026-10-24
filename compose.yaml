@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bedrock
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  storage:
+    image: ministackorg/ministack:1.5.0
+    environment:
+      SERVICES: s3
+      PERSIST_STATE: "1"
+      S3_PERSIST: "1"
+      STATE_DIR: /var/lib/ministack/state
+      S3_DATA_DIR: /var/lib/ministack/data/s3
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    ports:
+      - "4566:4566"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "aws",
+          "--endpoint-url=http://localhost:4566",
+          "s3api",
+          "head-bucket",
+          "--bucket",
+          "bedrock-media",
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    volumes:
+      - ministack_data:/var/lib/ministack
+      - ./scripts/ministack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh:ro
+
+  mail:
+    image: axllent/mailpit:v1.21
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      # 1025 is SMTP, 8025 is the web inbox at http://localhost:8025.
+      - "1025:1025"
+      - "8025:8025"
+    volumes:
+      - mailpit_data:/data
+
+volumes:
+  postgres_data:
+  ministack_data:
+  mailpit_data:

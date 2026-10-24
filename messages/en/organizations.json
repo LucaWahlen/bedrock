@@ -1,0 +1,467 @@
+{
+  "none": "None",
+  "columns": {
+    "actions": "Actions"
+  },
+  "roles": {
+    "owner": {
+      "label": "Owner",
+      "description": "Full control, including other owners and deletion."
+    },
+    "admin": {
+      "label": "Admin",
+      "description": "Manages members and settings, but not ownership."
+    },
+    "member": {
+      "label": "Member",
+      "description": "Access to the organization without administering it."
+    }
+  },
+  "memberStatus": {
+    "confirmed": "Confirmed",
+    "unconfirmed": "Unconfirmed",
+    "invited": "Invited"
+  },
+  "organizationStatus": {
+    "active": "Active",
+    "suspended": "Suspended",
+    "deleted": "Deleted"
+  },
+  "accountStatus": {
+    "active": "Active",
+    "disabled": "Disabled"
+  },
+  "secondFactor": {
+    "on": "On",
+    "off": "Off",
+    "authenticatorApp": "Authenticator app",
+    "passkeys": "{count, plural, one {# passkey} other {# passkeys}}",
+    "none": "No second factor"
+  },
+  "activity": {
+    "never": "Never",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{count, plural, one {# day ago} other {# days ago}}"
+  },
+  "people": {
+    "actionsFor": "Actions for {name}",
+    "emailAddress": "Email address",
+    "copyEmailAddress": "Copy email address",
+    "userId": "User ID",
+    "copyUserId": "Copy user ID"
+  },
+  "members": {
+    "addPeople": "Add people",
+    "invitedByUntil": "Invited by {inviter}, expires {date}",
+    "invitedUntil": "Invited, expires {date}",
+    "columns": {
+      "member": "Member",
+      "roles": "Roles",
+      "applicationRoles": "Application roles",
+      "groups": "Groups",
+      "status": "Status",
+      "secondFactor": "2FA",
+      "active": "Active",
+      "added": "Added"
+    },
+    "filters": {
+      "role": "Role",
+      "status": "Status",
+      "applicationRole": "Application role",
+      "group": "Group"
+    },
+    "table": {
+      "label": "Organization members",
+      "empty": "No people found.",
+      "searchEntity": "people",
+      "unitOne": "person",
+      "unitOther": "people"
+    }
+  },
+  "invitationActions": {
+    "sendAgain": "Send again",
+    "resent": "Invitation sent to {email} again",
+    "renewedNotSent": "The invitation was renewed but the email failed to send",
+    "withdraw": "Withdraw invitation",
+    "withdrawing": "Withdrawing...",
+    "withdrawn": "The invitation to {email} was withdrawn",
+    "withdrawTitle": "Withdraw this invitation?",
+    "withdrawDescription": "The link sent to {email} stops working immediately. You can always invite them again."
+  },
+  "memberActions": {
+    "changeRole": "Change role",
+    "changing": "Changing...",
+    "manageApplicationRoles": "Manage application roles",
+    "manageGroups": "Manage groups",
+    "leave": "Leave",
+    "leaving": "Leaving...",
+    "remove": "Remove",
+    "removing": "Removing...",
+    "roleChange": {
+      "self": {
+        "title": "Change your own role?",
+        "description": "You will be {role, select, owner {owner} admin {admin} other {member}} in {organization} and lose the rights you have now. You will not be able to change it back yourself.",
+        "action": "Change my role"
+      },
+      "promote": {
+        "title": "Make {name} an owner?",
+        "description": "{name} will have full control of {organization}, including managing its owners and requesting its deletion.",
+        "action": "Make owner"
+      },
+      "demote": {
+        "title": "Remove {name} as owner?",
+        "description": "{name} will be {role, select, owner {owner} admin {admin} other {member}} and lose control of {organization}. You can make them an owner again.",
+        "action": "Remove ownership"
+      }
+    },
+    "roleChanged": {
+      "self": "You are now {role, select, owner {owner} admin {admin} other {member}} in {organization}",
+      "other": "{name} is now {role, select, owner {owner} admin {admin} other {member}}"
+    },
+    "removed": {
+      "self": "You left {organization}",
+      "other": "{name} was removed from {organization}"
+    },
+    "leaveDialog": {
+      "title": "Leave organization?",
+      "description": "You will lose access to {organization} and need someone there to add you back. Your account and your other memberships are unaffected."
+    },
+    "removeDialog": {
+      "title": "Remove member?",
+      "description": "{name} will lose access to {organization}. Their account and their other memberships are unaffected."
+    }
+  },
+  "addPeople": {
+    "title": "Add people",
+    "descriptionWithDirectory": "Search for an account, or type an address nobody holds yet to invite it to {organization}.",
+    "descriptionByAddress": "Enter an email address exactly. It does not need an account on {organization} yet.",
+    "people": "People",
+    "role": "Role",
+    "inviteTo": "Invite to {organization}",
+    "sendInvitation": "Send an invitation",
+    "mustInvite": "An address without an account has nobody to add, so it can only be invited.",
+    "sending": "Sending...",
+    "adding": "Adding...",
+    "submitInvite": "Send invitations",
+    "submitAdd": "Add people",
+    "invited": {
+      "one": "{name} was invited to {organization}",
+      "many": "{count, plural, one {# person was} other {# people were}} invited to {organization}"
+    },
+    "added": {
+      "one": "{name} was added to {organization}",
+      "many": "{count, plural, one {# person was} other {# people were}} added to {organization}"
+    },
+    "notes": {
+      "summary": "{notes}.",
+      "refused": "{count, number} {count, plural, one {was} other {were}} refused",
+      "undelivered": "{count, number} could not be emailed, so send {count, plural, one {it} other {those}} again",
+      "skipped": "{count, number} already belonged"
+    }
+  },
+  "directory": {
+    "enableAccount": "Enable account",
+    "disableAccount": "Disable account",
+    "enabled": "{name} can sign in again",
+    "disabled": "{name} can no longer sign in",
+    "disabledSince": "Disabled {date}",
+    "disabledSinceBecause": "Disabled {date}: {reason}",
+    "columns": {
+      "user": "User",
+      "organizations": "Organizations",
+      "status": "Status",
+      "active": "Active",
+      "created": "Created"
+    },
+    "filters": {
+      "organization": "Organization",
+      "account": "Account"
+    },
+    "table": {
+      "label": "Users",
+      "empty": "No users found.",
+      "searchEntity": "users",
+      "unitOne": "user",
+      "unitOther": "users"
+    },
+    "enableDialog": {
+      "title": "Enable {name}?",
+      "description": "{email} can sign in again, with every membership they had. Sessions and application tokens ended when the account was disabled stay ended."
+    },
+    "disableDialog": {
+      "title": "Disable {name}?",
+      "description": "{email} is signed out everywhere and cannot sign in again, to this instance or any application that uses it, until the account is enabled. Memberships are kept.",
+      "soleOwner": "They are the only active owner of {organizations}. Nobody will be able to administer {count, plural, one {it} other {them}} until the account is enabled again.",
+      "reason": "Reason",
+      "reasonPlaceholder": "Why this account is being disabled",
+      "disabling": "Disabling..."
+    },
+    "memberships": {
+      "title": "Organizations",
+      "count": "{count, plural, one {# membership} other {# memberships}}",
+      "view": "View the {count, plural, one {# organization} other {# organizations}} {name} belongs to",
+      "loading": "Loading organizations",
+      "loadFailed": "Organizations could not be loaded"
+    }
+  },
+  "organizationsTable": {
+    "statusChangedBy": "Changed by {name} on {date}",
+    "statusChanged": "Changed by an administrator on {date}",
+    "noHistory": "No recorded history",
+    "purgedOn": "Purged on {date}",
+    "columns": {
+      "organization": "Organization",
+      "status": "Status",
+      "administrators": "Administrators",
+      "members": "Members",
+      "created": "Created"
+    },
+    "filters": {
+      "status": "Status"
+    },
+    "table": {
+      "label": "Organizations",
+      "empty": "No organizations found.",
+      "searchEntity": "organizations",
+      "unitOne": "organization",
+      "unitOther": "organizations"
+    },
+    "people": {
+      "administrators": {
+        "title": "Administrators",
+        "count": "{count, plural, one {# administrator} other {# administrators}}",
+        "view": "View {count, plural, one {# administrator} other {# administrators}}",
+        "loading": "Loading administrators",
+        "loadFailed": "Administrators could not be loaded"
+      },
+      "members": {
+        "title": "Members",
+        "count": "{count, plural, one {# member} other {# members}}",
+        "view": "View {count, plural, one {# member} other {# members}}",
+        "loading": "Loading members",
+        "loadFailed": "Members could not be loaded"
+      }
+    }
+  },
+  "rowActions": {
+    "actionsFor": "Actions for {name}",
+    "suspend": {
+      "menu": "Suspend",
+      "title": "Suspend organization?",
+      "description": "Nobody can sign in to {name} while it is suspended, not even its owners.",
+      "confirm": "Suspend",
+      "succeeded": "{name} was suspended"
+    },
+    "reactivate": {
+      "menu": "Reactivate",
+      "title": "Reactivate organization?",
+      "description": "{name} becomes active again and its members return.",
+      "confirm": "Reactivate",
+      "succeeded": "{name} was reactivated"
+    },
+    "delete": {
+      "menu": "Delete",
+      "title": "Delete organization?",
+      "description": "{name} disappears for everyone who belongs to it right away. You can restore it until the retention period is over, after which it is purged.",
+      "confirm": "Delete organization",
+      "succeeded": "{name} was deleted"
+    },
+    "restore": {
+      "menu": "Restore",
+      "title": "Restore organization?",
+      "description": "{name} becomes active again and its members can sign in.",
+      "confirm": "Restore",
+      "succeeded": "{name} was restored"
+    }
+  },
+  "actionDialog": {
+    "typeToConfirm": "Type <code>{slug}</code> to confirm"
+  },
+  "settings": {
+    "discard": "Discard",
+    "dangerZone": {
+      "title": "Danger zone",
+      "description": "These changes are visible outside the organization or affect everyone in it.",
+      "deleteDescription": "Deletion takes effect at once. You and everyone else lose access immediately, and only the instance administrators can bring the organization back before it is purged.",
+      "deleteDialog": {
+        "title": "Delete organization?",
+        "description": "{organization} disappears for you and for every one of its members right away. Only the instance administrators can restore it, and once the retention period is over it is purged.",
+        "confirm": "Delete organization"
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "How this organization is named and presented to everyone who reaches it.",
+      "updated": "{name} was updated"
+    },
+    "slug": {
+      "description": "The slug is how everyone reaches this organization. Changing it breaks every existing link, bookmark and invitation, and the old one stops working immediately.",
+      "change": "Change slug",
+      "changed": "{organization} now lives at {path}",
+      "changeFailed": "Could not change the slug",
+      "taken": "This slug is taken",
+      "dialogTitle": "Change the slug?",
+      "dialogDescription": "{organization} currently lives at {path}. Every existing link, bookmark and invitation pointing at it stops working the moment you save, and there is no redirect.",
+      "newSlug": "New slug"
+    }
+  },
+  "pages": {
+    "titleWithOrganization": "{page} | {organization}",
+    "members": "Members",
+    "directory": "Directory",
+    "organizations": "Organizations",
+    "settings": "Settings",
+    "authentication": "Authentication",
+    "invitation": "Invitation"
+  },
+  "slugAvailability": {
+    "checking": "Checking slug availability",
+    "available": "Slug available",
+    "taken": "Slug taken"
+  },
+  "branding": {
+    "name": "Name",
+    "logo": "Logo",
+    "logoHint": "PNG, JPEG, WebP, or SVG up to 2 MB",
+    "backgroundImage": "Background image",
+    "backgroundImageHint": "PNG, JPEG, or WebP up to 10 MB",
+    "favicon": "Favicon",
+    "faviconHint": "ICO, PNG, or SVG up to 1 MB",
+    "themeColor": "Theme color",
+    "chooseThemeColor": "Choose theme color",
+    "suggestedColor": "Suggested color",
+    "dismiss": "Dismiss",
+    "useColor": "Use color",
+    "useDefaultTheme": "Use default theme",
+    "uploadFailed": "Could not upload organization images"
+  },
+  "create": {
+    "title": "Create organization",
+    "description": "Add a new organization and upload its branding.",
+    "namePlaceholder": "Acme Inc.",
+    "slug": "Slug",
+    "slugPlaceholder": "acme-inc",
+    "slugTaken": "This organization slug is taken",
+    "owners": "Owners",
+    "creating": "Creating...",
+    "submit": "Create organization",
+    "handedToOwner": "{name} was created and handed to {owner}",
+    "handedToOwners": "{name} was created and handed to its owners"
+  },
+  "authentication": {
+    "title": "Sign-in policy",
+    "description": "Who can join {organization}, and how members prove it is them.",
+    "publicSignUp": {
+      "title": "Allow public sign-up",
+      "description": "Anyone who reaches {organization} can create an account and join as a member, without an invitation.",
+      "ownersAndAdminsOnly": "Only owners and admins can change this."
+    },
+    "twoFactor": {
+      "title": "Require two-factor authentication",
+      "description": "Members without an authenticator app or a passkey must set one up before they can use {organization} or sign in to its applications.",
+      "ownersOnly": "Only owners can change this.",
+      "setUpYourOwnFirst": "Set up an authenticator app or a passkey on your own account first.",
+      "compliance": "<strong>{compliant, number} of {total, number}</strong> active members have a second factor",
+      "viewMembers": "View members"
+    },
+    "confirmTwoFactor": {
+      "title": "Require two-factor authentication?",
+      "description": "{count, plural, one {# active member has} other {# active members have}} no second factor. Until they set up an authenticator app or a passkey, they cannot use {organization} or sign in to its applications.",
+      "notice": "They are asked to set one up the next time they sign in.",
+      "confirm": "Require it"
+    },
+    "saved": {
+      "signUpOpened": "Anyone can now join {organization}",
+      "signUpClosed": "{organization} is invitation only again",
+      "twoFactorRequired": "{organization} now requires a second factor",
+      "twoFactorOptional": "{organization} no longer requires a second factor"
+    }
+  },
+  "invitation": {
+    "invitedBy": "{inviter} invited <strong>{email}</strong> to join {organization}.",
+    "invitedBySomeone": "Someone invited <strong>{email}</strong> to join {organization}.",
+    "join": "Join {organization}",
+    "joining": "Joining...",
+    "accept": "Accept invitation",
+    "email": "Email",
+    "name": "Name",
+    "namePlaceholder": "John Doe",
+    "password": "Password",
+    "signInAndJoin": "Sign in and join",
+    "forgotPassword": "Forgot your password?",
+    "creatingAccount": "Creating account...",
+    "createAccountAndJoin": "Create account and join",
+    "confirmAddress": "Confirm your address",
+    "goToLogin": "Go to login",
+    "otherAccount": {
+      "title": "You are signed in as someone else",
+      "description": "This invitation was sent to <strong>{email}</strong>, but you are signed in as <strong>{signedInAs}</strong>.",
+      "signOut": "Sign out and continue"
+    },
+    "refusals": {
+      "unknown": {
+        "title": "This invitation link is not valid",
+        "description": "It may have been withdrawn, already used, or replaced by a newer invitation to the same address. Ask whoever invited you to send another one."
+      },
+      "expired": {
+        "title": "This invitation has expired",
+        "description": "Invitations are only good for a limited time. Ask whoever invited you to send a new one."
+      },
+      "organizationUnavailable": {
+        "title": "This organization is not accepting anyone right now",
+        "description": "It was suspended or scheduled for deletion after the invitation was sent."
+      },
+      "alreadyMember": {
+        "title": "You already belong to this organization",
+        "description": "Sign in and carry on where you left off."
+      },
+      "unconfirmedAddress": {
+        "title": "Confirm your email address first",
+        "description": "Your invitation is waiting. Confirm your address, or open the invitation link we emailed you, and you can accept it."
+      }
+    }
+  },
+  "join": {
+    "title": "Join {organization}",
+    "description": "{organization} is open to anyone. You will join as <strong>{email}</strong>.",
+    "joining": "Joining...",
+    "wrongAccount": "Wrong account? <link>Sign out</link>"
+  },
+  "memberOrganizations": {
+    "empty": "No other organizations.",
+    "root": "Root organization"
+  },
+  "pendingInvitations": {
+    "empty": "No pending invitations.",
+    "expires": "Expires <time>{date}</time>"
+  },
+  "userPicker": {
+    "searching": "Searching...",
+    "searchingLabel": "Searching",
+    "lookupFailed": "Nobody could be looked up",
+    "nobodyLeft": "Nobody left to add.",
+    "enterExactAddress": "Enter an exact email address.",
+    "noMatch": "Nobody matches that.",
+    "noAccount": "No account uses that address.",
+    "remove": "Remove {name}",
+    "searchPlaceholder": "Search by name or email address...",
+    "addressPlaceholder": "Enter an exact email address..."
+  },
+  "validation": {
+    "organizationNameRequired": "Organization name cannot be empty",
+    "slugRequired": "Organization slug cannot be empty",
+    "slugFormat": "Use lowercase letters, numbers, and single hyphens",
+    "colorFormat": "Enter a six-digit hex color",
+    "ownersRequired": "Choose at least one owner",
+    "imageRequired": "Select an image file",
+    "logoFile": "Use a PNG, JPEG, WebP, or SVG up to 2 MB",
+    "backgroundFile": "Use a PNG, JPEG, or WebP up to 10 MB",
+    "faviconFile": "Use an ICO, PNG, or SVG up to 1 MB",
+    "reasonTooShort": "Give a reason of at least {min, number} characters",
+    "reasonTooLong": "Keep the reason under {max, number} characters",
+    "nameRequired": "Enter your name",
+    "passwordTooShort": "Use at least {min, number} characters",
+    "tooLong": "Use at most {max, number} characters"
+  }
+}

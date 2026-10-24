@@ -1,0 +1,232 @@
+{
+  "table": {
+    "entity": "audit events",
+    "singular": "event",
+    "plural": "events",
+    "empty": "No audit events found.",
+    "label": "Audit events"
+  },
+  "columns": {
+    "event": "Event",
+    "outcome": "Outcome",
+    "organization": "Organization",
+    "actor": "Actor",
+    "timestamp": "Timestamp",
+    "actions": "Actions"
+  },
+  "outcomes": {
+    "success": "Success",
+    "failure": "Failed",
+    "denied": "Denied"
+  },
+  "actor": {
+    "anonymous": "Anonymous",
+    "deletedUser": "Deleted user",
+    "platform": "Platform"
+  },
+  "rowActions": {
+    "label": "Actions for {action} on {date}",
+    "copyId": "Copy event ID",
+    "copyJson": "Copy as JSON",
+    "eventId": "Event ID",
+    "event": "Event"
+  },
+  "details": {
+    "timestamp": "Timestamp",
+    "reason": "Reason",
+    "ipAddress": "IP address",
+    "userAgent": "User agent",
+    "eventId": "Event ID",
+    "targets": {
+      "target": "Target",
+      "user": "User",
+      "application": "Application",
+      "applicationRole": "Application role",
+      "group": "Group",
+      "invitation": "Invitation",
+      "organization": "Organization",
+      "passkey": "Passkey",
+      "session": "Session"
+    },
+    "metadata": {
+      "role": "Role",
+      "roles": "Roles",
+      "from": "From",
+      "to": "To",
+      "via": "Via",
+      "name": "Name",
+      "email": "Email",
+      "key": "Key",
+      "added": "Added",
+      "removed": "Removed",
+      "count": "Count",
+      "method": "Method",
+      "otherSessionsRevoked": "Other sessions signed out",
+      "previousName": "Previous name",
+      "requestedEmail": "Requested email",
+      "requiredBy": "Required by",
+      "invitationId": "Invitation ID",
+      "userAgent": "User agent",
+      "redirectUris": "Redirect URIs",
+      "launchUrl": "Launch URL",
+      "clientId": "Client ID",
+      "organizationId": "Organization ID",
+      "slug": "Slug",
+      "confidential": "Confidential",
+      "deviceType": "Device type",
+      "backedUp": "Backed up",
+      "soleOwnerOf": "Sole owner of",
+      "changed": "Changed",
+      "members": "Members",
+      "applications": "Applications",
+      "memberships": "Memberships",
+      "inviters": "Invited by",
+      "organizations": "Organizations",
+      "organization": "Organization",
+      "reason": "Reason"
+    }
+  },
+  "recent": {
+    "empty": "No activity yet."
+  },
+  "domains": {
+    "organization": "Organizations",
+    "application": "Applications",
+    "group": "Groups",
+    "user": "Users",
+    "account": "Accounts",
+    "authentication": "Authentication"
+  },
+  "actions": {
+    "organization": {
+      "created": "Organization created",
+      "updated": "Organization updated",
+      "suspended": "Organization suspended",
+      "reactivated": "Organization reactivated",
+      "deleted": "Organization deleted",
+      "restored": "Organization restored",
+      "purged": "Organization purged",
+      "memberAdded": "Member added",
+      "memberRemoved": "Member removed",
+      "memberRoleChanged": "Member role changed",
+      "memberInvited": "Member invited",
+      "invitationResent": "Invitation resent",
+      "invitationRevoked": "Invitation revoked",
+      "invitationAccepted": "Invitation accepted"
+    },
+    "application": {
+      "created": "Application created",
+      "updated": "Application updated",
+      "deleted": "Application deleted",
+      "secretRotated": "Application secret rotated",
+      "roleCreated": "Application role created",
+      "roleUpdated": "Application role updated",
+      "roleDeleted": "Application role deleted",
+      "rolesAssigned": "Application roles assigned",
+      "roleMembersChanged": "Role members changed",
+      "roleGroupsChanged": "Role groups changed"
+    },
+    "group": {
+      "created": "Group created",
+      "updated": "Group updated",
+      "deleted": "Group deleted",
+      "membersChanged": "Group members changed",
+      "rolesChanged": "Group roles changed"
+    },
+    "user": {
+      "created": "User created",
+      "disabled": "User disabled",
+      "enabled": "User enabled"
+    },
+    "account": {
+      "profileUpdated": "Profile updated",
+      "passwordChanged": "Password changed",
+      "emailChangeRequested": "Email change requested",
+      "emailChanged": "Email changed",
+      "sessionRevoked": "Session revoked",
+      "sessionsRevoked": "Sessions revoked",
+      "twoFactorEnabled": "Two-factor authentication enabled",
+      "twoFactorDisabled": "Two-factor authentication disabled",
+      "twoFactorReset": "Two-factor authentication reset",
+      "backupCodesRegenerated": "Backup codes regenerated",
+      "passkeyAdded": "Passkey added",
+      "passkeyRenamed": "Passkey renamed",
+      "passkeyRemoved": "Passkey removed",
+      "deleted": "Account deleted"
+    },
+    "authentication": {
+      "login": "Sign-in",
+      "twoFactorChallenged": "Second factor requested",
+      "logout": "Sign-out",
+      "emailVerified": "Email verified",
+      "passwordResetRequested": "Password reset requested",
+      "passwordReset": "Password reset"
+    }
+  },
+  "actionsShort": {
+    "organization": {
+      "created": "Created",
+      "updated": "Updated",
+      "suspended": "Suspended",
+      "reactivated": "Reactivated",
+      "deleted": "Deleted",
+      "restored": "Restored",
+      "purged": "Purged",
+      "memberAdded": "Member added",
+      "memberRemoved": "Member removed",
+      "memberRoleChanged": "Member role changed",
+      "memberInvited": "Member invited",
+      "invitationResent": "Invitation resent",
+      "invitationRevoked": "Invitation revoked",
+      "invitationAccepted": "Invitation accepted"
+    },
+    "application": {
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "secretRotated": "Secret rotated",
+      "roleCreated": "Role created",
+      "roleUpdated": "Role updated",
+      "roleDeleted": "Role deleted",
+      "rolesAssigned": "Roles assigned",
+      "roleMembersChanged": "Role members changed",
+      "roleGroupsChanged": "Role groups changed"
+    },
+    "group": {
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "membersChanged": "Members changed",
+      "rolesChanged": "Roles changed"
+    },
+    "user": {
+      "created": "Created",
+      "disabled": "Disabled",
+      "enabled": "Enabled"
+    },
+    "account": {
+      "profileUpdated": "Profile updated",
+      "passwordChanged": "Password changed",
+      "emailChangeRequested": "Email change requested",
+      "emailChanged": "Email changed",
+      "sessionRevoked": "Session revoked",
+      "sessionsRevoked": "Sessions revoked",
+      "twoFactorEnabled": "Two-factor enabled",
+      "twoFactorDisabled": "Two-factor disabled",
+      "twoFactorReset": "Two-factor reset",
+      "backupCodesRegenerated": "Backup codes regenerated",
+      "passkeyAdded": "Passkey added",
+      "passkeyRenamed": "Passkey renamed",
+      "passkeyRemoved": "Passkey removed",
+      "deleted": "Deleted"
+    },
+    "authentication": {
+      "login": "Sign-in",
+      "twoFactorChallenged": "Second factor requested",
+      "logout": "Sign-out",
+      "emailVerified": "Email verified",
+      "passwordResetRequested": "Password reset requested",
+      "passwordReset": "Password reset"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+# Bedrock and its Postgres on one host. Object storage and mail stay external:
+# any S3 API (Cloudflare R2, AWS S3, MinIO, ...) and any SMTP server. Put a
+# reverse proxy with TLS in front; see README.md.
+#
+#   $EDITOR .env            # the variables in README.md, next to this file
+#   docker compose up -d
+
+name: bedrock
+
+services:
+  bedrock:
+    image: ghcr.io/lucawahlen/bedrock:${BEDROCK_VERSION:-latest}
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    # Only the reverse proxy on this host should reach the server. Bind to all
+    # interfaces ("3000:3000") if the proxy runs elsewhere.
+    ports:
+      - "127.0.0.1:3000:3000"
+    # The server writes only to these two; everything else is the image.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache:mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bedrock
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: bedrock
+    volumes:
+      - postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bedrock -d bedrock"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres:

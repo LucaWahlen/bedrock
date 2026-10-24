@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "title": "App"
+  },
+  "navigation": {
+    "groups": {
+      "platform": "Plattform",
+      "governance": "Governance",
+      "system": "System",
+      "workspace": "Arbeitsbereich",
+      "access": "Zugriff",
+      "organization": "Organisation"
+    },
+    "items": {
+      "overview": "Übersicht",
+      "organizations": "Organisationen",
+      "members": "Mitglieder",
+      "directory": "Verzeichnis",
+      "applications": "Anwendungen",
+      "groups": "Gruppen",
+      "roles": "Rollen & Berechtigungen",
+      "authentication": "Authentifizierung",
+      "auditLog": "Audit-Log",
+      "health": "Systemzustand",
+      "usage": "Nutzung",
+      "settings": "Einstellungen"
+    }
+  },
+  "orgSwitcher": {
+    "select": "Organisation auswählen",
+    "organizations": "Organisationen",
+    "create": "Organisation erstellen"
+  },
+  "userMenu": {
+    "settings": "Einstellungen",
+    "theme": "Design",
+    "themes": {
+      "system": "System",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
+    "logOut": "Abmelden"
+  },
+  "overview": {
+    "yourApplications": "Deine Anwendungen",
+    "recentActivity": "Letzte Aktivitäten",
+    "recentPlatformActivity": "Letzte Aktivitäten auf der Plattform",
+    "yourOrganizations": "Deine Organisationen",
+    "pendingInvitations": "Offene Einladungen",
+    "metrics": {
+      "activeUsers": "Aktive Benutzer",
+      "signIns": "Anmeldungen",
+      "tokensIssued": "Ausgestellte Tokens",
+      "secondFactor": "Zweiter Faktor",
+      "organizations": "Organisationen",
+      "users": "Benutzer",
+      "detail": {
+        "dailyAverage": "Tagesdurchschnitt, letzte 7 Tage",
+        "signIns": "Erfolgreich, letzte 7 Tage",
+        "instanceSignIns": "Alle Organisationen, letzte 7 Tage",
+        "tokensIssued": "An Anwendungen, letzte 7 Tage",
+        "secondFactor": "{count, number} von {total, plural, one {# Mitglied} other {# Mitgliedern}}",
+        "organizations": "Aktive Mandanten",
+        "users": "Konten auf dieser Instanz"
+      },
+      "trend": {
+        "up": "{change} mehr {basis, select, snapshot {als vor 7 Tagen} other {als in den 7 Tagen davor}}",
+        "down": "{change} weniger {basis, select, snapshot {als vor 7 Tagen} other {als in den 7 Tagen davor}}",
+        "flat": "{basis, select, snapshot {Wie vor 7 Tagen} other {Wie in den 7 Tagen davor}}",
+        "noneBefore": "{basis, select, snapshot {Vor 7 Tagen keine} other {In den 7 Tagen davor keine}}",
+        "noEarlierData": "Noch kein Vergleich möglich",
+        "points": "{points} Pp."
+      }
+    },
+    "activity": {
+      "title": "Anmeldungen",
+      "description": "{count, plural, one {# Anmeldung} other {# Anmeldungen}} in den letzten 30 Tagen",
+      "empty": "Keine Anmeldungen in den letzten 30 Tagen",
+      "viewUsage": "Nutzung ansehen",
+      "caption": "Anmeldungen pro Tag, letzte 30 Tage",
+      "day": "Tag",
+      "signIns": "Anmeldungen",
+      "notRecorded": "Nicht erfasst"
+    }
+  },
+  "status": {
+    "switchAccount": "Konto wechseln",
+    "goElsewhere": "Zu einer anderen Organisation",
+    "availableOrganizations": "Zu deinen Organisationen",
+    "pageNotFound": {
+      "title": "Seite nicht gefunden",
+      "description": "Die gesuchte Seite existiert nicht oder wurde verschoben."
+    },
+    "organizationNotFound": {
+      "title": "Organisation nicht gefunden",
+      "description": "Die gesuchte Organisation existiert nicht oder ist nicht mehr verfügbar."
+    },
+    "roleDenied": {
+      "title": "Kein Zugriff",
+      "description": "Deine Rolle in {organization} erlaubt das nicht.",
+      "action": "Zu {organization}"
+    },
+    "invitationWaiting": {
+      "title": "Eine Einladung wartet auf dich",
+      "description": "Du wurdest zu {organization} eingeladen, hast aber noch nicht angenommen.",
+      "action": "Einladung ansehen"
+    },
+    "notJoined": {
+      "title": "Du bist noch nicht beigetreten",
+      "description": "{organization} steht allen offen, aber dein Konto ist kein Mitglied.",
+      "action": "Organisation beitreten"
+    },
+    "notMember": {
+      "title": "Kein Zugriff",
+      "description": "Dein Konto ist kein Mitglied von {organization}."
+    },
+    "suspended": {
+      "title": "Organisation gesperrt",
+      "description": "Die Administration dieser Instanz hat {organization} gesperrt. Niemand kann sich anmelden, bis sie wieder freigegeben wird."
+    },
+    "error": {
+      "title": "Seite konnte nicht geladen werden",
+      "description": "Wir konnten unsere Dienste gerade nicht erreichen. Das ist meist nur vorübergehend – versuch es bitte erneut.",
+      "reload": "Seite neu laden",
+      "home": "Zur Startseite"
+    }
+  }
+}

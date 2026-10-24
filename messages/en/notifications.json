@@ -1,0 +1,115 @@
+{
+  "email": {
+    "accountFooter": "This is an automatic notice about your {organization} account. It is sent whenever this happens and needs no reply.",
+    "membershipFooter": "This is an automatic notice from {organization} about your membership. It needs no reply."
+  },
+  "details": {
+    "when": "When",
+    "time": "{time} UTC",
+    "device": "Device",
+    "browserOnOs": "{browser} on {os}",
+    "osDevice": "{os} device",
+    "unknownDevice": "Unknown device",
+    "ipAddress": "IP address",
+    "unknown": "Unknown",
+    "newAddress": "New address",
+    "passkey": "Passkey",
+    "signedInTo": "Signed in to",
+    "reason": "Reason",
+    "organization": "Organization"
+  },
+  "roles": {
+    "owner": "an owner",
+    "admin": "an admin",
+    "member": "a member"
+  },
+  "actions": {
+    "reviewSecurity": "Review your security",
+    "reviewSessions": "Review your sessions",
+    "signIn": "Sign in",
+    "openOrganization": "Open {organization}",
+    "viewMembers": "View members"
+  },
+  "notYouWithoutAccess": "If this wasn't you, contact your administrator right away.",
+  "passwordChanged": {
+    "subject": "Your password was changed",
+    "body": "Hi {name}, the password for your {organization} account was just changed.",
+    "otherSessionsRevoked": "Every other device signed in to your account was signed out.",
+    "guidance": "If this wasn't you, reset your password from the sign-in page right away, and contact your administrator."
+  },
+  "emailChangeRequested": {
+    "subject": "A new email address was requested for your account",
+    "body": "Hi {name}, someone signed in to your {organization} account asked to move it to a new email address.",
+    "pending": "Nothing changes until the confirmation link sent to the new address is followed.",
+    "guidance": "If this wasn't you, change your password now so the request cannot be completed, and contact your administrator."
+  },
+  "emailChanged": {
+    "subject": "Your email address was changed",
+    "body": "Hi {name}, your {organization} account no longer uses this address. Signing in and future notices now use the new one.",
+    "guidance": "If this wasn't you, contact your administrator right away: this address can no longer be used to sign in or to reset your password."
+  },
+  "twoFactorEnabled": {
+    "subject": "Two-factor authentication was turned on",
+    "body": "Hi {name}, two-factor authentication is now on for your {organization} account. Signing in needs a code from your authenticator app as well as your password.",
+    "guidance": "If this wasn't you, someone else can sign in as you: change your password and review your two-factor settings, and contact your administrator."
+  },
+  "twoFactorDisabled": {
+    "subject": "Two-factor authentication was turned off",
+    "body": "Hi {name}, two-factor authentication was turned off for your {organization} account. Signing in now needs only your password.",
+    "guidance": "If this wasn't you, change your password and turn two-factor authentication back on, and contact your administrator."
+  },
+  "backupCodesRegenerated": {
+    "subject": "New backup codes were created",
+    "body": "Hi {name}, a new set of backup codes was created for your {organization} account. Your previous backup codes no longer work.",
+    "guidance": "If this wasn't you, change your password and create new backup codes yourself, and contact your administrator."
+  },
+  "passkeyAdded": {
+    "subject": "A passkey was added to your account",
+    "body": "Hi {name}, a new passkey can now be used to sign in to your {organization} account.",
+    "guidance": "If this wasn't you, remove the passkey and change your password, and contact your administrator."
+  },
+  "passkeyRemoved": {
+    "subject": "A passkey was removed from your account",
+    "body": "Hi {name}, a passkey can no longer be used to sign in to your {organization} account.",
+    "guidance": "If this wasn't you, change your password and review your passkeys, and contact your administrator."
+  },
+  "accountDeleted": {
+    "subject": "Your account was deleted",
+    "body": "Hi {name}, your {organization} account was deleted, along with every organization membership it had. This cannot be undone."
+  },
+  "newSignIn": {
+    "subject": "New sign-in to your account",
+    "body": "Hi {name}, your {organization} account was just signed in to from a device it has not used recently.",
+    "guidance": "If this wasn't you, change your password, sign out the sessions you do not recognise, and contact your administrator."
+  },
+  "accountDisabled": {
+    "subject": "Your account was disabled",
+    "body": "Hi {name}, an administrator disabled your {organization} account. You cannot sign in to it, or to anything that uses it, until it is enabled again.",
+    "guidance": "If you think this is a mistake, contact your administrator."
+  },
+  "accountEnabled": {
+    "subject": "Your account was enabled again",
+    "body": "Hi {name}, an administrator enabled your {organization} account again. You can sign in as before.",
+    "guidance": "If you did not expect this, contact your administrator."
+  },
+  "memberAdded": {
+    "subject": "You were added to {organization}",
+    "body": "Hi {name}, {actor} added you to {organization} as {role}. Sign in with your existing account to get started.",
+    "guidance": "If you did not expect this, contact an administrator of {organization}."
+  },
+  "memberRoleChanged": {
+    "subject": "Your role in {organization} changed",
+    "body": "Hi {name}, {actor} changed your role in {organization} from {from} to {to}.",
+    "guidance": "If you think this is a mistake, contact an administrator of {organization}."
+  },
+  "memberRemoved": {
+    "subject": "You were removed from {organization}",
+    "body": "Hi {name}, {actor} removed you from {organization}. You can no longer sign in to it or to the applications it gives you.",
+    "guidance": "If you think this is a mistake, contact an administrator of {organization}."
+  },
+  "invitationAccepted": {
+    "subject": "{invitee} accepted your invitation to {organization}",
+    "body": "Hi {name}, {invitee} ({inviteeEmail}) accepted your invitation and joined {organization} as {role}.",
+    "guidance": "If you did not invite them, review the members of {organization}."
+  }
+}

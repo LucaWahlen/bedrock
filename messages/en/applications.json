@@ -1,0 +1,296 @@
+{
+  "pages": {
+    "applications": {
+      "title": "Applications",
+      "metadataTitle": "Applications | {organization}"
+    },
+    "roles": {
+      "title": "Roles",
+      "metadataTitle": "Roles | {organization}"
+    },
+    "consent": {
+      "metadataTitle": "Authorize"
+    }
+  },
+  "types": {
+    "confidential": "Confidential",
+    "public": "Public"
+  },
+  "badges": {
+    "disabled": "Disabled",
+    "trusted": "Trusted",
+    "trustedTitle": "Trusted: members are not asked for consent"
+  },
+  "lists": {
+    "loadFailed": "{title} could not be loaded",
+    "roles": {
+      "title": "Application roles",
+      "singular": "role",
+      "plural": "roles"
+    },
+    "applications": {
+      "title": "Applications",
+      "count": "{count, plural, one {# application} other {# applications}}"
+    },
+    "members": {
+      "title": "Members",
+      "count": "{count, plural, one {# member} other {# members}}",
+      "breakdown": "{total} · {share}",
+      "allViaGroups": "all via groups",
+      "direct": "{count, number} direct"
+    },
+    "groups": {
+      "title": "Groups",
+      "singular": "group",
+      "plural": "groups"
+    }
+  },
+  "roleSource": {
+    "direct": "Assigned directly",
+    "via": "Via {groups}",
+    "directAndVia": "Assigned directly and via {groups}"
+  },
+  "applicationsTable": {
+    "entity": "applications",
+    "singular": "application",
+    "plural": "applications",
+    "typeFilter": "Type",
+    "newApplication": "New application",
+    "empty": "No applications found.",
+    "ariaLabel": "Applications",
+    "instanceAriaLabel": "Instance applications",
+    "columns": {
+      "application": "Application",
+      "organization": "Organization",
+      "clientId": "Client ID",
+      "roles": "Roles",
+      "type": "Type",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "actions": {
+      "menu": "Actions for {name}",
+      "connect": "Connection details",
+      "rotate": "Rotate secret"
+    },
+    "deleted": "{name} was deleted",
+    "deleteDialog": {
+      "title": "Delete application?",
+      "description": "{name} stops working immediately, and every token and consent it was granted is revoked."
+    }
+  },
+  "applicationDialog": {
+    "createTitle": "New application",
+    "editTitle": "Edit application",
+    "createDescription": "Register an application that signs people in with this organization.",
+    "editDescription": "Changes take effect on the next sign-in.",
+    "name": "Name",
+    "namePlaceholder": "Intranet",
+    "redirectUris": "Redirect URIs",
+    "redirectUrisHint": "Where the application may send people back to after sign-in. Matched exactly, so no wildcards.",
+    "redirectUri": "Redirect URI {index, number}",
+    "removeRedirectUri": "Remove redirect URI {index, number}",
+    "addRedirectUri": "Add redirect URI",
+    "iconHint": "PNG, JPEG, WebP or SVG, up to 2 MB",
+    "launchUrl": "Launch URL (optional)",
+    "launchUrlHint": "Where members open the application from their overview.",
+    "isPublic": "Cannot keep a secret (browser or mobile app)",
+    "skipConsent": "Trusted: do not ask members for consent",
+    "saveChanges": "Save changes",
+    "create": "Create application",
+    "updated": "{name} was updated",
+    "iconUploadFailed": "Could not upload the application logo"
+  },
+  "connection": {
+    "title": "Connect {name}",
+    "fallbackTitle": "Connection details",
+    "description": "What the application needs to sign people in with this instance.",
+    "clientId": "Client ID",
+    "clientSecret": "Client secret",
+    "secretShownOnce": "This is the only time the secret is shown. Store it now; if it is lost you can only replace it by rotating.",
+    "secretIssued": "The client secret was shown once, when it was issued. Rotate it from the actions menu if it has been lost.",
+    "publicClient": "This application cannot keep a secret, so it authenticates with PKCE alone.",
+    "copy": "Copy {label}",
+    "done": "Done"
+  },
+  "endpoints": {
+    "discovery": "Discovery URL",
+    "discoveryHint": "If the application accepts a discovery or well-known URL, this is all it needs.",
+    "issuer": "Issuer",
+    "authorization": "Authorization URL",
+    "token": "Token URL",
+    "jwks": "Certificate URL (JWKS)",
+    "userinfo": "Userinfo URL",
+    "endSession": "Logout URL",
+    "signingAlgorithm": "Signing algorithm",
+    "scopes": "Scopes",
+    "clientAuthentication": "Client authentication",
+    "pkce": "PKCE"
+  },
+  "applicationPicker": {
+    "placeholder": "Search applications...",
+    "remove": "Remove {name}",
+    "none": "Register an application first.",
+    "noMatch": "No application matches that."
+  },
+  "rolesTable": {
+    "entity": "roles",
+    "singular": "role",
+    "plural": "roles",
+    "newRole": "New role",
+    "registerFirst": "Register an application before defining roles.",
+    "applicationFilter": "Application",
+    "empty": "No roles found.",
+    "ariaLabel": "Roles",
+    "columns": {
+      "role": "Role",
+      "key": "Key",
+      "applications": "Applications",
+      "members": "Members",
+      "groups": "Groups",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "actions": {
+      "menu": "Actions for {name}",
+      "edit": "Edit role",
+      "manageMembers": "Manage members",
+      "manageGroups": "Manage groups",
+      "delete": "Delete role"
+    },
+    "deleted": "{name} was deleted",
+    "deleteDialog": {
+      "title": "Delete role?",
+      "description": "{name} is removed from everyone who holds it and from every application it covers."
+    }
+  },
+  "roleDialog": {
+    "createTitle": "New role",
+    "editTitle": "Edit role",
+    "description": "A role can cover several applications, so one name means the same thing in each of them.",
+    "name": "Name",
+    "namePlaceholder": "Editor",
+    "key": "Key",
+    "keyPlaceholder": "editor",
+    "keyLocked": "The key cannot change once applications rely on it.",
+    "keyHint": "What appears in the token. It cannot be changed later.",
+    "descriptionLabel": "Description (optional)",
+    "applications": "Applications",
+    "members": "Members (optional)",
+    "save": "Save role",
+    "saved": "{name} was saved"
+  },
+  "roleMembers": {
+    "title": "Members of {name}",
+    "description": "Applications covered by this role receive <code>{key}</code> when these people sign in.",
+    "direct": "Assigned directly",
+    "loading": "Loading members",
+    "showingDirect": "Showing {shown, number} of {total, number}. The others keep the role.",
+    "throughGroups": "Through groups",
+    "showingInherited": "Showing {shown, number} of {total, number}.",
+    "inheritedHint": "Their groups grant them the role, so it stays theirs until they leave the group or the group stops granting it.",
+    "via": "Via <groups></groups>",
+    "viaAndDirect": "Via <groups></groups>, and assigned directly",
+    "loadFailed": "Members could not be loaded",
+    "save": "Save members",
+    "saved": "Members of {name} were saved"
+  },
+  "roleGroups": {
+    "title": "Groups granting {name}",
+    "description": "Everyone in these groups holds <code>{key}</code>, in addition to the members it was given to directly.",
+    "label": "Groups",
+    "placeholder": "Search groups...",
+    "none": "Create a group on the Groups page first.",
+    "allTaken": "Every group already grants this role.",
+    "noMatch": "No group matches that.",
+    "noGroups": "This organization has no groups yet. Create one on the Groups page.",
+    "save": "Save groups",
+    "saved": "Groups granting {name} were saved"
+  },
+  "memberRoles": {
+    "title": "Application roles",
+    "description": "Choose the roles {name} holds directly. Applications covered by a role receive its key when {name} signs in.",
+    "noRoles": "This organization has no roles yet. Define one on the Roles page.",
+    "label": "Roles",
+    "via": "Via <groups></groups>",
+    "alsoVia": "Also via <groups></groups>",
+    "save": "Save roles",
+    "saved": "Application roles for {name} were saved"
+  },
+  "memberApplications": {
+    "empty": "No applications yet.",
+    "setUp": "Set up an application",
+    "noRoles": "No roles",
+    "opensInNewTab": "(opens in a new tab)"
+  },
+  "consent": {
+    "title": "Authorize {application}",
+    "signingIn": "Signing you in",
+    "signingInDescription": "You're signing in to {application} as {email}",
+    "description": "{application} in {organization} wants to use your account, {email}",
+    "allow": "Allow",
+    "cancelling": "Cancelling...",
+    "status": {
+      "connecting": "Connecting to {application}...",
+      "connected": "Taking you to {application}..."
+    }
+  },
+  "scopes": {
+    "openid": "Confirm who you are",
+    "profile": "See your name and picture",
+    "email": "See your email address",
+    "roles": "See the roles you hold in this organization",
+    "groups": "See the groups you belong to in this organization",
+    "offlineAccess": "Stay signed in when you are away",
+    "other": "Use \"{scope}\""
+  },
+  "validation": {
+    "tooLong": "Use at most {max, number} characters",
+    "nameRequired": "Give the application a name",
+    "urlInvalid": "Enter a valid URL",
+    "redirectUriRequired": "Enter a redirect URI, or remove this row",
+    "redirectUrisRequired": "Add at least one redirect URI",
+    "redirectUrisTooMany": "Add at most {max, number} redirect URIs",
+    "redirectUriDuplicate": "This redirect URI is already listed",
+    "redirectUriFragment": "A redirect URI cannot contain a fragment",
+    "redirectUriScheme": "A redirect URI must use https, or http on localhost, 127.0.0.1 or [::1]",
+    "launchUrlHttps": "Use an absolute https URL",
+    "launchUrlHttp": "Use an absolute http or https URL",
+    "iconInvalid": "Use a PNG, JPEG, WebP or SVG under 2 MB",
+    "roleKeyRequired": "Give the role a key",
+    "roleKeyFormat": "Use lowercase letters, numbers, and - _ : separators",
+    "roleNameRequired": "Give the role a name",
+    "applicationsTooMany": "Choose at most {max, number} applications",
+    "membersTooMany": "Choose at most {max, number} members"
+  },
+  "errors": {
+    "invalidApplication": "Invalid application details",
+    "httpsRedirectRequired": "Use an https redirect URI",
+    "createDenied": "You cannot create applications here",
+    "createFailed": "Could not create application",
+    "updateDenied": "You cannot change this application",
+    "updateFailed": "Could not update the application",
+    "deleteDenied": "You cannot delete this application",
+    "applicationNotFound": "Application does not exist",
+    "rotateDenied": "You cannot rotate this secret",
+    "rotateFailed": "Could not rotate the secret",
+    "invalidRole": "Invalid role details",
+    "roleMembersSeparately": "Change who holds a role separately",
+    "manageRolesDenied": "You cannot manage roles here",
+    "unknownApplication": "Unknown application",
+    "roleKeyTaken": "A role with this key already exists",
+    "roleSaveFailed": "Could not save the role",
+    "deleteRoleDenied": "You cannot delete this role",
+    "roleNotFound": "Role does not exist",
+    "assignRolesDenied": "You cannot assign roles here",
+    "viewMembersDenied": "You cannot view these members",
+    "invalidRoles": "Invalid roles",
+    "invalidGroups": "Invalid groups",
+    "invalidMembers": "Invalid members",
+    "unknownRole": "Unknown role",
+    "unknownGroup": "Unknown group",
+    "notMember": "Not a member of this organization",
+    "consentFailed": "Could not complete the sign-in request",
+    "consentExpired": "This sign-in request is no longer valid. Start again."
+  }
+}

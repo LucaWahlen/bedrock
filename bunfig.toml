@@ -1,0 +1,4 @@
+[test]
+# Stands in for the Next request and the mail transport before any test file
+# loads an action. See `tests/support/`.
+preload = ["./tests/support/request.ts", "./tests/support/mail.ts"]

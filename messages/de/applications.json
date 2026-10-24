@@ -1,0 +1,296 @@
+{
+  "pages": {
+    "applications": {
+      "title": "Anwendungen",
+      "metadataTitle": "Anwendungen | {organization}"
+    },
+    "roles": {
+      "title": "Rollen",
+      "metadataTitle": "Rollen | {organization}"
+    },
+    "consent": {
+      "metadataTitle": "Autorisieren"
+    }
+  },
+  "types": {
+    "confidential": "Vertraulich",
+    "public": "Öffentlich"
+  },
+  "badges": {
+    "disabled": "Deaktiviert",
+    "trusted": "Vertrauenswürdig",
+    "trustedTitle": "Vertrauenswürdig: Mitglieder werden nicht um Zustimmung gebeten"
+  },
+  "lists": {
+    "loadFailed": "{title} konnten nicht geladen werden",
+    "roles": {
+      "title": "Anwendungsrollen",
+      "singular": "Rolle",
+      "plural": "Rollen"
+    },
+    "applications": {
+      "title": "Anwendungen",
+      "count": "{count, plural, one {# Anwendung} other {# Anwendungen}}"
+    },
+    "members": {
+      "title": "Mitglieder",
+      "count": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
+      "breakdown": "{total} · {share}",
+      "allViaGroups": "alle über Gruppen",
+      "direct": "{count, number} direkt"
+    },
+    "groups": {
+      "title": "Gruppen",
+      "singular": "Gruppe",
+      "plural": "Gruppen"
+    }
+  },
+  "roleSource": {
+    "direct": "Direkt zugewiesen",
+    "via": "Über {groups}",
+    "directAndVia": "Direkt zugewiesen und über {groups}"
+  },
+  "applicationsTable": {
+    "entity": "Anwendungen",
+    "singular": "Anwendung",
+    "plural": "Anwendungen",
+    "typeFilter": "Typ",
+    "newApplication": "Neue Anwendung",
+    "empty": "Keine Anwendungen gefunden.",
+    "ariaLabel": "Anwendungen",
+    "instanceAriaLabel": "Anwendungen der Instanz",
+    "columns": {
+      "application": "Anwendung",
+      "organization": "Organisation",
+      "clientId": "Client-ID",
+      "roles": "Rollen",
+      "type": "Typ",
+      "created": "Erstellt",
+      "actions": "Aktionen"
+    },
+    "actions": {
+      "menu": "Aktionen für {name}",
+      "connect": "Verbindungsdetails",
+      "rotate": "Secret erneuern"
+    },
+    "deleted": "{name} wurde gelöscht",
+    "deleteDialog": {
+      "title": "Anwendung löschen?",
+      "description": "{name} funktioniert sofort nicht mehr, und alle erteilten Tokens und Zustimmungen werden widerrufen."
+    }
+  },
+  "applicationDialog": {
+    "createTitle": "Neue Anwendung",
+    "editTitle": "Anwendung bearbeiten",
+    "createDescription": "Registriere eine Anwendung, die Personen über diese Organisation anmeldet.",
+    "editDescription": "Änderungen gelten ab der nächsten Anmeldung.",
+    "name": "Name",
+    "namePlaceholder": "Intranet",
+    "redirectUris": "Redirect-URIs",
+    "redirectUrisHint": "Wohin die Anwendung Personen nach der Anmeldung zurückschicken darf. Exakter Abgleich, also keine Platzhalter.",
+    "redirectUri": "Redirect-URI {index, number}",
+    "removeRedirectUri": "Redirect-URI {index, number} entfernen",
+    "addRedirectUri": "Redirect-URI hinzufügen",
+    "iconHint": "PNG, JPEG, WebP oder SVG, bis zu 2 MB",
+    "launchUrl": "Start-URL (optional)",
+    "launchUrlHint": "Wo Mitglieder die Anwendung aus ihrer Übersicht öffnen.",
+    "isPublic": "Kann kein Secret geheim halten (Browser- oder Mobil-App)",
+    "skipConsent": "Vertrauenswürdig: Mitglieder nicht um Zustimmung bitten",
+    "saveChanges": "Änderungen speichern",
+    "create": "Anwendung erstellen",
+    "updated": "{name} wurde aktualisiert",
+    "iconUploadFailed": "Das Anwendungslogo konnte nicht hochgeladen werden"
+  },
+  "connection": {
+    "title": "{name} verbinden",
+    "fallbackTitle": "Verbindungsdetails",
+    "description": "Was die Anwendung braucht, um Personen über diese Instanz anzumelden.",
+    "clientId": "Client-ID",
+    "clientSecret": "Client-Secret",
+    "secretShownOnce": "Das Secret wird nur dieses eine Mal angezeigt. Speichere es jetzt; geht es verloren, kannst du es nur durch Erneuern ersetzen.",
+    "secretIssued": "Das Client-Secret wurde einmalig bei der Ausstellung angezeigt. Erneuere es über das Aktionsmenü, falls es verloren gegangen ist.",
+    "publicClient": "Diese Anwendung kann kein Secret geheim halten und authentifiziert sich daher nur mit PKCE.",
+    "copy": "{label} kopieren",
+    "done": "Fertig"
+  },
+  "endpoints": {
+    "discovery": "Discovery-URL",
+    "discoveryHint": "Akzeptiert die Anwendung eine Discovery- oder Well-known-URL, ist das alles, was sie braucht.",
+    "issuer": "Issuer",
+    "authorization": "Autorisierungs-URL",
+    "token": "Token-URL",
+    "jwks": "Zertifikat-URL (JWKS)",
+    "userinfo": "Userinfo-URL",
+    "endSession": "Abmelde-URL",
+    "signingAlgorithm": "Signaturalgorithmus",
+    "scopes": "Scopes",
+    "clientAuthentication": "Client-Authentifizierung",
+    "pkce": "PKCE"
+  },
+  "applicationPicker": {
+    "placeholder": "Anwendungen suchen...",
+    "remove": "{name} entfernen",
+    "none": "Registriere zuerst eine Anwendung.",
+    "noMatch": "Keine Anwendung passt dazu."
+  },
+  "rolesTable": {
+    "entity": "Rollen",
+    "singular": "Rolle",
+    "plural": "Rollen",
+    "newRole": "Neue Rolle",
+    "registerFirst": "Registriere eine Anwendung, bevor du Rollen festlegst.",
+    "applicationFilter": "Anwendung",
+    "empty": "Keine Rollen gefunden.",
+    "ariaLabel": "Rollen",
+    "columns": {
+      "role": "Rolle",
+      "key": "Schlüssel",
+      "applications": "Anwendungen",
+      "members": "Mitglieder",
+      "groups": "Gruppen",
+      "created": "Erstellt",
+      "actions": "Aktionen"
+    },
+    "actions": {
+      "menu": "Aktionen für {name}",
+      "edit": "Rolle bearbeiten",
+      "manageMembers": "Mitglieder verwalten",
+      "manageGroups": "Gruppen verwalten",
+      "delete": "Rolle löschen"
+    },
+    "deleted": "{name} wurde gelöscht",
+    "deleteDialog": {
+      "title": "Rolle löschen?",
+      "description": "{name} wird allen entzogen, die sie innehaben, und aus jeder Anwendung entfernt, die sie abdeckt."
+    }
+  },
+  "roleDialog": {
+    "createTitle": "Neue Rolle",
+    "editTitle": "Rolle bearbeiten",
+    "description": "Eine Rolle kann mehrere Anwendungen abdecken, damit ein Name in jeder davon dasselbe bedeutet.",
+    "name": "Name",
+    "namePlaceholder": "Redakteur",
+    "key": "Schlüssel",
+    "keyPlaceholder": "editor",
+    "keyLocked": "Der Schlüssel kann nicht mehr geändert werden, sobald Anwendungen sich darauf verlassen.",
+    "keyHint": "Erscheint im Token. Er kann später nicht geändert werden.",
+    "descriptionLabel": "Beschreibung (optional)",
+    "applications": "Anwendungen",
+    "members": "Mitglieder (optional)",
+    "save": "Rolle speichern",
+    "saved": "{name} wurde gespeichert"
+  },
+  "roleMembers": {
+    "title": "Mitglieder von {name}",
+    "description": "Anwendungen, die diese Rolle abdeckt, erhalten <code>{key}</code>, wenn sich diese Personen anmelden.",
+    "direct": "Direkt zugewiesen",
+    "loading": "Mitglieder werden geladen",
+    "showingDirect": "{shown, number} von {total, number} angezeigt. Die übrigen behalten die Rolle.",
+    "throughGroups": "Über Gruppen",
+    "showingInherited": "{shown, number} von {total, number} angezeigt.",
+    "inheritedHint": "Ihre Gruppen vergeben ihnen die Rolle. Sie behalten sie, bis sie die Gruppe verlassen oder die Gruppe sie nicht mehr vergibt.",
+    "via": "Über <groups></groups>",
+    "viaAndDirect": "Über <groups></groups> und direkt zugewiesen",
+    "loadFailed": "Mitglieder konnten nicht geladen werden",
+    "save": "Mitglieder speichern",
+    "saved": "Mitglieder von {name} wurden gespeichert"
+  },
+  "roleGroups": {
+    "title": "Gruppen, die {name} vergeben",
+    "description": "Alle in diesen Gruppen haben <code>{key}</code>, zusätzlich zu den Mitgliedern, denen die Rolle direkt zugewiesen wurde.",
+    "label": "Gruppen",
+    "placeholder": "Gruppen suchen...",
+    "none": "Lege zuerst auf der Seite „Gruppen“ eine Gruppe an.",
+    "allTaken": "Jede Gruppe vergibt diese Rolle bereits.",
+    "noMatch": "Keine Gruppe passt dazu.",
+    "noGroups": "Diese Organisation hat noch keine Gruppen. Lege auf der Seite „Gruppen“ eine an.",
+    "save": "Gruppen speichern",
+    "saved": "Gruppen, die {name} vergeben, wurden gespeichert"
+  },
+  "memberRoles": {
+    "title": "Anwendungsrollen",
+    "description": "Wähle die Rollen, die {name} direkt hat. Anwendungen, die eine Rolle abdeckt, erhalten deren Schlüssel, wenn sich {name} anmeldet.",
+    "noRoles": "Diese Organisation hat noch keine Rollen. Lege auf der Seite „Rollen“ eine fest.",
+    "label": "Rollen",
+    "via": "Über <groups></groups>",
+    "alsoVia": "Auch über <groups></groups>",
+    "save": "Rollen speichern",
+    "saved": "Anwendungsrollen für {name} wurden gespeichert"
+  },
+  "memberApplications": {
+    "empty": "Noch keine Anwendungen.",
+    "setUp": "Anwendung einrichten",
+    "noRoles": "Keine Rollen",
+    "opensInNewTab": "(öffnet in einem neuen Tab)"
+  },
+  "consent": {
+    "title": "{application} autorisieren",
+    "signingIn": "Du wirst angemeldet",
+    "signingInDescription": "Du meldest dich als {email} bei {application} an",
+    "description": "{application} in {organization} möchte dein Konto {email} verwenden",
+    "allow": "Erlauben",
+    "cancelling": "Wird abgebrochen...",
+    "status": {
+      "connecting": "Verbindung zu {application} wird hergestellt...",
+      "connected": "Du wirst zu {application} weitergeleitet..."
+    }
+  },
+  "scopes": {
+    "openid": "Bestätigen, wer du bist",
+    "profile": "Deinen Namen und dein Bild sehen",
+    "email": "Deine E-Mail-Adresse sehen",
+    "roles": "Deine Rollen in dieser Organisation sehen",
+    "groups": "Deine Gruppen in dieser Organisation sehen",
+    "offlineAccess": "Angemeldet bleiben, während du nicht da bist",
+    "other": "„{scope}“ verwenden"
+  },
+  "validation": {
+    "tooLong": "Verwende höchstens {max, number} Zeichen",
+    "nameRequired": "Gib der Anwendung einen Namen",
+    "urlInvalid": "Gib eine gültige URL ein",
+    "redirectUriRequired": "Gib eine Redirect-URI ein oder entferne diese Zeile",
+    "redirectUrisRequired": "Füge mindestens eine Redirect-URI hinzu",
+    "redirectUrisTooMany": "Füge höchstens {max, number} Redirect-URIs hinzu",
+    "redirectUriDuplicate": "Diese Redirect-URI ist bereits aufgeführt",
+    "redirectUriFragment": "Eine Redirect-URI darf kein Fragment enthalten",
+    "redirectUriScheme": "Eine Redirect-URI muss https verwenden, oder http auf localhost, 127.0.0.1 oder [::1]",
+    "launchUrlHttps": "Verwende eine absolute https-URL",
+    "launchUrlHttp": "Verwende eine absolute http- oder https-URL",
+    "iconInvalid": "Verwende ein PNG, JPEG, WebP oder SVG unter 2 MB",
+    "roleKeyRequired": "Gib der Rolle einen Schlüssel",
+    "roleKeyFormat": "Verwende Kleinbuchstaben, Ziffern und die Trennzeichen - _ :",
+    "roleNameRequired": "Gib der Rolle einen Namen",
+    "applicationsTooMany": "Wähle höchstens {max, number} Anwendungen",
+    "membersTooMany": "Wähle höchstens {max, number} Mitglieder"
+  },
+  "errors": {
+    "invalidApplication": "Ungültige Anwendungsdaten",
+    "httpsRedirectRequired": "Verwende eine https-Redirect-URI",
+    "createDenied": "Du kannst hier keine Anwendungen erstellen",
+    "createFailed": "Die Anwendung konnte nicht erstellt werden",
+    "updateDenied": "Du kannst diese Anwendung nicht ändern",
+    "updateFailed": "Die Anwendung konnte nicht aktualisiert werden",
+    "deleteDenied": "Du kannst diese Anwendung nicht löschen",
+    "applicationNotFound": "Die Anwendung existiert nicht",
+    "rotateDenied": "Du kannst dieses Secret nicht erneuern",
+    "rotateFailed": "Das Secret konnte nicht erneuert werden",
+    "invalidRole": "Ungültige Rollendaten",
+    "roleMembersSeparately": "Ändere separat, wer eine Rolle hat",
+    "manageRolesDenied": "Du kannst hier keine Rollen verwalten",
+    "unknownApplication": "Unbekannte Anwendung",
+    "roleKeyTaken": "Eine Rolle mit diesem Schlüssel existiert bereits",
+    "roleSaveFailed": "Die Rolle konnte nicht gespeichert werden",
+    "deleteRoleDenied": "Du kannst diese Rolle nicht löschen",
+    "roleNotFound": "Die Rolle existiert nicht",
+    "assignRolesDenied": "Du kannst hier keine Rollen zuweisen",
+    "viewMembersDenied": "Du kannst diese Mitglieder nicht sehen",
+    "invalidRoles": "Ungültige Rollen",
+    "invalidGroups": "Ungültige Gruppen",
+    "invalidMembers": "Ungültige Mitglieder",
+    "unknownRole": "Unbekannte Rolle",
+    "unknownGroup": "Unbekannte Gruppe",
+    "notMember": "Kein Mitglied dieser Organisation",
+    "consentFailed": "Die Anmeldeanfrage konnte nicht abgeschlossen werden",
+    "consentExpired": "Diese Anmeldeanfrage ist nicht mehr gültig. Beginne erneut."
+  }
+}

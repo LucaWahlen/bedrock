@@ -1,0 +1,467 @@
+{
+  "none": "Keine",
+  "columns": {
+    "actions": "Aktionen"
+  },
+  "roles": {
+    "owner": {
+      "label": "Inhaber",
+      "description": "Volle Kontrolle, auch über andere Inhaber und das Löschen."
+    },
+    "admin": {
+      "label": "Admin",
+      "description": "Verwaltet Mitglieder und Einstellungen, aber nicht die Inhaberschaft."
+    },
+    "member": {
+      "label": "Mitglied",
+      "description": "Zugriff auf die Organisation, ohne sie zu verwalten."
+    }
+  },
+  "memberStatus": {
+    "confirmed": "Bestätigt",
+    "unconfirmed": "Nicht bestätigt",
+    "invited": "Eingeladen"
+  },
+  "organizationStatus": {
+    "active": "Aktiv",
+    "suspended": "Gesperrt",
+    "deleted": "Gelöscht"
+  },
+  "accountStatus": {
+    "active": "Aktiv",
+    "disabled": "Deaktiviert"
+  },
+  "secondFactor": {
+    "on": "An",
+    "off": "Aus",
+    "authenticatorApp": "Authenticator-App",
+    "passkeys": "{count, plural, one {# Passkey} other {# Passkeys}}",
+    "none": "Kein zweiter Faktor"
+  },
+  "activity": {
+    "never": "Nie",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "daysAgo": "{count, plural, one {vor # Tag} other {vor # Tagen}}"
+  },
+  "people": {
+    "actionsFor": "Aktionen für {name}",
+    "emailAddress": "E-Mail-Adresse",
+    "copyEmailAddress": "E-Mail-Adresse kopieren",
+    "userId": "Benutzer-ID",
+    "copyUserId": "Benutzer-ID kopieren"
+  },
+  "members": {
+    "addPeople": "Personen hinzufügen",
+    "invitedByUntil": "Eingeladen von {inviter}, läuft ab am {date}",
+    "invitedUntil": "Eingeladen, läuft ab am {date}",
+    "columns": {
+      "member": "Mitglied",
+      "roles": "Rollen",
+      "applicationRoles": "Anwendungsrollen",
+      "groups": "Gruppen",
+      "status": "Status",
+      "secondFactor": "2FA",
+      "active": "Aktiv",
+      "added": "Hinzugefügt"
+    },
+    "filters": {
+      "role": "Rolle",
+      "status": "Status",
+      "applicationRole": "Anwendungsrolle",
+      "group": "Gruppe"
+    },
+    "table": {
+      "label": "Mitglieder der Organisation",
+      "empty": "Keine Personen gefunden.",
+      "searchEntity": "Personen",
+      "unitOne": "Person",
+      "unitOther": "Personen"
+    }
+  },
+  "invitationActions": {
+    "sendAgain": "Erneut senden",
+    "resent": "Einladung erneut an {email} gesendet",
+    "renewedNotSent": "Die Einladung wurde erneuert, aber die E-Mail konnte nicht gesendet werden",
+    "withdraw": "Einladung zurückziehen",
+    "withdrawing": "Wird zurückgezogen...",
+    "withdrawn": "Die Einladung an {email} wurde zurückgezogen",
+    "withdrawTitle": "Diese Einladung zurückziehen?",
+    "withdrawDescription": "Der an {email} gesendete Link funktioniert sofort nicht mehr. Du kannst die Person jederzeit erneut einladen."
+  },
+  "memberActions": {
+    "changeRole": "Rolle ändern",
+    "changing": "Wird geändert...",
+    "manageApplicationRoles": "Anwendungsrollen verwalten",
+    "manageGroups": "Gruppen verwalten",
+    "leave": "Verlassen",
+    "leaving": "Wird verlassen...",
+    "remove": "Entfernen",
+    "removing": "Wird entfernt...",
+    "roleChange": {
+      "self": {
+        "title": "Deine eigene Rolle ändern?",
+        "description": "Du wirst in {organization} {role, select, owner {Inhaber} admin {Admin} other {Mitglied}} und verlierst deine jetzigen Rechte. Du kannst das nicht selbst rückgängig machen.",
+        "action": "Meine Rolle ändern"
+      },
+      "promote": {
+        "title": "{name} zum Inhaber machen?",
+        "description": "{name} erhält die volle Kontrolle über {organization}, einschließlich der Verwaltung der Inhaber und des Antrags auf Löschung.",
+        "action": "Zum Inhaber machen"
+      },
+      "demote": {
+        "title": "{name} als Inhaber entfernen?",
+        "description": "{name} wird {role, select, owner {Inhaber} admin {Admin} other {Mitglied}} und verliert die Kontrolle über {organization}. Du kannst die Person wieder zum Inhaber machen.",
+        "action": "Inhaberschaft entziehen"
+      }
+    },
+    "roleChanged": {
+      "self": "Du bist jetzt {role, select, owner {Inhaber} admin {Admin} other {Mitglied}} in {organization}",
+      "other": "{name} ist jetzt {role, select, owner {Inhaber} admin {Admin} other {Mitglied}}"
+    },
+    "removed": {
+      "self": "Du hast {organization} verlassen",
+      "other": "{name} wurde aus {organization} entfernt"
+    },
+    "leaveDialog": {
+      "title": "Organisation verlassen?",
+      "description": "Du verlierst den Zugriff auf {organization} und brauchst dort jemanden, der dich wieder hinzufügt. Dein Konto und deine anderen Mitgliedschaften bleiben unberührt."
+    },
+    "removeDialog": {
+      "title": "Mitglied entfernen?",
+      "description": "{name} verliert den Zugriff auf {organization}. Das Konto und die anderen Mitgliedschaften der Person bleiben unberührt."
+    }
+  },
+  "addPeople": {
+    "title": "Personen hinzufügen",
+    "descriptionWithDirectory": "Suche nach einem Konto oder gib eine Adresse ein, die noch niemand nutzt, um sie zu {organization} einzuladen.",
+    "descriptionByAddress": "Gib eine E-Mail-Adresse exakt ein. Sie braucht noch kein Konto bei {organization}.",
+    "people": "Personen",
+    "role": "Rolle",
+    "inviteTo": "Zu {organization} einladen",
+    "sendInvitation": "Einladung senden",
+    "mustInvite": "Zu einer Adresse ohne Konto gibt es niemanden zum Hinzufügen, sie kann daher nur eingeladen werden.",
+    "sending": "Wird gesendet...",
+    "adding": "Wird hinzugefügt...",
+    "submitInvite": "Einladungen senden",
+    "submitAdd": "Personen hinzufügen",
+    "invited": {
+      "one": "{name} wurde zu {organization} eingeladen",
+      "many": "{count, plural, one {# Person wurde} other {# Personen wurden}} zu {organization} eingeladen"
+    },
+    "added": {
+      "one": "{name} wurde zu {organization} hinzugefügt",
+      "many": "{count, plural, one {# Person wurde} other {# Personen wurden}} zu {organization} hinzugefügt"
+    },
+    "notes": {
+      "summary": "{notes}.",
+      "refused": "{count, number} {count, plural, one {wurde} other {wurden}} abgelehnt",
+      "undelivered": "{count, number} {count, plural, one {konnte} other {konnten}} nicht per E-Mail zugestellt werden, sende {count, plural, one {die Einladung} other {die Einladungen}} also erneut",
+      "skipped": "{count, number} {count, plural, one {war} other {waren}} bereits Mitglied"
+    }
+  },
+  "directory": {
+    "enableAccount": "Konto aktivieren",
+    "disableAccount": "Konto deaktivieren",
+    "enabled": "{name} kann sich wieder anmelden",
+    "disabled": "{name} kann sich nicht mehr anmelden",
+    "disabledSince": "Deaktiviert am {date}",
+    "disabledSinceBecause": "Deaktiviert am {date}: {reason}",
+    "columns": {
+      "user": "Benutzer",
+      "organizations": "Organisationen",
+      "status": "Status",
+      "active": "Aktiv",
+      "created": "Erstellt"
+    },
+    "filters": {
+      "organization": "Organisation",
+      "account": "Konto"
+    },
+    "table": {
+      "label": "Benutzer",
+      "empty": "Keine Benutzer gefunden.",
+      "searchEntity": "Benutzer",
+      "unitOne": "Benutzer",
+      "unitOther": "Benutzer"
+    },
+    "enableDialog": {
+      "title": "{name} aktivieren?",
+      "description": "{email} kann sich wieder anmelden, mit allen bisherigen Mitgliedschaften. Sitzungen und Anwendungstoken, die beim Deaktivieren beendet wurden, bleiben beendet."
+    },
+    "disableDialog": {
+      "title": "{name} deaktivieren?",
+      "description": "{email} wird überall abgemeldet und kann sich nicht mehr anmelden, weder bei dieser Instanz noch bei einer Anwendung, die sie verwendet, bis das Konto wieder aktiviert ist. Die Mitgliedschaften bleiben erhalten.",
+      "soleOwner": "Die Person ist der einzige aktive Inhaber von {organizations}. Niemand kann {count, plural, one {diese Organisation} other {diese Organisationen}} verwalten, bis das Konto wieder aktiviert ist.",
+      "reason": "Grund",
+      "reasonPlaceholder": "Warum dieses Konto deaktiviert wird",
+      "disabling": "Wird deaktiviert..."
+    },
+    "memberships": {
+      "title": "Organisationen",
+      "count": "{count, plural, one {# Mitgliedschaft} other {# Mitgliedschaften}}",
+      "view": "{count, plural, one {Die # Organisation} other {Die # Organisationen}} von {name} anzeigen",
+      "loading": "Organisationen werden geladen",
+      "loadFailed": "Die Organisationen konnten nicht geladen werden"
+    }
+  },
+  "organizationsTable": {
+    "statusChangedBy": "Geändert von {name} am {date}",
+    "statusChanged": "Von einem Administrator geändert am {date}",
+    "noHistory": "Kein Verlauf aufgezeichnet",
+    "purgedOn": "Endgültig gelöscht am {date}",
+    "columns": {
+      "organization": "Organisation",
+      "status": "Status",
+      "administrators": "Administratoren",
+      "members": "Mitglieder",
+      "created": "Erstellt"
+    },
+    "filters": {
+      "status": "Status"
+    },
+    "table": {
+      "label": "Organisationen",
+      "empty": "Keine Organisationen gefunden.",
+      "searchEntity": "Organisationen",
+      "unitOne": "Organisation",
+      "unitOther": "Organisationen"
+    },
+    "people": {
+      "administrators": {
+        "title": "Administratoren",
+        "count": "{count, plural, one {# Administrator} other {# Administratoren}}",
+        "view": "{count, plural, one {# Administrator} other {# Administratoren}} anzeigen",
+        "loading": "Administratoren werden geladen",
+        "loadFailed": "Die Administratoren konnten nicht geladen werden"
+      },
+      "members": {
+        "title": "Mitglieder",
+        "count": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
+        "view": "{count, plural, one {# Mitglied} other {# Mitglieder}} anzeigen",
+        "loading": "Mitglieder werden geladen",
+        "loadFailed": "Die Mitglieder konnten nicht geladen werden"
+      }
+    }
+  },
+  "rowActions": {
+    "actionsFor": "Aktionen für {name}",
+    "suspend": {
+      "menu": "Sperren",
+      "title": "Organisation sperren?",
+      "description": "Solange {name} gesperrt ist, kann sich dort niemand anmelden, auch nicht die Inhaber.",
+      "confirm": "Sperren",
+      "succeeded": "{name} wurde gesperrt"
+    },
+    "reactivate": {
+      "menu": "Reaktivieren",
+      "title": "Organisation reaktivieren?",
+      "description": "{name} ist wieder aktiv und die Mitglieder erhalten wieder Zugriff.",
+      "confirm": "Reaktivieren",
+      "succeeded": "{name} wurde reaktiviert"
+    },
+    "delete": {
+      "menu": "Löschen",
+      "title": "Organisation löschen?",
+      "description": "{name} verschwindet sofort für alle, die ihr angehören. Bis zum Ende der Aufbewahrungsfrist kannst du sie wiederherstellen, danach wird sie endgültig gelöscht.",
+      "confirm": "Organisation löschen",
+      "succeeded": "{name} wurde gelöscht"
+    },
+    "restore": {
+      "menu": "Wiederherstellen",
+      "title": "Organisation wiederherstellen?",
+      "description": "{name} ist wieder aktiv und die Mitglieder können sich anmelden.",
+      "confirm": "Wiederherstellen",
+      "succeeded": "{name} wurde wiederhergestellt"
+    }
+  },
+  "actionDialog": {
+    "typeToConfirm": "Gib zur Bestätigung <code>{slug}</code> ein"
+  },
+  "settings": {
+    "discard": "Verwerfen",
+    "dangerZone": {
+      "title": "Gefahrenbereich",
+      "description": "Diese Änderungen sind außerhalb der Organisation sichtbar oder betreffen alle darin.",
+      "deleteDescription": "Das Löschen wirkt sofort. Du und alle anderen verlieren umgehend den Zugriff, und nur die Administratoren der Instanz können die Organisation zurückholen, bevor sie endgültig gelöscht wird.",
+      "deleteDialog": {
+        "title": "Organisation löschen?",
+        "description": "{organization} verschwindet sofort für dich und alle Mitglieder. Nur die Administratoren der Instanz können sie wiederherstellen, und nach Ablauf der Aufbewahrungsfrist wird sie endgültig gelöscht.",
+        "confirm": "Organisation löschen"
+      }
+    },
+    "profile": {
+      "title": "Profil",
+      "description": "Wie diese Organisation heißt und sich allen präsentiert, die sie aufrufen.",
+      "updated": "{name} wurde aktualisiert"
+    },
+    "slug": {
+      "description": "Über den Slug erreichen alle diese Organisation. Eine Änderung macht alle bestehenden Links, Lesezeichen und Einladungen ungültig, und der alte Slug funktioniert sofort nicht mehr.",
+      "change": "Slug ändern",
+      "changed": "{organization} ist jetzt unter {path} erreichbar",
+      "changeFailed": "Der Slug konnte nicht geändert werden",
+      "taken": "Dieser Slug ist bereits vergeben",
+      "dialogTitle": "Slug ändern?",
+      "dialogDescription": "{organization} ist derzeit unter {path} erreichbar. Alle bestehenden Links, Lesezeichen und Einladungen dorthin funktionieren ab dem Speichern nicht mehr, und es gibt keine Weiterleitung.",
+      "newSlug": "Neuer Slug"
+    }
+  },
+  "pages": {
+    "titleWithOrganization": "{page} | {organization}",
+    "members": "Mitglieder",
+    "directory": "Verzeichnis",
+    "organizations": "Organisationen",
+    "settings": "Einstellungen",
+    "authentication": "Authentifizierung",
+    "invitation": "Einladung"
+  },
+  "slugAvailability": {
+    "checking": "Verfügbarkeit des Slugs wird geprüft",
+    "available": "Slug verfügbar",
+    "taken": "Slug vergeben"
+  },
+  "branding": {
+    "name": "Name",
+    "logo": "Logo",
+    "logoHint": "PNG, JPEG, WebP oder SVG bis 2 MB",
+    "backgroundImage": "Hintergrundbild",
+    "backgroundImageHint": "PNG, JPEG oder WebP bis 10 MB",
+    "favicon": "Favicon",
+    "faviconHint": "ICO, PNG oder SVG bis 1 MB",
+    "themeColor": "Designfarbe",
+    "chooseThemeColor": "Designfarbe auswählen",
+    "suggestedColor": "Vorgeschlagene Farbe",
+    "dismiss": "Verwerfen",
+    "useColor": "Farbe verwenden",
+    "useDefaultTheme": "Standarddesign verwenden",
+    "uploadFailed": "Die Bilder der Organisation konnten nicht hochgeladen werden"
+  },
+  "create": {
+    "title": "Organisation erstellen",
+    "description": "Lege eine neue Organisation an und lade ihr Branding hoch.",
+    "namePlaceholder": "Muster GmbH",
+    "slug": "Slug",
+    "slugPlaceholder": "muster-gmbh",
+    "slugTaken": "Dieser Organisations-Slug ist bereits vergeben",
+    "owners": "Inhaber",
+    "creating": "Wird erstellt...",
+    "submit": "Organisation erstellen",
+    "handedToOwner": "{name} wurde erstellt und an {owner} übergeben",
+    "handedToOwners": "{name} wurde erstellt und an die Inhaber übergeben"
+  },
+  "authentication": {
+    "title": "Anmelderichtlinie",
+    "description": "Wer {organization} beitreten kann und wie Mitglieder ihre Identität nachweisen.",
+    "publicSignUp": {
+      "title": "Öffentliche Registrierung erlauben",
+      "description": "Alle, die {organization} aufrufen, können ohne Einladung ein Konto erstellen und als Mitglied beitreten.",
+      "ownersAndAdminsOnly": "Nur Inhaber und Admins können das ändern."
+    },
+    "twoFactor": {
+      "title": "Zwei-Faktor-Authentifizierung verlangen",
+      "description": "Mitglieder ohne Authenticator-App oder Passkey müssen eins davon einrichten, bevor sie {organization} nutzen oder sich bei deren Anwendungen anmelden können.",
+      "ownersOnly": "Nur Inhaber können das ändern.",
+      "setUpYourOwnFirst": "Richte zuerst für dein eigenes Konto eine Authenticator-App oder einen Passkey ein.",
+      "compliance": "<strong>{compliant, number} von {total, number}</strong> aktiven Mitgliedern haben einen zweiten Faktor",
+      "viewMembers": "Mitglieder anzeigen"
+    },
+    "confirmTwoFactor": {
+      "title": "Zwei-Faktor-Authentifizierung verlangen?",
+      "description": "{count, plural, one {# aktives Mitglied hat} other {# aktive Mitglieder haben}} keinen zweiten Faktor. Bis sie eine Authenticator-App oder einen Passkey einrichten, können sie {organization} nicht nutzen und sich nicht bei deren Anwendungen anmelden.",
+      "notice": "Sie werden bei ihrer nächsten Anmeldung aufgefordert, einen einzurichten.",
+      "confirm": "Verlangen"
+    },
+    "saved": {
+      "signUpOpened": "Jetzt kann jeder {organization} beitreten",
+      "signUpClosed": "{organization} ist wieder nur auf Einladung zugänglich",
+      "twoFactorRequired": "{organization} verlangt jetzt einen zweiten Faktor",
+      "twoFactorOptional": "{organization} verlangt keinen zweiten Faktor mehr"
+    }
+  },
+  "invitation": {
+    "invitedBy": "{inviter} hat <strong>{email}</strong> eingeladen, {organization} beizutreten.",
+    "invitedBySomeone": "Jemand hat <strong>{email}</strong> eingeladen, {organization} beizutreten.",
+    "join": "{organization} beitreten",
+    "joining": "Beitritt läuft...",
+    "accept": "Einladung annehmen",
+    "email": "E-Mail",
+    "name": "Name",
+    "namePlaceholder": "Max Mustermann",
+    "password": "Passwort",
+    "signInAndJoin": "Anmelden und beitreten",
+    "forgotPassword": "Passwort vergessen?",
+    "creatingAccount": "Konto wird erstellt...",
+    "createAccountAndJoin": "Konto erstellen und beitreten",
+    "confirmAddress": "Adresse bestätigen",
+    "goToLogin": "Zur Anmeldung",
+    "otherAccount": {
+      "title": "Du bist mit einem anderen Konto angemeldet",
+      "description": "Diese Einladung wurde an <strong>{email}</strong> gesendet, aber du bist als <strong>{signedInAs}</strong> angemeldet.",
+      "signOut": "Abmelden und fortfahren"
+    },
+    "refusals": {
+      "unknown": {
+        "title": "Dieser Einladungslink ist ungültig",
+        "description": "Er wurde möglicherweise zurückgezogen, bereits verwendet oder durch eine neuere Einladung an dieselbe Adresse ersetzt. Bitte die Person, die dich eingeladen hat, dir eine neue zu senden."
+      },
+      "expired": {
+        "title": "Diese Einladung ist abgelaufen",
+        "description": "Einladungen sind nur begrenzt gültig. Bitte die Person, die dich eingeladen hat, dir eine neue zu senden."
+      },
+      "organizationUnavailable": {
+        "title": "Diese Organisation nimmt gerade niemanden auf",
+        "description": "Sie wurde nach dem Versand der Einladung gesperrt oder zur Löschung vorgesehen."
+      },
+      "alreadyMember": {
+        "title": "Du gehörst dieser Organisation bereits an",
+        "description": "Melde dich an und mach dort weiter, wo du aufgehört hast."
+      },
+      "unconfirmedAddress": {
+        "title": "Bestätige zuerst deine E-Mail-Adresse",
+        "description": "Deine Einladung wartet. Bestätige deine Adresse oder öffne den Einladungslink aus unserer E-Mail, dann kannst du sie annehmen."
+      }
+    }
+  },
+  "join": {
+    "title": "{organization} beitreten",
+    "description": "{organization} steht allen offen. Du trittst als <strong>{email}</strong> bei.",
+    "joining": "Beitritt läuft...",
+    "wrongAccount": "Falsches Konto? <link>Abmelden</link>"
+  },
+  "memberOrganizations": {
+    "empty": "Keine weiteren Organisationen.",
+    "root": "Root-Organisation"
+  },
+  "pendingInvitations": {
+    "empty": "Keine offenen Einladungen.",
+    "expires": "Läuft <time>{date}</time> ab"
+  },
+  "userPicker": {
+    "searching": "Wird gesucht...",
+    "searchingLabel": "Suche läuft",
+    "lookupFailed": "Die Suche ist fehlgeschlagen",
+    "nobodyLeft": "Niemand mehr zum Hinzufügen.",
+    "enterExactAddress": "Gib eine exakte E-Mail-Adresse ein.",
+    "noMatch": "Keine Treffer.",
+    "noAccount": "Kein Konto verwendet diese Adresse.",
+    "remove": "{name} entfernen",
+    "searchPlaceholder": "Nach Name oder E-Mail-Adresse suchen...",
+    "addressPlaceholder": "Exakte E-Mail-Adresse eingeben..."
+  },
+  "validation": {
+    "organizationNameRequired": "Der Name der Organisation darf nicht leer sein",
+    "slugRequired": "Der Slug der Organisation darf nicht leer sein",
+    "slugFormat": "Verwende Kleinbuchstaben, Ziffern und einzelne Bindestriche",
+    "colorFormat": "Gib eine sechsstellige Hex-Farbe ein",
+    "ownersRequired": "Wähle mindestens einen Inhaber aus",
+    "imageRequired": "Wähle eine Bilddatei aus",
+    "logoFile": "Verwende PNG, JPEG, WebP oder SVG bis 2 MB",
+    "backgroundFile": "Verwende PNG, JPEG oder WebP bis 10 MB",
+    "faviconFile": "Verwende ICO, PNG oder SVG bis 1 MB",
+    "reasonTooShort": "Gib einen Grund mit mindestens {min, number} Zeichen an",
+    "reasonTooLong": "Halte den Grund unter {max, number} Zeichen",
+    "nameRequired": "Gib deinen Namen ein",
+    "passwordTooShort": "Verwende mindestens {min, number} Zeichen",
+    "tooLong": "Verwende höchstens {max, number} Zeichen"
+  }
+}

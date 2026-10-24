@@ -1,0 +1,245 @@
+{
+  "range": {
+    "label": "Zeitraum",
+    "week": "Letzte 7 Tage",
+    "month": "Letzte 30 Tage",
+    "quarter": "Letzte 3 Monate",
+    "year": "Letzte 12 Monate",
+    "comparison": "Verglichen mit den {period, number} Tagen davor. Tage in UTC."
+  },
+  "cards": {
+    "signIns": {
+      "label": "Anmeldungen",
+      "organization": "Erfolgreiche Anmeldungen bei dieser Organisation",
+      "instance": "Erfolgreiche Anmeldungen über alle Organisationen"
+    },
+    "activeUsers": {
+      "label": "Täglich aktive Benutzer",
+      "context": "Angemeldet oder Token erhalten, an einem durchschnittlichen Tag"
+    },
+    "weeklyActiveUsers": {
+      "label": "Wöchentlich aktive Benutzer",
+      "context": "Verschiedene Personen in den letzten 7 Tagen"
+    },
+    "stickiness": {
+      "label": "Bindung",
+      "context": "Täglich aktive Benutzer im Verhältnis zu monatlich aktiven"
+    },
+    "tokensIssued": {
+      "label": "Ausgestellte Tokens",
+      "context": "Access Tokens für deine Anwendungen"
+    },
+    "successRate": {
+      "label": "Erfolgsquote der Anmeldungen",
+      "context": "{failures, plural, =0 {Keine fehlgeschlagenen Versuche} one {# fehlgeschlagener Versuch} other {# fehlgeschlagene Versuche}} im Zeitraum"
+    },
+    "secondFactor": {
+      "label": "Nutzung des zweiten Faktors",
+      "organization": "{secured, number} von {total, number} Mitgliedern nutzen einen Passkey oder eine Authenticator-App",
+      "instance": "{secured, number} von {total, number} Konten nutzen einen Passkey oder eine Authenticator-App"
+    },
+    "newMembers": {
+      "label": "Neue Mitglieder",
+      "context": "{removed, plural, =0 {Niemand ausgetreten} one {# ausgetreten} other {# ausgetreten}}, jetzt {members, plural, one {# Mitglied} other {# Mitglieder}}"
+    },
+    "organizations": {
+      "label": "Organisationen",
+      "context": "{created, plural, =0 {Keine erstellt} one {# erstellt} other {# erstellt}} im Zeitraum"
+    },
+    "users": {
+      "label": "Benutzer",
+      "context": "{created, plural, =0 {Keine neuen Konten} one {# neues Konto} other {# neue Konten}} im Zeitraum"
+    }
+  },
+  "comparison": {
+    "up": "{change} mehr als im Vorzeitraum",
+    "down": "{change} weniger als im Vorzeitraum",
+    "flat": "Unverändert ggü. Vorzeitraum",
+    "noEarlierData": "Kein Vergleichszeitraum",
+    "noneBefore": "Keine im Vorzeitraum",
+    "nothingYet": "Noch nichts zu messen",
+    "points": "{points} Pp.",
+    "new": "Neu"
+  },
+  "empty": {
+    "value": "–",
+    "notRolledUp": "Die Wartung hat noch keinen Tag dieses Zeitraums zusammengefasst, und heute ist noch nichts passiert."
+  },
+  "chart": {
+    "day": "Tag",
+    "notRolledUp": "Nicht zusammengefasst",
+    "notRecorded": "Nicht erfasst"
+  },
+  "activity": {
+    "title": "Aktivität",
+    "description": "Anmeldungen, aktive Personen und fehlgeschlagene Anmeldungen pro Tag",
+    "signIns": "Anmeldungen",
+    "activeUsers": "Aktive Benutzer",
+    "failures": "Fehlgeschlagene Anmeldungen",
+    "totals": {
+      "signIns": "Anmeldungen",
+      "activeUsers": "Aktive Benutzer pro Tag",
+      "failures": "Fehlgeschlagene Anmeldungen"
+    },
+    "toggle": "{series} im Diagramm anzeigen",
+    "caption": "Anmeldungen, aktive Benutzer und fehlgeschlagene Anmeldungen pro Tag",
+    "empty": "Keine Anmeldungen in diesem Zeitraum."
+  },
+  "methods": {
+    "title": "Anmeldemethoden",
+    "description": "Womit sich erfolgreiche Anmeldungen ausgewiesen haben",
+    "total": "Anmeldungen",
+    "password": "Passwort",
+    "twoFactor": "Passwort und zweiter Faktor",
+    "passkey": "Passkey",
+    "caption": "Erfolgreiche Anmeldungen nach Methode",
+    "method": "Methode",
+    "count": "Anmeldungen",
+    "share": "Anteil",
+    "empty": "Keine erfolgreichen Anmeldungen in diesem Zeitraum."
+  },
+  "failures": {
+    "title": "Fehlgeschlagene Anmeldungen",
+    "description": "Abgelehnte Versuche nach Grund",
+    "reasons": {
+      "invalidCredentials": "Falsche E-Mail oder falsches Passwort",
+      "secondFactor": "Falscher Code für den zweiten Faktor",
+      "passkey": "Passkey nicht akzeptiert",
+      "rateLimited": "Zu viele Versuche",
+      "disabled": "Konto deaktiviert",
+      "notMember": "Kein Mitglied",
+      "suspended": "Organisation gesperrt",
+      "other": "Sonstiges"
+    },
+    "caption": "Fehlgeschlagene Anmeldungen nach Grund",
+    "reason": "Grund",
+    "count": "Versuche",
+    "empty": "Keine fehlgeschlagenen Anmeldungen in diesem Zeitraum."
+  },
+  "secondFactor": {
+    "title": "Nutzung des zweiten Faktors",
+    "organization": "Mitglieder mit Passkey oder Authenticator-App, jeweils am Ende des Tages",
+    "instance": "Konten mit Passkey oder Authenticator-App, jeweils am Ende des Tages",
+    "series": "Nutzung",
+    "caption": "Nutzung des zweiten Faktors pro Tag",
+    "empty": "Die Wartung erfasst die Nutzung einmal täglich und hat das für diesen Zeitraum noch nicht getan."
+  },
+  "engagement": {
+    "title": "Engagement",
+    "description": "Verschiedene aktive Personen über einen Tag, 7 Tage und 30 Tage",
+    "daily": "Täglich",
+    "weekly": "Wöchentlich",
+    "monthly": "Monatlich",
+    "caption": "Täglich, wöchentlich und monatlich aktive Benutzer pro Tag",
+    "empty": "In diesem Zeitraum war niemand aktiv."
+  },
+  "heatmap": {
+    "title": "Wann sich Leute anmelden",
+    "description": "Erfolgreiche Anmeldungen nach Wochentag und Stunde, in UTC",
+    "fewer": "Weniger",
+    "more": "Mehr",
+    "cell": "{weekday}, {hour}: {count, plural, =0 {keine Anmeldungen} one {# Anmeldung} other {# Anmeldungen}}",
+    "busiest": "Am meisten los: {weekday}, {hour}",
+    "hint": "Zeig auf ein Feld, um die Anzahl zu sehen",
+    "caption": "Erfolgreiche Anmeldungen nach Wochentag und UTC-Stunde",
+    "weekday": "Wochentag",
+    "empty": "Keine erfolgreichen Anmeldungen in diesem Zeitraum."
+  },
+  "applications": {
+    "title": "Anwendungen",
+    "description": "Ausgestellte Tokens und erreichte Personen, nach Anwendung",
+    "link": "Anwendungen",
+    "application": "Anwendung",
+    "tokens": "Tokens",
+    "change": "Veränderung",
+    "users": "Benutzer pro Tag",
+    "share": "Anteil",
+    "trend": "Tokens pro Tag",
+    "deleted": "Gelöschte Anwendung",
+    "empty": "Keine Tokens in diesem Zeitraum ausgestellt."
+  },
+  "growth": {
+    "title": "Mitgliederentwicklung",
+    "description": "Beitritte und Austritte pro Tag",
+    "joined": "Beigetreten",
+    "removed": "Ausgetreten oder entfernt",
+    "caption": "Beitritte und Austritte pro Tag",
+    "empty": "In diesem Zeitraum ist niemand beigetreten oder ausgetreten."
+  },
+  "invitations": {
+    "title": "Einladungen",
+    "description": "Im Zeitraum verschickt, und was daraus wurde",
+    "sent": "Verschickt",
+    "accepted": "Angenommen",
+    "open": "Noch offen",
+    "revoked": "Zurückgezogen",
+    "expired": "Abgelaufen",
+    "acceptance": "{rate} angenommen",
+    "truncated": "Audit-Ereignisse werden {days, number} Tage aufbewahrt, ältere Einladungen fehlen deshalb.",
+    "empty": "Keine Einladungen in diesem Zeitraum verschickt."
+  },
+  "roles": {
+    "title": "Rollen",
+    "description": "Mitglieder nach Rolle, Stand jetzt",
+    "owner": "Inhaber",
+    "admin": "Admin",
+    "member": "Mitglied",
+    "caption": "Mitglieder nach Rolle",
+    "role": "Rolle",
+    "count": "Mitglieder",
+    "empty": "Noch keine Mitglieder."
+  },
+  "organizationStatus": {
+    "title": "Organisationen nach Status",
+    "description": "Alle Organisationen, Stand jetzt, gelöschte bis zur Bereinigung",
+    "total": "Organisationen",
+    "active": "Aktiv",
+    "suspended": "Gesperrt",
+    "deleted": "Gelöscht",
+    "caption": "Organisationen nach Status",
+    "status": "Status",
+    "count": "Organisationen",
+    "share": "Anteil",
+    "empty": "Noch keine Organisationen."
+  },
+  "topOrganizations": {
+    "title": "Aktivste Organisationen",
+    "description": "Nach täglich aktiven Benutzern",
+    "link": "Organisationen",
+    "rank": "Rang",
+    "organization": "Organisation",
+    "activeUsers": "Benutzer pro Tag",
+    "signIns": "Anmeldungen",
+    "change": "Veränderung",
+    "tokens": "Tokens",
+    "trend": "Anmeldungen pro Tag",
+    "suspended": "Gesperrt",
+    "empty": "In diesem Zeitraum war keine Organisation aktiv."
+  },
+  "userGrowth": {
+    "title": "Neue Konten",
+    "description": "Erstellte Konten pro Tag",
+    "series": "Neue Konten",
+    "caption": "Erstellte Konten pro Tag",
+    "empty": "In diesem Zeitraum wurden keine Konten erstellt."
+  },
+  "trend": {
+    "empty": "Keine Anmeldungen in den letzten {period, number} Tagen.",
+    "signIns": "Anmeldungen",
+    "activeUsers": "Aktive Benutzer",
+    "day": "Tag",
+    "notRecorded": "Nicht erfasst"
+  },
+  "change": {
+    "noEarlierData": "Keine früheren Daten zum Vergleich",
+    "noneEither": "In beiden Zeiträumen keine",
+    "noneBefore": "Im Zeitraum davor keine",
+    "noChange": "Keine Veränderung",
+    "points": "{points} Pp.",
+    "comparison": "<highlight>{change}</highlight> ggü. den {period, number} Tagen davor"
+  },
+  "coverage": {
+    "todayOnly": "Noch kein Verlauf: Housekeeping ist noch nicht gelaufen. Der Server führt es stündlich aus, außer bei `HOUSEKEEPING_ENABLED=false`.",
+    "partial": "{missing, plural, one {# Tag fehlt} other {# Tage fehlen}}: Housekeeping ist dafür nicht gelaufen. Der Server führt es stündlich aus, außer bei `HOUSEKEEPING_ENABLED=false`."
+  }
+}

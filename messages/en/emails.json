@@ -1,0 +1,27 @@
+{
+  "layout": {
+    "footer": "You are receiving this because someone used this address on Bedrock.",
+    "fallbackLink": "If the button does not work, paste this into your browser:"
+  },
+  "verifyEmail": {
+    "subject": "Confirm your email address for {organization}",
+    "heading": "Confirm your email address",
+    "body": "Hi {name}, confirm this address to finish setting up your {organization} account. Until you do, you cannot sign in to anything.",
+    "button": "Confirm email address",
+    "footer": "If you did not create this account you can ignore this message."
+  },
+  "resetPassword": {
+    "subject": "Reset your {organization} password",
+    "heading": "Reset your password",
+    "body": "Hi {name}, choose a new password for your {organization} account. This link can be used once and expires within the hour.",
+    "button": "Choose a new password",
+    "footer": "If you did not ask for a new password, ignore this message and nothing changes."
+  },
+  "invitation": {
+    "subject": "{inviter} invited you to {organization}",
+    "heading": "Join {organization}",
+    "body": "{inviter} invited you to join {organization} as {role, select, owner {an owner} admin {an admin} other {a member}}. Accept the invitation to set up your account and get access.",
+    "button": "Accept invitation",
+    "footer": "If you were not expecting this invitation you can ignore it. It expires on {expiresOn}."
+  }
+}
