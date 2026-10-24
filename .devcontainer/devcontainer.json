@@ -14,6 +14,10 @@
   "features": {
     "ghcr.io/devcontainers-extra/features/bun:1": {}
   },
+  "containerEnv": {
+    "CONTAINER_HOST": "unix:///run/user/1000/podman/podman.sock",
+    "DOCKER_HOST": "unix:///run/user/1000/podman/podman.sock"
+  },
   "runArgs": [
     "--userns=keep-id",
     "--security-opt",
