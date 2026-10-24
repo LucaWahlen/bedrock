@@ -71,7 +71,7 @@
     "@formatjs/icu-messageformat-parser": "^3.5.22",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/bun": "^1.4.0",
-    "@types/node": "^20.19.43",
+    "@types/node": "^26.6.5",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
