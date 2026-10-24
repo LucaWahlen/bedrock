@@ -26,3 +26,19 @@ updates:
     ignore:
       - dependency-name: node
         update-types: [version-update:semver-major]
+
+  # The dev container: its `FROM` base image and the features it references.
+  # `devcontainers` is what keeps the Bun feature current, since Dependabot's
+  # docker ecosystem does not read `ARG` pins.
+  - package-ecosystem: docker
+    directory: /.devcontainer
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: devcontainers
+    directory: /.devcontainer
+    schedule:
+      interval: weekly
+    groups:
+      features:
+        patterns: ["*"]

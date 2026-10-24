@@ -1,0 +1,55 @@
+// Dev container for bedrock (Next.js 16 + Bun).
+// Bun is installed by the devcontainer feature below, so Dependabot can track
+// it. The compose stack (Postgres, MiniStack S3, Mailpit) runs through the host
+// Podman socket; the container shares the host network so the application keeps
+// seeing services, its own origin and the MiniStack CORS rule as `localhost`,
+// matching `.env.example` and `scripts/ministack/init-s3.sh`.
+// Podman users: point your editor's devcontainer docker path at podman,
+// e.g. VS Code: "dev.containers.dockerPath": "podman"
+{
+  "name": "bedrock",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers-extra/features/bun:1": {}
+  },
+  "runArgs": [
+    "--userns=keep-id",
+    "--security-opt",
+    "label=disable",
+    "--network=host"
+  ],
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,readonly",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind",
+    "source=${localEnv:HOME}/dotfiles,target=/home/vscode/dotfiles,type=bind",
+    "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind",
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind",
+    "source=${localEnv:HOME}/.agents/skills,target=/home/vscode/.agents/skills,type=bind",
+    "source=${localEnv:XDG_RUNTIME_DIR}/podman/podman.sock,target=/run/user/1000/podman/podman.sock,type=bind"
+  ],
+  "forwardPorts": [3000, 5432, 4566, 8025, 1025],
+  "portsAttributes": {
+    "3000": { "label": "bedrock (next dev)", "onAutoForward": "openBrowser" },
+    "5432": { "label": "postgres", "onAutoForward": "silent" },
+    "4566": { "label": "s3 (ministack)", "onAutoForward": "silent" },
+    "8025": { "label": "mailpit inbox", "onAutoForward": "notify" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "oxc.oxc-vscode",
+        "bradlc.vscode-tailwindcss",
+        "sst-dev.opencode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "oxc.oxc-vscode",
+        "files.eol": "\n"
+      }
+    }
+  },
+  "remoteUser": "vscode",
+  "postCreateCommand": "opencode --version && bun --version && podman compose version && bun install && (podman compose up -d || true)"
+}

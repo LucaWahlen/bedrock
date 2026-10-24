@@ -46,6 +46,11 @@ Open http://localhost:3000 and sign in with `SEED_ADMIN_EMAIL` and
 `SEED_ADMIN_PASSWORD` from `.env`. Mail sent locally lands in Mailpit at
 http://localhost:8025.
 
+The repository ships a [dev container](.devcontainer/) with Bun, opencode and
+the Podman client. It starts the Compose stack on create through the host Podman
+socket, so `bun run db:migrate` and `bun run dev` work straight away; copy
+`.env.example` to `.env` first.
+
 To run Bedrock in production, see [Deployment](#deployment),
 [`deploy/docker`](deploy/docker/) and [`deploy/kubernetes`](deploy/kubernetes/). Every setting is documented in
 [`.env.example`](.env.example). Contributors, and coding agents, should read
