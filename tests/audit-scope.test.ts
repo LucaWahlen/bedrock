@@ -108,6 +108,19 @@ describe("what the instance owns", () => {
     ).toBe("platform")
   })
 
+  // An organization's lifecycle is the instance's business whoever acts: an
+  // owner deleting it from inside is the last step of its existence, and root
+  // must be able to see it to restore it.
+  test("an organization deleted by its own owner", () => {
+    expect(
+      scope({
+        action: "organization.deleted",
+        actor: member(ACME.id),
+        organization: ACME,
+      })
+    ).toBe("platform")
+  })
+
   // Root administering a tenant is administration from outside, and must stay
   // visible to the instance and attributed to the root actor.
   test("an actor using another organization's authority", () => {

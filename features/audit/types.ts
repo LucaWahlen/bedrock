@@ -26,6 +26,19 @@ export const ORGANIZATION_AUDIT_ACTIONS = [
 export type OrganizationAuditAction =
   (typeof ORGANIZATION_AUDIT_ACTIONS)[number]
 
+// Whether an organization exists at all is the instance's business, not the
+// organization's own: only root administration may create, suspend, restore or
+// purge one, and a deletion an owner makes from inside is still its lifecycle,
+// which root has to be able to see and undo.
+export const ORGANIZATION_LIFECYCLE_ACTIONS = [
+  "organization.created",
+  "organization.suspended",
+  "organization.reactivated",
+  "organization.deleted",
+  "organization.restored",
+  "organization.purged",
+] as const
+
 export const APPLICATION_AUDIT_ACTIONS = [
   "application.created",
   "application.updated",

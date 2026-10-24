@@ -2,6 +2,7 @@ import { afterAll, beforeEach, describe, expect, test } from "bun:test"
 
 import { and, eq } from "drizzle-orm"
 
+import { listAuditEvents } from "@/features/audit/actions/list-audit-events"
 import { createOrganization } from "@/features/organizations/actions/create-organization"
 import { deleteOrganization } from "@/features/organizations/actions/delete-organization"
 import { getOrganizationMembers } from "@/features/organizations/actions/get-organization-members"
@@ -240,6 +241,27 @@ describe("deleting and restoring an organization", () => {
 
     expect(await deleteOrganization(orgA.id)).toEqual({ success: true })
     expect(await statusOf(orgA.id)).toBe("deleted")
+  })
+
+  // The deletion is the organization's lifecycle, so it is the instance's to
+  // read even though an owner inside the organization made it.
+  test("a deletion by its own owner reaches the instance log", async () => {
+    await actAs(alice)
+    expect(await deleteOrganization(orgA.id)).toEqual({ success: true })
+
+    await actAs(rootOwner)
+    const { events } = await listAuditEvents({
+      actions: ["organization.deleted"],
+      organizationIds: [orgA.id],
+      pageSize: 10,
+    })
+
+    expect(
+      events.some(
+        (event) =>
+          event.organization?.id === orgA.id && event.actor.id === alice.id
+      )
+    ).toBeTrue()
   })
 })
 

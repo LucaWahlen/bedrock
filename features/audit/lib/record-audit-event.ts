@@ -1,6 +1,7 @@
 import {
   ACCOUNT_AUDIT_ACTIONS,
   AUTHENTICATION_AUDIT_ACTIONS,
+  ORGANIZATION_LIFECYCLE_ACTIONS,
   USER_AUDIT_ACTIONS,
   type AuditEventInput,
   type AuditScope,
@@ -34,6 +35,7 @@ const AUTHENTICATION_ACTIONS: readonly string[] = AUTHENTICATION_AUDIT_ACTIONS
 const INSTANCE_SUBJECT_ACTIONS: readonly string[] = [
   ...USER_AUDIT_ACTIONS,
   ...ACCOUNT_AUDIT_ACTIONS,
+  ...ORGANIZATION_LIFECYCLE_ACTIONS,
 ]
 
 // Scope is policy, not a caller's choice, so it cannot be forgotten or widened.
