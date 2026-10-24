@@ -40,7 +40,7 @@
     "@opentelemetry/sdk-trace-node": "^2.12.0",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.1.0",
-    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/browser": "^14.0.0",
     "@tanstack/react-table": "^9.1.2",
     "@zxcvbn-ts/core": "^4.2.0",
     "@zxcvbn-ts/language-common": "^4.1.3",
