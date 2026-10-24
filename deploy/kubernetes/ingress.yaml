@@ -1,0 +1,33 @@
+# Example. The host must match BETTER_AUTH_URL in configmap.yaml, which is the
+# OIDC issuer: pick it once and keep it. TLS ends here; the application sees
+# plain HTTP and takes the scheme from BETTER_AUTH_URL alone.
+#
+# The controller must pass the original Host and X-Forwarded-Proto, and
+# overwrite (not append to) X-Forwarded-For / X-Real-IP, which rate limiting
+# keys on. Check your controller's defaults.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bedrock
+  labels:
+    app.kubernetes.io/name: bedrock
+    app.kubernetes.io/component: server
+  # annotations:
+  #   cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  # ingressClassName: nginx
+  tls:
+    - hosts:
+        - bedrock.example.com
+      secretName: bedrock-tls
+  rules:
+    - host: bedrock.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bedrock
+                port:
+                  name: http

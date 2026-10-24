@@ -1,0 +1,204 @@
+{
+  "metadata": {
+    "setupSecurity": "Secure your account",
+    "setupSecurityIn": "Secure your account | {organization}"
+  },
+  "dialog": {
+    "title": "Settings",
+    "description": "Your account across every organization.",
+    "sectionsLabel": "Settings sections",
+    "sections": {
+      "profile": "Profile",
+      "password": "Password",
+      "email": "Email",
+      "security": "Security",
+      "sessions": "Sessions",
+      "danger": "Danger zone"
+    },
+    "emailChanged": "Your email address was changed"
+  },
+  "fields": {
+    "currentPassword": "Current password",
+    "secondFactorCode": "Authentication or backup code",
+    "name": "Name"
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "How you appear to everyone in every organization you belong to.",
+    "picture": "Picture",
+    "pictureHint": "PNG, JPEG, or WebP up to 2 MB",
+    "submit": "Save profile",
+    "saved": "Your profile was updated",
+    "uploadFailed": "Could not upload your picture"
+  },
+  "password": {
+    "title": "Password",
+    "description": "Used to sign in to every organization on this instance.",
+    "newPassword": "New password",
+    "revokeOthers": "Sign out other sessions",
+    "revokeOthersDescription": "Everywhere else you are signed in has to sign in again with the new password.",
+    "submit": "Change password",
+    "changed": "Password changed",
+    "changedAndRevoked": "Password changed. Every other session was signed out."
+  },
+  "email": {
+    "title": "Email address",
+    "description": "Where sign-in links, invitations and notices are sent.",
+    "current": "Your address is <strong>{email}</strong>.",
+    "confirmed": "Your new address is confirmed and is now the one you sign in with.",
+    "requested": "If <strong>{requested}</strong> can be used, a confirmation link is on its way there. Your address stays <strong>{email}</strong> until you follow it.",
+    "newAddress": "New address",
+    "newAddressPlaceholder": "mail@example.com",
+    "submit": "Send confirmation link"
+  },
+  "security": {
+    "title": "Security",
+    "description": "Ways to prove it is you, beyond your password. They apply to every organization on this instance.",
+    "refusal": {
+      "authenticator": "{organizations} {count, plural, one {requires} other {require}} two-factor authentication; add a passkey or keep your authenticator app",
+      "passkey": "{organizations} {count, plural, one {requires} other {require}} two-factor authentication; add another passkey or an authenticator app before removing this one"
+    }
+  },
+  "twoFactor": {
+    "title": "Authenticator app",
+    "on": "On",
+    "off": "Off",
+    "enabledDescription": "A code from your app is asked for after your password.",
+    "enabledWithBackupCodes": "A code from your app is asked for after your password. {count, plural, one {# backup code} other {# backup codes}} left.",
+    "disabledDescription": "Ask for a code from an authenticator app after your password.",
+    "newBackupCodes": "New backup codes",
+    "turnOff": "Turn off",
+    "setUp": "Set up",
+    "regenerate": "Create new backup codes",
+    "regenerated": "New backup codes created. The old ones no longer work.",
+    "enabled": "Two-factor authentication is on",
+    "disabled": "Two-factor authentication is off",
+    "disableSubmit": "Turn off two-factor authentication",
+    "verify": {
+      "qrLabel": "QR code for your authenticator app",
+      "scan": "Scan the code with an authenticator app, such as 1Password, Google Authenticator or Microsoft Authenticator.",
+      "cantScan": "Can't scan it? Enter this key instead:",
+      "setupKey": "Setup key",
+      "copySetupKey": "Copy setup key",
+      "code": "Code from the app",
+      "codeDescription": "Two-factor authentication is only turned on once this code is accepted.",
+      "submit": "Turn on"
+    }
+  },
+  "backupCodes": {
+    "title": "Save your backup codes",
+    "description": "Each code signs you in once if you lose your authenticator app. Keep them somewhere safe: they will not be shown again.",
+    "label": "Backup codes",
+    "download": "Download",
+    "done": "I have saved them"
+  },
+  "passkeys": {
+    "title": "Passkeys",
+    "description": "Sign in with your fingerprint, face or device PIN instead of a password. A passkey is used instead of a second factor.",
+    "add": "Add a passkey",
+    "unsupported": "This browser does not support passkeys.",
+    "empty": "No passkeys yet.",
+    "namePlaceholder": "Work laptop",
+    "create": "Create passkey",
+    "added": "Passkey added",
+    "notCreated": "The passkey was not created",
+    "alreadyOnDevice": "This device already holds a passkey for your account",
+    "browserFailed": "Your browser could not create a passkey",
+    "unnamed": "Unnamed passkey",
+    "synced": "Synced",
+    "addedAt": "Added {date}",
+    "addedAtUnknown": "Added at an unknown time",
+    "rename": "Rename",
+    "renamed": "Passkey renamed",
+    "remove": "Remove",
+    "removeLabel": "Remove {name}",
+    "removeConfirm": "Remove <strong>{name}</strong>? You will no longer be able to sign in with it.",
+    "removeSubmit": "Remove passkey",
+    "removed": "Passkey removed"
+  },
+  "sessions": {
+    "title": "Sessions",
+    "description": "Everywhere you are signed in. Sign out of anything you do not recognise, then change your password.",
+    "thisDevice": "This device",
+    "details": "{address} · Signed in {signedIn} · Last active: {lastActive}",
+    "unknownAddress": "Unknown address",
+    "activity": {
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "signOut": "Sign out",
+    "signOutOthers": "Sign out of all other sessions",
+    "signedOut": "Session signed out",
+    "othersSignedOut": "Every other session was signed out"
+  },
+  "device": {
+    "browserOnOs": "{browser} on {os}",
+    "osDevice": "{os} device",
+    "unknown": "Unknown device"
+  },
+  "danger": {
+    "title": "Delete account",
+    "description": "Deleting your account removes you from every organization at once, signs you out everywhere and cannot be undone.",
+    "soleOwner": "You are the only owner of these organizations. Make someone else an owner of each, or delete it, before you delete your account.",
+    "auditNote": "What you did stays in the audit logs under the name and address you had, as the record of what happened.",
+    "delete": "Delete account",
+    "confirmPassword": "Enter your password to confirm",
+    "submit": "Permanently delete account"
+  },
+  "setup": {
+    "title": "Secure your account",
+    "description": "{organization} requires two-factor authentication. Set up an authenticator app or add a passkey to continue.",
+    "continue": "Continue to {name}",
+    "notNow": "Not now? <link>Sign out</link>"
+  },
+  "nudge": {
+    "title": "Protect your account",
+    "description": "Add a passkey or an authenticator app, so a password alone is not enough to sign in as you.",
+    "action": "Secure account",
+    "dismiss": "Dismiss"
+  },
+  "validation": {
+    "nameRequired": "Enter your name",
+    "tooLong": "Use at most {max, number} characters",
+    "pictureRequired": "Select an image file",
+    "pictureInvalid": "Use a PNG, JPEG, or WebP up to 2 MB",
+    "currentPasswordRequired": "Enter your current password",
+    "passwordTooShort": "Use at least {min, number} characters",
+    "passwordUnchanged": "Choose a password different from your current one",
+    "emailInvalid": "Enter a valid email address",
+    "secondFactorRequired": "Enter a code from your authenticator app or a backup code",
+    "codeInvalid": "That is not a valid code",
+    "enrollmentCode": "Enter the 6-digit code from your app",
+    "passkeyNameRequired": "Give the passkey a name",
+    "codeRequired": "Enter a code"
+  },
+  "errors": {
+    "tooManyAttempts": "Too many attempts. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
+    "incorrectPassword": "Your current password is incorrect",
+    "passwordNotChanged": "Your password could not be changed",
+    "sameEmail": "That is already your email address",
+    "emailNotChanged": "Your email address could not be changed",
+    "invalidPicture": "Invalid profile picture",
+    "profileNotSaved": "Could not save your profile",
+    "secondFactorInvalid": "That code is not valid. Use your authenticator app or a backup code.",
+    "twoFactorNotEnabled": "Two-factor authentication is not turned on",
+    "twoFactorAlreadyEnabled": "Two-factor authentication is already turned on",
+    "twoFactorNotStarted": "Start setting up two-factor first",
+    "twoFactorSetupFailed": "Two-factor authentication could not be set up",
+    "twoFactorCodeInvalid": "That code is not valid. Check the time on your device and try again.",
+    "twoFactorNotDisabled": "Two-factor authentication could not be turned off",
+    "backupCodesNotCreated": "New backup codes could not be created",
+    "passkeySessionNotFresh": "For your security, sign out and sign in again before adding a passkey.",
+    "passkeyNotStarted": "A passkey cannot be added right now",
+    "passkeyNotAdded": "The passkey could not be added",
+    "passkeyNotFound": "That passkey was not found",
+    "passkeyNotRenamed": "The passkey could not be renamed",
+    "passkeyNotRemoved": "The passkey could not be removed",
+    "sessionNotFound": "Session not found",
+    "currentSession": "This is the session you are using. Log out to end it.",
+    "soleOwner": "You are the only owner of {organizations}. Make someone else an owner first.",
+    "chooseDifferentPassword": "Choose a different password",
+    "invalidProfile": "Invalid profile details",
+    "passwordAndCodeRequired": "Enter your password and a code"
+  }
+}

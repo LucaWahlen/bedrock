@@ -1,0 +1,101 @@
+{
+  "status": {
+    "ok": "Operational",
+    "warning": "Needs attention",
+    "error": "Failing",
+    "never": "Never run",
+    "pending": "Checking"
+  },
+  "summary": {
+    "operational": "All systems operational",
+    "attention": "{count, plural, one {# check needs attention} other {# checks need attention}}",
+    "checking": "Checking systems",
+    "checkedAt": "Checked at {time} UTC"
+  },
+  "rerun": "Run checks again",
+  "latency": "{ms, number} ms",
+  "latencyLabel": "to respond",
+  "sections": {
+    "checks": {
+      "title": "Checks",
+      "description": "Each runs with a five-second timeout."
+    },
+    "configuration": {
+      "title": "Configuration",
+      "description": "Settings worth a second look.",
+      "empty": "Nothing to flag.",
+      "warning": "Warning:",
+      "note": "Note:"
+    }
+  },
+  "build": {
+    "version": "Version {version}",
+    "next": "Next.js {version}",
+    "commit": "Commit {commit}"
+  },
+  "checks": {
+    "database": {
+      "label": "Database",
+      "unreachable": "Unreachable",
+      "migrationsUnreadable": "Migrations unreadable: {detail}",
+      "pending": "{applied, number} of {expected, number} migrations applied; pending {pending}",
+      "ahead": "{applied, number} migrations applied, this build ships {expected, number}",
+      "applied": "{applied, number} of {expected, number} migrations applied"
+    },
+    "storage": {
+      "label": "Object storage",
+      "reachable": "Bucket {bucket} reachable"
+    },
+    "email": {
+      "label": "Email",
+      "localSink": "Local sink at {host}:{port}; mail is captured, not delivered",
+      "accepting": "SMTP {host}:{port} accepts connections"
+    },
+    "signingKeys": {
+      "label": "Signing keys",
+      "none": "No key yet; one is generated for the first token",
+      "allExpired": "{count, plural, one {The only signing key has expired} other {All # signing keys have expired}}",
+      "unknownAlgorithm": "Unknown algorithm",
+      "summary": "{algorithm}, newest created {created} · {count, plural, one {# key} other {# keys}}",
+      "old": "{summary}; older than a year, consider rotating"
+    }
+  },
+  "housekeeping": {
+    "label": "Housekeeping",
+    "neverRun": "Never run. The server runs it hourly unless `HOUSEKEEPING_ENABLED=false`.",
+    "taskFailed": "{task} failed on its last run",
+    "tasksFailed": "{count, plural, one {# task failed on its last run} other {# tasks failed on their last run}}",
+    "lastRun": "Last run {when}",
+    "overdue": "{lastRun}; {attention, number} of {total, number} tasks are overdue or never ran",
+    "never": "Never run",
+    "runningSince": "Running since {when}",
+    "tasks": {
+      "organizations": "Purge deleted organizations",
+      "invitations": "Remove lapsed invitations",
+      "rateLimits": "Prune rate limit counters",
+      "auditEvents": "Apply audit retention",
+      "usage": "Roll up usage"
+    }
+  },
+  "notices": {
+    "insecureUrl": {
+      "title": "BETTER_AUTH_URL is not https",
+      "description": "Session cookies lose the Secure flag, HSTS is not sent, and the OIDC issuer is plain http."
+    },
+    "auditRetention": {
+      "title": "Audit retention is not set",
+      "description": "Audit events, and the names and addresses in them, are kept forever. Set AUDIT_RETENTION_DAYS."
+    },
+    "localEmail": {
+      "title": "Email goes to a local sink",
+      "description": "Invitations and password resets are captured, not delivered. Set SMTP_HOST to a real server."
+    },
+    "telemetry": {
+      "title": "OpenTelemetry is off",
+      "description": "No metrics or traces are exported. Set OTEL_EXPORTER_OTLP_ENDPOINT to turn it on."
+    }
+  },
+  "errors": {
+    "forbidden": "You cannot view the instance's health"
+  }
+}

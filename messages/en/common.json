@@ -1,0 +1,141 @@
+{
+  "language": {
+    "label": "Language",
+    "select": "Select language",
+    "changeFailed": "Could not change the language"
+  },
+  "actions": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "copy": "Copy",
+    "delete": "Delete",
+    "edit": "Edit",
+    "goHome": "Go back home",
+    "retry": "Try again",
+    "save": "Save"
+  },
+  "states": {
+    "loading": "Loading",
+    "saving": "Saving...",
+    "none": "None",
+    "never": "Never"
+  },
+  "errors": {
+    "notSignedIn": "You are not signed in",
+    "unexpected": "Something went wrong. Please try again."
+  },
+  "values": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "clipboard": {
+    "copied": "{label} copied",
+    "failed": "{label} could not be copied"
+  },
+  "dataTable": {
+    "search": "Search {entity}...",
+    "searchLabel": "Search {entity}",
+    "clearFilters": "Clear filters",
+    "empty": "No results.",
+    "details": "Details",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "sortedAscending": "sorted ascending",
+    "sortedDescending": "sorted descending",
+    "filter": {
+      "search": "Search options...",
+      "searchLabel": "Filter {title} options",
+      "legend": "{title} options",
+      "selected": "{count, number} selected",
+      "noResults": "No results.",
+      "clear": "Clear filter"
+    },
+    "pagination": {
+      "rows": "{count, number} {label}",
+      "page": "Page {page, number} of {pages, number}",
+      "first": "Go to first page",
+      "previous": "Go to previous page",
+      "next": "Go to next page",
+      "last": "Go to last page"
+    }
+  },
+  "media": {
+    "choose": "Choose image",
+    "replace": "Replace image",
+    "keep": "Keep the current image",
+    "remove": "Remove image",
+    "removeFile": "Remove {name}",
+    "removedOnSave": "Removed when you save"
+  },
+  "password": {
+    "show": "Show password",
+    "hide": "Hide password",
+    "requirement": "At least {minimum, number} characters. A few unrelated words work well.",
+    "strength": {
+      "veryWeak": "Very weak",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "hints": {
+      "tooShort": "Use at least {minimum, number} characters.",
+      "moreWords": "A few more words would make it stronger.",
+      "harderToGuess": "Choose a password that is harder to guess",
+      "warnings": {
+        "straightRow": "Straight rows of keys on your keyboard are easy to guess.",
+        "keyPattern": "Short keyboard patterns are easy to guess.",
+        "simpleRepeat": "Repeated characters like \"aaa\" are easy to guess.",
+        "extendedRepeat": "Repeated character patterns like \"abcabcabc\" are easy to guess.",
+        "sequences": "Common character sequences like \"abc\" are easy to guess.",
+        "recentYears": "Recent years are easy to guess.",
+        "dates": "Dates are easy to guess.",
+        "topTen": "This is a heavily used password.",
+        "topHundred": "This is a frequently used password.",
+        "common": "This is a commonly used password.",
+        "similarToCommon": "This is similar to a commonly used password.",
+        "wordByItself": "Single words are easy to guess.",
+        "namesByThemselves": "Single names or surnames are easy to guess.",
+        "commonNames": "Common names and surnames are easy to guess.",
+        "userInputs": "There should not be any personal or page related data.",
+        "pwned": "Your password was exposed by a data breach on the Internet."
+      },
+      "suggestions": {
+        "l33t": "Avoid predictable letter substitutions like ''@'' for ''a''.",
+        "reverseWords": "Avoid reversed spellings of common words.",
+        "allUppercase": "Capitalize some, but not all letters.",
+        "capitalization": "Capitalize more than the first letter.",
+        "dates": "Avoid dates and years that are associated with you.",
+        "recentYears": "Avoid recent years.",
+        "associatedYears": "Avoid years that are associated with you.",
+        "sequences": "Avoid common character sequences.",
+        "repeated": "Avoid repeated words and characters.",
+        "longerKeyboardPattern": "Use longer keyboard patterns and change typing direction multiple times.",
+        "anotherWord": "Add more words that are less common.",
+        "useWords": "Use multiple words, but avoid common phrases.",
+        "noNeed": "You can create strong passwords without using symbols, numbers, or uppercase letters.",
+        "pwned": "If you use this password elsewhere, you should change it."
+      }
+    }
+  },
+  "identity": {
+    "rootOrganization": "Root organization",
+    "rootActor": "Acted with root organization authority",
+    "deleted": "Deleted",
+    "renamed": "Renamed since",
+    "renamedTo": "Now called {name}"
+  },
+  "keyed": {
+    "count": "{count, number} {label}",
+    "view": "View {label}",
+    "remove": "Remove {name}"
+  },
+  "sidebar": {
+    "toggle": "Toggle sidebar",
+    "title": "Sidebar",
+    "description": "Displays the mobile sidebar."
+  }
+}

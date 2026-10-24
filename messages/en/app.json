@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "title": "App"
+  },
+  "navigation": {
+    "groups": {
+      "platform": "Platform",
+      "governance": "Governance",
+      "system": "System",
+      "workspace": "Workspace",
+      "access": "Access",
+      "organization": "Organization"
+    },
+    "items": {
+      "overview": "Overview",
+      "organizations": "Organizations",
+      "members": "Members",
+      "directory": "Directory",
+      "applications": "Applications",
+      "groups": "Groups",
+      "roles": "Roles & permissions",
+      "authentication": "Authentication",
+      "auditLog": "Audit log",
+      "health": "Health",
+      "usage": "Usage",
+      "settings": "Settings"
+    }
+  },
+  "orgSwitcher": {
+    "select": "Select organization",
+    "organizations": "Organizations",
+    "create": "Create organization"
+  },
+  "userMenu": {
+    "settings": "Settings",
+    "theme": "Theme",
+    "themes": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "logOut": "Log out"
+  },
+  "overview": {
+    "yourApplications": "Your applications",
+    "recentActivity": "Recent activity",
+    "recentPlatformActivity": "Recent platform activity",
+    "yourOrganizations": "Your organizations",
+    "pendingInvitations": "Pending invitations",
+    "metrics": {
+      "activeUsers": "Active users",
+      "signIns": "Sign-ins",
+      "tokensIssued": "Tokens issued",
+      "secondFactor": "Second-factor adoption",
+      "organizations": "Organizations",
+      "users": "Users",
+      "detail": {
+        "dailyAverage": "Daily average, last 7 days",
+        "signIns": "Successful, last 7 days",
+        "instanceSignIns": "All organizations, last 7 days",
+        "tokensIssued": "To applications, last 7 days",
+        "secondFactor": "{count, number} of {total, plural, one {# member} other {# members}}",
+        "organizations": "Active tenants",
+        "users": "Accounts on this instance"
+      },
+      "trend": {
+        "up": "Up {change} {basis, select, snapshot {since 7 days ago} other {on the 7 days before}}",
+        "down": "Down {change} {basis, select, snapshot {since 7 days ago} other {on the 7 days before}}",
+        "flat": "{basis, select, snapshot {Same as 7 days ago} other {Same as the 7 days before}}",
+        "noneBefore": "{basis, select, snapshot {None 7 days ago} other {None the 7 days before}}",
+        "noEarlierData": "Nothing to compare yet",
+        "points": "{points} pts"
+      }
+    },
+    "activity": {
+      "title": "Sign-ins",
+      "description": "{count, plural, one {# sign-in} other {# sign-ins}} in the last 30 days",
+      "empty": "No sign-ins in the last 30 days",
+      "viewUsage": "View usage",
+      "caption": "Sign-ins per day, last 30 days",
+      "day": "Day",
+      "signIns": "Sign-ins",
+      "notRecorded": "Not recorded"
+    }
+  },
+  "status": {
+    "switchAccount": "Switch account",
+    "goElsewhere": "Go elsewhere",
+    "availableOrganizations": "Go to available organizations",
+    "pageNotFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist or has been moved."
+    },
+    "organizationNotFound": {
+      "title": "Organization not found",
+      "description": "The organization you are looking for does not exist or is no longer available."
+    },
+    "roleDenied": {
+      "title": "You do not have access",
+      "description": "Your role in {organization} does not allow this.",
+      "action": "Go to {organization}"
+    },
+    "invitationWaiting": {
+      "title": "You have an invitation waiting",
+      "description": "You were invited to {organization} but have not accepted yet.",
+      "action": "View the invitation"
+    },
+    "notJoined": {
+      "title": "You have not joined yet",
+      "description": "{organization} is open to anyone, but your account is not a member of it.",
+      "action": "Join this organization"
+    },
+    "notMember": {
+      "title": "You do not have access",
+      "description": "Your account is not a member of {organization}."
+    },
+    "suspended": {
+      "title": "Organization suspended",
+      "description": "The instance administrators suspended {organization}. Nobody can sign in to it until they reactivate it."
+    },
+    "error": {
+      "title": "Unable to load this page",
+      "description": "We ran into a problem connecting to our services. This is usually temporary - please try again.",
+      "reload": "Reload page",
+      "home": "Go to home"
+    }
+  }
+}

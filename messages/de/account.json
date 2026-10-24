@@ -1,0 +1,204 @@
+{
+  "metadata": {
+    "setupSecurity": "Konto absichern",
+    "setupSecurityIn": "Konto absichern | {organization}"
+  },
+  "dialog": {
+    "title": "Einstellungen",
+    "description": "Dein Konto in allen Organisationen.",
+    "sectionsLabel": "Bereiche der Einstellungen",
+    "sections": {
+      "profile": "Profil",
+      "password": "Passwort",
+      "email": "E-Mail",
+      "security": "Sicherheit",
+      "sessions": "Sitzungen",
+      "danger": "Gefahrenzone"
+    },
+    "emailChanged": "Deine E-Mail-Adresse wurde geändert"
+  },
+  "fields": {
+    "currentPassword": "Aktuelles Passwort",
+    "secondFactorCode": "Authentifizierungs- oder Backup-Code",
+    "name": "Name"
+  },
+  "profile": {
+    "title": "Profil",
+    "description": "So sehen dich alle in jeder Organisation, der du angehörst.",
+    "picture": "Bild",
+    "pictureHint": "PNG, JPEG oder WebP, bis 2 MB",
+    "submit": "Profil speichern",
+    "saved": "Dein Profil wurde aktualisiert",
+    "uploadFailed": "Dein Bild konnte nicht hochgeladen werden"
+  },
+  "password": {
+    "title": "Passwort",
+    "description": "Damit meldest du dich bei jeder Organisation dieser Instanz an.",
+    "newPassword": "Neues Passwort",
+    "revokeOthers": "Andere Sitzungen abmelden",
+    "revokeOthersDescription": "Überall sonst, wo du angemeldet bist, musst du dich mit dem neuen Passwort erneut anmelden.",
+    "submit": "Passwort ändern",
+    "changed": "Passwort geändert",
+    "changedAndRevoked": "Passwort geändert. Alle anderen Sitzungen wurden abgemeldet."
+  },
+  "email": {
+    "title": "E-Mail-Adresse",
+    "description": "Hierhin gehen Anmeldelinks, Einladungen und Hinweise.",
+    "current": "Deine Adresse ist <strong>{email}</strong>.",
+    "confirmed": "Deine neue Adresse ist bestätigt. Mit ihr meldest du dich ab jetzt an.",
+    "requested": "Falls <strong>{requested}</strong> verwendet werden kann, ist ein Bestätigungslink dorthin unterwegs. Bis du ihm folgst, bleibt deine Adresse <strong>{email}</strong>.",
+    "newAddress": "Neue Adresse",
+    "newAddressPlaceholder": "mail@example.com",
+    "submit": "Bestätigungslink senden"
+  },
+  "security": {
+    "title": "Sicherheit",
+    "description": "Möglichkeiten, über dein Passwort hinaus zu beweisen, dass du es bist. Sie gelten für jede Organisation dieser Instanz.",
+    "refusal": {
+      "authenticator": "{organizations} {count, plural, one {verlangt} other {verlangen}} Zwei-Faktor-Authentifizierung. Füge einen Passkey hinzu oder behalte deine Authenticator-App",
+      "passkey": "{organizations} {count, plural, one {verlangt} other {verlangen}} Zwei-Faktor-Authentifizierung. Füge einen weiteren Passkey oder eine Authenticator-App hinzu, bevor du diesen entfernst"
+    }
+  },
+  "twoFactor": {
+    "title": "Authenticator-App",
+    "on": "An",
+    "off": "Aus",
+    "enabledDescription": "Nach deinem Passwort wird ein Code aus deiner App abgefragt.",
+    "enabledWithBackupCodes": "Nach deinem Passwort wird ein Code aus deiner App abgefragt. {count, plural, one {# Backup-Code} other {# Backup-Codes}} übrig.",
+    "disabledDescription": "Nach deinem Passwort einen Code aus einer Authenticator-App abfragen.",
+    "newBackupCodes": "Neue Backup-Codes",
+    "turnOff": "Ausschalten",
+    "setUp": "Einrichten",
+    "regenerate": "Neue Backup-Codes erstellen",
+    "regenerated": "Neue Backup-Codes erstellt. Die alten funktionieren nicht mehr.",
+    "enabled": "Zwei-Faktor-Authentifizierung ist an",
+    "disabled": "Zwei-Faktor-Authentifizierung ist aus",
+    "disableSubmit": "Zwei-Faktor-Authentifizierung ausschalten",
+    "verify": {
+      "qrLabel": "QR-Code für deine Authenticator-App",
+      "scan": "Scanne den Code mit einer Authenticator-App wie 1Password, Google Authenticator oder Microsoft Authenticator.",
+      "cantScan": "Scannen klappt nicht? Gib stattdessen diesen Schlüssel ein:",
+      "setupKey": "Einrichtungsschlüssel",
+      "copySetupKey": "Einrichtungsschlüssel kopieren",
+      "code": "Code aus der App",
+      "codeDescription": "Die Zwei-Faktor-Authentifizierung wird erst eingeschaltet, wenn dieser Code akzeptiert wurde.",
+      "submit": "Einschalten"
+    }
+  },
+  "backupCodes": {
+    "title": "Speichere deine Backup-Codes",
+    "description": "Jeder Code meldet dich einmal an, falls du deine Authenticator-App verlierst. Bewahre sie sicher auf: Sie werden nicht noch einmal angezeigt.",
+    "label": "Backup-Codes",
+    "download": "Herunterladen",
+    "done": "Ich habe sie gespeichert"
+  },
+  "passkeys": {
+    "title": "Passkeys",
+    "description": "Melde dich statt mit einem Passwort mit Fingerabdruck, Gesicht oder Geräte-PIN an. Ein Passkey ersetzt den zweiten Faktor.",
+    "add": "Passkey hinzufügen",
+    "unsupported": "Dieser Browser unterstützt keine Passkeys.",
+    "empty": "Noch keine Passkeys.",
+    "namePlaceholder": "Arbeitslaptop",
+    "create": "Passkey erstellen",
+    "added": "Passkey hinzugefügt",
+    "notCreated": "Der Passkey wurde nicht erstellt",
+    "alreadyOnDevice": "Auf diesem Gerät gibt es bereits einen Passkey für dein Konto",
+    "browserFailed": "Dein Browser konnte keinen Passkey erstellen",
+    "unnamed": "Unbenannter Passkey",
+    "synced": "Synchronisiert",
+    "addedAt": "Hinzugefügt am {date}",
+    "addedAtUnknown": "Zu unbekanntem Zeitpunkt hinzugefügt",
+    "rename": "Umbenennen",
+    "renamed": "Passkey umbenannt",
+    "remove": "Entfernen",
+    "removeLabel": "{name} entfernen",
+    "removeConfirm": "<strong>{name}</strong> entfernen? Du kannst dich dann nicht mehr damit anmelden.",
+    "removeSubmit": "Passkey entfernen",
+    "removed": "Passkey entfernt"
+  },
+  "sessions": {
+    "title": "Sitzungen",
+    "description": "Überall, wo du angemeldet bist. Melde alles ab, was du nicht wiedererkennst, und ändere dann dein Passwort.",
+    "thisDevice": "Dieses Gerät",
+    "details": "{address} · Angemeldet am {signedIn} · Zuletzt aktiv: {lastActive}",
+    "unknownAddress": "Unbekannte Adresse",
+    "activity": {
+      "today": "Heute",
+      "yesterday": "Gestern"
+    },
+    "signOut": "Abmelden",
+    "signOutOthers": "Alle anderen Sitzungen abmelden",
+    "signedOut": "Sitzung abgemeldet",
+    "othersSignedOut": "Alle anderen Sitzungen wurden abgemeldet"
+  },
+  "device": {
+    "browserOnOs": "{browser} unter {os}",
+    "osDevice": "{os}-Gerät",
+    "unknown": "Unbekanntes Gerät"
+  },
+  "danger": {
+    "title": "Konto löschen",
+    "description": "Wenn du dein Konto löschst, wirst du sofort aus allen Organisationen entfernt und überall abgemeldet. Das lässt sich nicht rückgängig machen.",
+    "soleOwner": "Du bist der einzige Inhaber dieser Organisationen. Mach in jeder jemand anderen zum Inhaber oder lösche sie, bevor du dein Konto löschst.",
+    "auditNote": "Was du getan hast, bleibt in den Audit-Logs unter deinem damaligen Namen und deiner damaligen Adresse festgehalten.",
+    "delete": "Konto löschen",
+    "confirmPassword": "Gib zur Bestätigung dein Passwort ein",
+    "submit": "Konto endgültig löschen"
+  },
+  "setup": {
+    "title": "Konto absichern",
+    "description": "{organization} verlangt Zwei-Faktor-Authentifizierung. Richte eine Authenticator-App ein oder füge einen Passkey hinzu, um fortzufahren.",
+    "continue": "Weiter zu {name}",
+    "notNow": "Nicht jetzt? <link>Abmelden</link>"
+  },
+  "nudge": {
+    "title": "Schütze dein Konto",
+    "description": "Füge einen Passkey oder eine Authenticator-App hinzu, damit ein Passwort allein nicht reicht, um sich als du anzumelden.",
+    "action": "Konto absichern",
+    "dismiss": "Ausblenden"
+  },
+  "validation": {
+    "nameRequired": "Gib deinen Namen ein",
+    "tooLong": "Verwende höchstens {max, number} Zeichen",
+    "pictureRequired": "Wähle eine Bilddatei aus",
+    "pictureInvalid": "Verwende PNG, JPEG oder WebP bis 2 MB",
+    "currentPasswordRequired": "Gib dein aktuelles Passwort ein",
+    "passwordTooShort": "Verwende mindestens {min, number} Zeichen",
+    "passwordUnchanged": "Wähle ein anderes Passwort als dein aktuelles",
+    "emailInvalid": "Gib eine gültige E-Mail-Adresse ein",
+    "secondFactorRequired": "Gib einen Code aus deiner Authenticator-App oder einen Backup-Code ein",
+    "codeInvalid": "Das ist kein gültiger Code",
+    "enrollmentCode": "Gib den 6-stelligen Code aus deiner App ein",
+    "passkeyNameRequired": "Gib dem Passkey einen Namen",
+    "codeRequired": "Gib einen Code ein"
+  },
+  "errors": {
+    "tooManyAttempts": "Zu viele Versuche. Versuch es in {minutes, plural, one {einer Minute} other {# Minuten}} erneut.",
+    "incorrectPassword": "Dein aktuelles Passwort ist falsch",
+    "passwordNotChanged": "Dein Passwort konnte nicht geändert werden",
+    "sameEmail": "Das ist bereits deine E-Mail-Adresse",
+    "emailNotChanged": "Deine E-Mail-Adresse konnte nicht geändert werden",
+    "invalidPicture": "Ungültiges Profilbild",
+    "profileNotSaved": "Dein Profil konnte nicht gespeichert werden",
+    "secondFactorInvalid": "Dieser Code ist ungültig. Verwende deine Authenticator-App oder einen Backup-Code.",
+    "twoFactorNotEnabled": "Die Zwei-Faktor-Authentifizierung ist nicht eingeschaltet",
+    "twoFactorAlreadyEnabled": "Die Zwei-Faktor-Authentifizierung ist bereits eingeschaltet",
+    "twoFactorNotStarted": "Starte zuerst die Einrichtung der Zwei-Faktor-Authentifizierung",
+    "twoFactorSetupFailed": "Die Zwei-Faktor-Authentifizierung konnte nicht eingerichtet werden",
+    "twoFactorCodeInvalid": "Dieser Code ist ungültig. Prüfe die Uhrzeit auf deinem Gerät und versuch es erneut.",
+    "twoFactorNotDisabled": "Die Zwei-Faktor-Authentifizierung konnte nicht ausgeschaltet werden",
+    "backupCodesNotCreated": "Es konnten keine neuen Backup-Codes erstellt werden",
+    "passkeySessionNotFresh": "Melde dich zu deiner Sicherheit ab und wieder an, bevor du einen Passkey hinzufügst.",
+    "passkeyNotStarted": "Gerade kann kein Passkey hinzugefügt werden",
+    "passkeyNotAdded": "Der Passkey konnte nicht hinzugefügt werden",
+    "passkeyNotFound": "Dieser Passkey wurde nicht gefunden",
+    "passkeyNotRenamed": "Der Passkey konnte nicht umbenannt werden",
+    "passkeyNotRemoved": "Der Passkey konnte nicht entfernt werden",
+    "sessionNotFound": "Sitzung nicht gefunden",
+    "currentSession": "Das ist die Sitzung, die du gerade verwendest. Melde dich ab, um sie zu beenden.",
+    "soleOwner": "Du bist der einzige Inhaber von {organizations}. Mach zuerst jemand anderen zum Inhaber.",
+    "chooseDifferentPassword": "Wähle ein anderes Passwort",
+    "invalidProfile": "Ungültige Profilangaben",
+    "passwordAndCodeRequired": "Gib dein Passwort und einen Code ein"
+  }
+}

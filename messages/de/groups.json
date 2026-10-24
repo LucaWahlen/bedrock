@@ -1,0 +1,120 @@
+{
+  "pages": {
+    "title": "Gruppen",
+    "metadataTitle": "Gruppen | {organization}"
+  },
+  "lists": {
+    "groups": {
+      "title": "Gruppen",
+      "singular": "Gruppe",
+      "plural": "Gruppen"
+    },
+    "members": {
+      "title": "Mitglieder",
+      "count": "{count, plural, one {# Mitglied} other {# Mitglieder}}"
+    },
+    "loadFailed": "{title} konnten nicht geladen werden"
+  },
+  "table": {
+    "entity": "Gruppen",
+    "singular": "Gruppe",
+    "plural": "Gruppen",
+    "newGroup": "Neue Gruppe",
+    "roleFilter": "Rolle",
+    "empty": "Keine Gruppen gefunden.",
+    "ariaLabel": "Gruppen",
+    "columns": {
+      "group": "Gruppe",
+      "key": "Schlüssel",
+      "members": "Mitglieder",
+      "roles": "Rollen",
+      "created": "Erstellt",
+      "actions": "Aktionen"
+    },
+    "actions": {
+      "menu": "Aktionen für {name}",
+      "edit": "Gruppe bearbeiten",
+      "manageMembers": "Mitglieder verwalten",
+      "manageRoles": "Rollen verwalten",
+      "delete": "Gruppe löschen"
+    },
+    "deleted": "{name} wurde gelöscht",
+    "deleteDialog": {
+      "title": "Gruppe löschen?",
+      "description": "Alle in {name} verlieren die Rollen, die sie vergibt, und Anwendungen erhalten {key} nicht mehr.",
+      "confirm": "Gruppe löschen"
+    }
+  },
+  "dialog": {
+    "createTitle": "Neue Gruppe",
+    "editTitle": "Gruppe bearbeiten",
+    "description": "Alle in einer Gruppe haben die Rollen, die sie vergibt, und Anwendungen, die nach Gruppen fragen, erfahren, in welchen sie sind.",
+    "name": "Name",
+    "namePlaceholder": "Entwicklung",
+    "key": "Schlüssel",
+    "keyPlaceholder": "engineering",
+    "keyLocked": "Der Schlüssel kann nicht mehr geändert werden, sobald Anwendungen sich darauf verlassen.",
+    "keyHint": "Erscheint im Token. Er kann später nicht geändert werden.",
+    "descriptionLabel": "Beschreibung (optional)",
+    "roles": "Rollen (optional)",
+    "members": "Mitglieder (optional)",
+    "save": "Gruppe speichern",
+    "saved": "{name} wurde gespeichert"
+  },
+  "rolePicker": {
+    "placeholder": "Rollen suchen...",
+    "none": "Lege zuerst auf der Seite „Rollen“ eine Rolle fest.",
+    "allTaken": "Jede Rolle wird bereits vergeben.",
+    "noMatch": "Keine Rolle passt dazu."
+  },
+  "groupMembers": {
+    "title": "Mitglieder von {name}",
+    "description": "Anwendungen, die nach Gruppen fragen, erhalten <code>{key}</code> für diese Personen, zusammen mit jeder Rolle, die die Gruppe vergibt.",
+    "label": "Mitglieder",
+    "showing": "{shown, number} von {total, number} angezeigt. Die übrigen bleiben in der Gruppe.",
+    "loadFailed": "Mitglieder konnten nicht geladen werden",
+    "save": "Mitglieder speichern",
+    "saved": "Mitglieder von {name} wurden gespeichert"
+  },
+  "groupRoles": {
+    "title": "Rollen von {name}",
+    "description": "Alle in {name} haben diese Rollen, zusätzlich zu denen, die ihnen direkt zugewiesen wurden.",
+    "label": "Rollen",
+    "noRoles": "Diese Organisation hat noch keine Rollen. Lege auf der Seite „Rollen“ eine fest.",
+    "save": "Rollen speichern",
+    "saved": "Rollen von {name} wurden gespeichert"
+  },
+  "memberGroups": {
+    "title": "Gruppen",
+    "description": "Wähle die Gruppen, in denen {name} ist. {name} hat jede Rolle, die eine Gruppe vergibt, zusätzlich zu direkt zugewiesenen.",
+    "label": "Gruppen",
+    "grants": "Vergibt {roles}",
+    "grantsNone": "Vergibt keine Rollen",
+    "noGroups": "Diese Organisation hat noch keine Gruppen. Lege auf der Seite „Gruppen“ eine an.",
+    "save": "Gruppen speichern",
+    "saved": "Gruppen für {name} wurden gespeichert"
+  },
+  "validation": {
+    "tooLong": "Verwende höchstens {max, number} Zeichen",
+    "keyRequired": "Gib der Gruppe einen Schlüssel",
+    "keyFormat": "Verwende Kleinbuchstaben, Ziffern und die Trennzeichen - _",
+    "nameRequired": "Gib der Gruppe einen Namen",
+    "membersTooMany": "Wähle höchstens {max, number} Mitglieder",
+    "rolesTooMany": "Wähle höchstens {max, number} Rollen"
+  },
+  "errors": {
+    "invalidGroup": "Ungültige Gruppendaten",
+    "invalid": "Ungültige Gruppe",
+    "membersRolesSeparately": "Ändere Mitglieder und Rollen einer Gruppe separat",
+    "manageDenied": "Du kannst hier keine Gruppen verwalten",
+    "keyTaken": "Eine Gruppe mit diesem Schlüssel existiert bereits",
+    "saveFailed": "Die Gruppe konnte nicht gespeichert werden",
+    "viewMembersDenied": "Du kannst diese Mitglieder nicht sehen",
+    "invalidMembers": "Ungültige Mitglieder",
+    "invalidRoles": "Ungültige Rollen",
+    "invalidGroups": "Ungültige Gruppen",
+    "unknownGroup": "Unbekannte Gruppe",
+    "unknownRole": "Unbekannte Rolle",
+    "notMember": "Kein Mitglied dieser Organisation"
+  }
+}

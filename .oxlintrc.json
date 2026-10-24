@@ -1,0 +1,97 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "react",
+    "import",
+    "nextjs",
+    "jsx-a11y"
+  ],
+  "jsPlugins": ["eslint-plugin-boundaries"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "node": true
+  },
+  "settings": {
+    "boundaries/elements": [
+      {
+        "type": "shared",
+        "pattern": "features/shared",
+        "partialMatch": false,
+        "exclusive": true
+      },
+      {
+        "type": "feature",
+        "pattern": "features/*",
+        "partialMatch": false
+      }
+    ],
+    "boundaries/files": [
+      {
+        "category": "source",
+        "pattern": "**/*.{ts,tsx,mts,cts}"
+      }
+    ],
+    "import/resolver": {
+      "typescript": {
+        "project": "./tsconfig.json"
+      }
+    },
+    "boundaries/legacy-warnings": false
+  },
+  "ignorePatterns": [
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "drizzle/**",
+    "messages/**/*.d.json.ts",
+    "features/shared/components/ui/**"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+    "boundaries/dependencies": [
+      "error",
+      {
+        "default": "allow",
+        "policies": [
+          {
+            "to": { "element": { "type": "feature" } },
+            "disallow": {
+              "to": { "element": { "fileInternalPath": "!index.ts" } }
+            },
+            "message": "Import other features through their root barrel."
+          }
+        ]
+      }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "regex": "^\\.\\.?/",
+            "message": "Use \"@/...\" path aliases instead of relative imports."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["scripts/**", "tests/**"],
+      "rules": {
+        "boundaries/dependencies": "off"
+      }
+    }
+  ]
+}

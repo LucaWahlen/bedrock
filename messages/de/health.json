@@ -1,0 +1,101 @@
+{
+  "status": {
+    "ok": "Betriebsbereit",
+    "warning": "Braucht Aufmerksamkeit",
+    "error": "Fehlerhaft",
+    "never": "Nie ausgeführt",
+    "pending": "Wird geprüft"
+  },
+  "summary": {
+    "operational": "Alle Systeme betriebsbereit",
+    "attention": "{count, plural, one {# Prüfung braucht Aufmerksamkeit} other {# Prüfungen brauchen Aufmerksamkeit}}",
+    "checking": "Systeme werden geprüft",
+    "checkedAt": "Geprüft um {time} UTC"
+  },
+  "rerun": "Erneut prüfen",
+  "latency": "{ms, number} ms",
+  "latencyLabel": "Antwortzeit",
+  "sections": {
+    "checks": {
+      "title": "Prüfungen",
+      "description": "Jede läuft mit einem Zeitlimit von fünf Sekunden."
+    },
+    "configuration": {
+      "title": "Konfiguration",
+      "description": "Einstellungen, die einen zweiten Blick wert sind.",
+      "empty": "Nichts zu beanstanden.",
+      "warning": "Warnung:",
+      "note": "Hinweis:"
+    }
+  },
+  "build": {
+    "version": "Version {version}",
+    "next": "Next.js {version}",
+    "commit": "Commit {commit}"
+  },
+  "checks": {
+    "database": {
+      "label": "Datenbank",
+      "unreachable": "Nicht erreichbar",
+      "migrationsUnreadable": "Migrationen nicht lesbar: {detail}",
+      "pending": "{applied, number} von {expected, number} Migrationen angewendet; ausstehend: {pending}",
+      "ahead": "{applied, number} Migrationen angewendet, dieser Build enthält {expected, number}",
+      "applied": "{applied, number} von {expected, number} Migrationen angewendet"
+    },
+    "storage": {
+      "label": "Objektspeicher",
+      "reachable": "Bucket {bucket} erreichbar"
+    },
+    "email": {
+      "label": "E-Mail",
+      "localSink": "Lokales Test-Postfach unter {host}:{port}; E-Mails werden abgefangen, nicht zugestellt",
+      "accepting": "SMTP {host}:{port} nimmt Verbindungen an"
+    },
+    "signingKeys": {
+      "label": "Signaturschlüssel",
+      "none": "Noch kein Schlüssel; er wird für das erste Token erzeugt",
+      "allExpired": "{count, plural, one {Der einzige Signaturschlüssel ist abgelaufen} other {Alle # Signaturschlüssel sind abgelaufen}}",
+      "unknownAlgorithm": "Unbekannter Algorithmus",
+      "summary": "{algorithm}, neuester erstellt {created} · {count, plural, one {# Schlüssel} other {# Schlüssel}}",
+      "old": "{summary}; älter als ein Jahr, Rotation empfohlen"
+    }
+  },
+  "housekeeping": {
+    "label": "Housekeeping",
+    "neverRun": "Nie ausgeführt. Der Server führt es stündlich aus, außer bei `HOUSEKEEPING_ENABLED=false`.",
+    "taskFailed": "{task} ist beim letzten Lauf fehlgeschlagen",
+    "tasksFailed": "{count, plural, one {# Aufgabe ist beim letzten Lauf fehlgeschlagen} other {# Aufgaben sind beim letzten Lauf fehlgeschlagen}}",
+    "lastRun": "Zuletzt ausgeführt {when}",
+    "overdue": "{lastRun}; {attention, number} von {total, number} Aufgaben sind überfällig oder liefen nie",
+    "never": "Nie ausgeführt",
+    "runningSince": "Läuft seit {when}",
+    "tasks": {
+      "organizations": "Gelöschte Organisationen bereinigen",
+      "invitations": "Abgelaufene Einladungen entfernen",
+      "rateLimits": "Rate-Limit-Zähler aufräumen",
+      "auditEvents": "Audit-Aufbewahrung anwenden",
+      "usage": "Nutzung zusammenfassen"
+    }
+  },
+  "notices": {
+    "insecureUrl": {
+      "title": "BETTER_AUTH_URL ist kein https",
+      "description": "Session-Cookies verlieren das Secure-Flag, HSTS wird nicht gesendet und der OIDC-Issuer läuft über einfaches http."
+    },
+    "auditRetention": {
+      "title": "Audit-Aufbewahrung ist nicht festgelegt",
+      "description": "Audit-Ereignisse samt Namen und Adressen darin werden unbegrenzt aufbewahrt. Setze AUDIT_RETENTION_DAYS."
+    },
+    "localEmail": {
+      "title": "E-Mails landen in einem lokalen Test-Postfach",
+      "description": "Einladungen und Passwort-Resets werden abgefangen, nicht zugestellt. Setze SMTP_HOST auf einen echten Server."
+    },
+    "telemetry": {
+      "title": "OpenTelemetry ist aus",
+      "description": "Es werden keine Metriken oder Traces exportiert. Setze OTEL_EXPORTER_OTLP_ENDPOINT, um es einzuschalten."
+    }
+  },
+  "errors": {
+    "forbidden": "Du kannst den Zustand der Instanz nicht einsehen"
+  }
+}

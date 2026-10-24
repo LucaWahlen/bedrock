@@ -1,0 +1,232 @@
+{
+  "table": {
+    "entity": "Audit-Ereignisse",
+    "singular": "Ereignis",
+    "plural": "Ereignisse",
+    "empty": "Keine Audit-Ereignisse gefunden.",
+    "label": "Audit-Ereignisse"
+  },
+  "columns": {
+    "event": "Ereignis",
+    "outcome": "Ergebnis",
+    "organization": "Organisation",
+    "actor": "Ausgeführt von",
+    "timestamp": "Zeitpunkt",
+    "actions": "Aktionen"
+  },
+  "outcomes": {
+    "success": "Erfolgreich",
+    "failure": "Fehlgeschlagen",
+    "denied": "Abgelehnt"
+  },
+  "actor": {
+    "anonymous": "Anonym",
+    "deletedUser": "Gelöschter Benutzer",
+    "platform": "Plattform"
+  },
+  "rowActions": {
+    "label": "Aktionen für {action} am {date}",
+    "copyId": "Ereignis-ID kopieren",
+    "copyJson": "Als JSON kopieren",
+    "eventId": "Ereignis-ID",
+    "event": "Ereignis"
+  },
+  "details": {
+    "timestamp": "Zeitpunkt",
+    "reason": "Grund",
+    "ipAddress": "IP-Adresse",
+    "userAgent": "User-Agent",
+    "eventId": "Ereignis-ID",
+    "targets": {
+      "target": "Ziel",
+      "user": "Benutzer",
+      "application": "Anwendung",
+      "applicationRole": "Anwendungsrolle",
+      "group": "Gruppe",
+      "invitation": "Einladung",
+      "organization": "Organisation",
+      "passkey": "Passkey",
+      "session": "Sitzung"
+    },
+    "metadata": {
+      "role": "Rolle",
+      "roles": "Rollen",
+      "from": "Von",
+      "to": "Zu",
+      "via": "Über",
+      "name": "Name",
+      "email": "E-Mail",
+      "key": "Schlüssel",
+      "added": "Hinzugefügt",
+      "removed": "Entfernt",
+      "count": "Anzahl",
+      "method": "Methode",
+      "otherSessionsRevoked": "Andere Sitzungen abgemeldet",
+      "previousName": "Bisheriger Name",
+      "requestedEmail": "Angeforderte E-Mail-Adresse",
+      "requiredBy": "Verlangt von",
+      "invitationId": "Einladungs-ID",
+      "userAgent": "User-Agent",
+      "redirectUris": "Weiterleitungs-URIs",
+      "launchUrl": "Start-URL",
+      "clientId": "Client-ID",
+      "organizationId": "Organisations-ID",
+      "slug": "Slug",
+      "confidential": "Vertraulich",
+      "deviceType": "Gerätetyp",
+      "backedUp": "Gesichert",
+      "soleOwnerOf": "Einziger Inhaber von",
+      "changed": "Geändert",
+      "members": "Mitglieder",
+      "applications": "Anwendungen",
+      "memberships": "Mitgliedschaften",
+      "inviters": "Eingeladen von",
+      "organizations": "Organisationen",
+      "organization": "Organisation",
+      "reason": "Grund"
+    }
+  },
+  "recent": {
+    "empty": "Noch keine Aktivitäten."
+  },
+  "domains": {
+    "organization": "Organisationen",
+    "application": "Anwendungen",
+    "group": "Gruppen",
+    "user": "Benutzer",
+    "account": "Konten",
+    "authentication": "Authentifizierung"
+  },
+  "actions": {
+    "organization": {
+      "created": "Organisation erstellt",
+      "updated": "Organisation aktualisiert",
+      "suspended": "Organisation gesperrt",
+      "reactivated": "Organisation reaktiviert",
+      "deleted": "Organisation gelöscht",
+      "restored": "Organisation wiederhergestellt",
+      "purged": "Organisation endgültig gelöscht",
+      "memberAdded": "Mitglied hinzugefügt",
+      "memberRemoved": "Mitglied entfernt",
+      "memberRoleChanged": "Rolle eines Mitglieds geändert",
+      "memberInvited": "Mitglied eingeladen",
+      "invitationResent": "Einladung erneut gesendet",
+      "invitationRevoked": "Einladung widerrufen",
+      "invitationAccepted": "Einladung angenommen"
+    },
+    "application": {
+      "created": "Anwendung erstellt",
+      "updated": "Anwendung aktualisiert",
+      "deleted": "Anwendung gelöscht",
+      "secretRotated": "Client-Secret rotiert",
+      "roleCreated": "Anwendungsrolle erstellt",
+      "roleUpdated": "Anwendungsrolle aktualisiert",
+      "roleDeleted": "Anwendungsrolle gelöscht",
+      "rolesAssigned": "Anwendungsrollen zugewiesen",
+      "roleMembersChanged": "Mitglieder einer Rolle geändert",
+      "roleGroupsChanged": "Gruppen einer Rolle geändert"
+    },
+    "group": {
+      "created": "Gruppe erstellt",
+      "updated": "Gruppe aktualisiert",
+      "deleted": "Gruppe gelöscht",
+      "membersChanged": "Gruppenmitglieder geändert",
+      "rolesChanged": "Gruppenrollen geändert"
+    },
+    "user": {
+      "created": "Benutzer erstellt",
+      "disabled": "Benutzer deaktiviert",
+      "enabled": "Benutzer aktiviert"
+    },
+    "account": {
+      "profileUpdated": "Profil aktualisiert",
+      "passwordChanged": "Passwort geändert",
+      "emailChangeRequested": "Änderung der E-Mail-Adresse angefordert",
+      "emailChanged": "E-Mail-Adresse geändert",
+      "sessionRevoked": "Sitzung abgemeldet",
+      "sessionsRevoked": "Sitzungen abgemeldet",
+      "twoFactorEnabled": "Zwei-Faktor-Authentifizierung aktiviert",
+      "twoFactorDisabled": "Zwei-Faktor-Authentifizierung deaktiviert",
+      "twoFactorReset": "Zwei-Faktor-Authentifizierung zurückgesetzt",
+      "backupCodesRegenerated": "Backup-Codes neu erstellt",
+      "passkeyAdded": "Passkey hinzugefügt",
+      "passkeyRenamed": "Passkey umbenannt",
+      "passkeyRemoved": "Passkey entfernt",
+      "deleted": "Konto gelöscht"
+    },
+    "authentication": {
+      "login": "Anmeldung",
+      "twoFactorChallenged": "Zweiter Faktor angefordert",
+      "logout": "Abmeldung",
+      "emailVerified": "E-Mail-Adresse bestätigt",
+      "passwordResetRequested": "Passwort-Zurücksetzung angefordert",
+      "passwordReset": "Passwort zurückgesetzt"
+    }
+  },
+  "actionsShort": {
+    "organization": {
+      "created": "Erstellt",
+      "updated": "Aktualisiert",
+      "suspended": "Gesperrt",
+      "reactivated": "Reaktiviert",
+      "deleted": "Gelöscht",
+      "restored": "Wiederhergestellt",
+      "purged": "Endgültig gelöscht",
+      "memberAdded": "Mitglied hinzugefügt",
+      "memberRemoved": "Mitglied entfernt",
+      "memberRoleChanged": "Rolle eines Mitglieds geändert",
+      "memberInvited": "Mitglied eingeladen",
+      "invitationResent": "Einladung erneut gesendet",
+      "invitationRevoked": "Einladung widerrufen",
+      "invitationAccepted": "Einladung angenommen"
+    },
+    "application": {
+      "created": "Erstellt",
+      "updated": "Aktualisiert",
+      "deleted": "Gelöscht",
+      "secretRotated": "Client-Secret rotiert",
+      "roleCreated": "Rolle erstellt",
+      "roleUpdated": "Rolle aktualisiert",
+      "roleDeleted": "Rolle gelöscht",
+      "rolesAssigned": "Rollen zugewiesen",
+      "roleMembersChanged": "Mitglieder einer Rolle geändert",
+      "roleGroupsChanged": "Gruppen einer Rolle geändert"
+    },
+    "group": {
+      "created": "Erstellt",
+      "updated": "Aktualisiert",
+      "deleted": "Gelöscht",
+      "membersChanged": "Mitglieder geändert",
+      "rolesChanged": "Rollen geändert"
+    },
+    "user": {
+      "created": "Erstellt",
+      "disabled": "Deaktiviert",
+      "enabled": "Aktiviert"
+    },
+    "account": {
+      "profileUpdated": "Profil aktualisiert",
+      "passwordChanged": "Passwort geändert",
+      "emailChangeRequested": "Änderung der E-Mail-Adresse angefordert",
+      "emailChanged": "E-Mail-Adresse geändert",
+      "sessionRevoked": "Sitzung abgemeldet",
+      "sessionsRevoked": "Sitzungen abgemeldet",
+      "twoFactorEnabled": "Zwei-Faktor aktiviert",
+      "twoFactorDisabled": "Zwei-Faktor deaktiviert",
+      "twoFactorReset": "Zwei-Faktor zurückgesetzt",
+      "backupCodesRegenerated": "Backup-Codes neu erstellt",
+      "passkeyAdded": "Passkey hinzugefügt",
+      "passkeyRenamed": "Passkey umbenannt",
+      "passkeyRemoved": "Passkey entfernt",
+      "deleted": "Gelöscht"
+    },
+    "authentication": {
+      "login": "Anmeldung",
+      "twoFactorChallenged": "Zweiter Faktor angefordert",
+      "logout": "Abmeldung",
+      "emailVerified": "E-Mail-Adresse bestätigt",
+      "passwordResetRequested": "Passwort-Zurücksetzung angefordert",
+      "passwordReset": "Passwort zurückgesetzt"
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "pages": {
+    "title": "Groups",
+    "metadataTitle": "Groups | {organization}"
+  },
+  "lists": {
+    "groups": {
+      "title": "Groups",
+      "singular": "group",
+      "plural": "groups"
+    },
+    "members": {
+      "title": "Members",
+      "count": "{count, plural, one {# member} other {# members}}"
+    },
+    "loadFailed": "{title} could not be loaded"
+  },
+  "table": {
+    "entity": "groups",
+    "singular": "group",
+    "plural": "groups",
+    "newGroup": "New group",
+    "roleFilter": "Role",
+    "empty": "No groups found.",
+    "ariaLabel": "Groups",
+    "columns": {
+      "group": "Group",
+      "key": "Key",
+      "members": "Members",
+      "roles": "Roles",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "actions": {
+      "menu": "Actions for {name}",
+      "edit": "Edit group",
+      "manageMembers": "Manage members",
+      "manageRoles": "Manage roles",
+      "delete": "Delete group"
+    },
+    "deleted": "{name} was deleted",
+    "deleteDialog": {
+      "title": "Delete group?",
+      "description": "Everyone in {name} loses the roles it grants, and applications stop receiving {key}.",
+      "confirm": "Delete group"
+    }
+  },
+  "dialog": {
+    "createTitle": "New group",
+    "editTitle": "Edit group",
+    "description": "Everyone in a group holds the roles it grants, and applications that ask for groups are told which ones they are in.",
+    "name": "Name",
+    "namePlaceholder": "Engineering",
+    "key": "Key",
+    "keyPlaceholder": "engineering",
+    "keyLocked": "The key cannot change once applications rely on it.",
+    "keyHint": "What appears in the token. It cannot be changed later.",
+    "descriptionLabel": "Description (optional)",
+    "roles": "Roles (optional)",
+    "members": "Members (optional)",
+    "save": "Save group",
+    "saved": "{name} was saved"
+  },
+  "rolePicker": {
+    "placeholder": "Search roles...",
+    "none": "Define a role on the Roles page first.",
+    "allTaken": "Every role is already granted.",
+    "noMatch": "No role matches that."
+  },
+  "groupMembers": {
+    "title": "Members of {name}",
+    "description": "Applications that ask for groups receive <code>{key}</code> for these people, along with every role the group grants.",
+    "label": "Members",
+    "showing": "Showing {shown, number} of {total, number}. The others stay in the group.",
+    "loadFailed": "Members could not be loaded",
+    "save": "Save members",
+    "saved": "Members of {name} were saved"
+  },
+  "groupRoles": {
+    "title": "Roles of {name}",
+    "description": "Everyone in {name} holds these roles, in addition to any they were given directly.",
+    "label": "Roles",
+    "noRoles": "This organization has no roles yet. Define one on the Roles page.",
+    "save": "Save roles",
+    "saved": "Roles of {name} were saved"
+  },
+  "memberGroups": {
+    "title": "Groups",
+    "description": "Choose the groups {name} is in. {name} holds every role a group grants, in addition to any given directly.",
+    "label": "Groups",
+    "grants": "Grants {roles}",
+    "grantsNone": "Grants no roles",
+    "noGroups": "This organization has no groups yet. Create one on the Groups page.",
+    "save": "Save groups",
+    "saved": "Groups for {name} were saved"
+  },
+  "validation": {
+    "tooLong": "Use at most {max, number} characters",
+    "keyRequired": "Give the group a key",
+    "keyFormat": "Use lowercase letters, numbers, and - _ separators",
+    "nameRequired": "Give the group a name",
+    "membersTooMany": "Choose at most {max, number} members",
+    "rolesTooMany": "Choose at most {max, number} roles"
+  },
+  "errors": {
+    "invalidGroup": "Invalid group details",
+    "invalid": "Invalid group",
+    "membersRolesSeparately": "Change a group's members and roles separately",
+    "manageDenied": "You cannot manage groups here",
+    "keyTaken": "A group with this key already exists",
+    "saveFailed": "Could not save the group",
+    "viewMembersDenied": "You cannot view these members",
+    "invalidMembers": "Invalid members",
+    "invalidRoles": "Invalid roles",
+    "invalidGroups": "Invalid groups",
+    "unknownGroup": "Unknown group",
+    "unknownRole": "Unknown role",
+    "notMember": "Not a member of this organization"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "language": {
+    "label": "Sprache",
+    "select": "Sprache auswählen",
+    "changeFailed": "Die Sprache konnte nicht geändert werden"
+  },
+  "actions": {
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "continue": "Weiter",
+    "copy": "Kopieren",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "goHome": "Zur Startseite",
+    "retry": "Erneut versuchen",
+    "save": "Speichern"
+  },
+  "states": {
+    "loading": "Wird geladen",
+    "saving": "Wird gespeichert...",
+    "none": "Keine",
+    "never": "Nie"
+  },
+  "errors": {
+    "notSignedIn": "Du bist nicht angemeldet",
+    "unexpected": "Etwas ist schiefgelaufen. Bitte versuch es erneut."
+  },
+  "values": {
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "clipboard": {
+    "copied": "{label} kopiert",
+    "failed": "{label} konnte nicht kopiert werden"
+  },
+  "dataTable": {
+    "search": "{entity} durchsuchen...",
+    "searchLabel": "{entity} durchsuchen",
+    "clearFilters": "Filter zurücksetzen",
+    "empty": "Keine Ergebnisse.",
+    "details": "Details",
+    "showDetails": "Details anzeigen",
+    "hideDetails": "Details ausblenden",
+    "sortedAscending": "aufsteigend sortiert",
+    "sortedDescending": "absteigend sortiert",
+    "filter": {
+      "search": "Optionen durchsuchen...",
+      "searchLabel": "Optionen für {title} filtern",
+      "legend": "Optionen für {title}",
+      "selected": "{count, number} ausgewählt",
+      "noResults": "Keine Ergebnisse.",
+      "clear": "Filter zurücksetzen"
+    },
+    "pagination": {
+      "rows": "{count, number} {label}",
+      "page": "Seite {page, number} von {pages, number}",
+      "first": "Zur ersten Seite",
+      "previous": "Zur vorherigen Seite",
+      "next": "Zur nächsten Seite",
+      "last": "Zur letzten Seite"
+    }
+  },
+  "media": {
+    "choose": "Bild auswählen",
+    "replace": "Bild ersetzen",
+    "keep": "Aktuelles Bild behalten",
+    "remove": "Bild entfernen",
+    "removeFile": "{name} entfernen",
+    "removedOnSave": "Wird beim Speichern entfernt"
+  },
+  "password": {
+    "show": "Passwort anzeigen",
+    "hide": "Passwort verbergen",
+    "requirement": "Mindestens {minimum, number} Zeichen. Ein paar zusammenhanglose Wörter funktionieren gut.",
+    "strength": {
+      "veryWeak": "Sehr schwach",
+      "weak": "Schwach",
+      "fair": "Mittel",
+      "good": "Gut",
+      "strong": "Stark"
+    },
+    "hints": {
+      "tooShort": "Verwende mindestens {minimum, number} Zeichen.",
+      "moreWords": "Ein paar weitere Wörter würden es stärker machen.",
+      "harderToGuess": "Wähle ein Passwort, das schwerer zu erraten ist",
+      "warnings": {
+        "straightRow": "Gerade Tastenreihen auf der Tastatur sind leicht zu erraten.",
+        "keyPattern": "Kurze Tastaturmuster sind leicht zu erraten.",
+        "simpleRepeat": "Wiederholte Zeichen wie „aaa“ sind leicht zu erraten.",
+        "extendedRepeat": "Wiederholte Zeichenmuster wie „abcabcabc“ sind leicht zu erraten.",
+        "sequences": "Gängige Zeichenfolgen wie „abc“ sind leicht zu erraten.",
+        "recentYears": "Jahreszahlen der letzten Zeit sind leicht zu erraten.",
+        "dates": "Datumsangaben sind leicht zu erraten.",
+        "topTen": "Dieses Passwort wird sehr häufig verwendet.",
+        "topHundred": "Dieses Passwort wird häufig verwendet.",
+        "common": "Dieses Passwort ist weit verbreitet.",
+        "similarToCommon": "Dieses Passwort ähnelt einem weit verbreiteten Passwort.",
+        "wordByItself": "Einzelne Wörter sind leicht zu erraten.",
+        "namesByThemselves": "Einzelne Vor- oder Nachnamen sind leicht zu erraten.",
+        "commonNames": "Häufige Vor- und Nachnamen sind leicht zu erraten.",
+        "userInputs": "Es sollten keine persönlichen oder seitenbezogenen Daten enthalten sein.",
+        "pwned": "Dein Passwort wurde bei einem Datenleck im Internet offengelegt."
+      },
+      "suggestions": {
+        "l33t": "Vermeide vorhersehbare Ersetzungen wie ''@'' für ''a''.",
+        "reverseWords": "Vermeide rückwärts geschriebene gängige Wörter.",
+        "allUppercase": "Schreibe einige, aber nicht alle Buchstaben groß.",
+        "capitalization": "Schreibe mehr als nur den ersten Buchstaben groß.",
+        "dates": "Vermeide Daten und Jahreszahlen, die mit dir in Verbindung stehen.",
+        "recentYears": "Vermeide Jahreszahlen der letzten Zeit.",
+        "associatedYears": "Vermeide Jahreszahlen, die mit dir in Verbindung stehen.",
+        "sequences": "Vermeide gängige Zeichenfolgen.",
+        "repeated": "Vermeide wiederholte Wörter und Zeichen.",
+        "longerKeyboardPattern": "Verwende längere Tastaturmuster und wechsle mehrmals die Tipprichtung.",
+        "anotherWord": "Füge weitere, weniger gängige Wörter hinzu.",
+        "useWords": "Verwende mehrere Wörter, aber vermeide gängige Redewendungen.",
+        "noNeed": "Starke Passwörter gehen auch ohne Sonderzeichen, Ziffern oder Großbuchstaben.",
+        "pwned": "Wenn du dieses Passwort anderswo verwendest, solltest du es ändern."
+      }
+    }
+  },
+  "identity": {
+    "rootOrganization": "Root-Organisation",
+    "rootActor": "Mit der Befugnis der Root-Organisation gehandelt",
+    "deleted": "Gelöscht",
+    "renamed": "Inzwischen umbenannt",
+    "renamedTo": "Heißt jetzt {name}"
+  },
+  "keyed": {
+    "count": "{count, number} {label}",
+    "view": "{label} anzeigen",
+    "remove": "{name} entfernen"
+  },
+  "sidebar": {
+    "toggle": "Seitenleiste umschalten",
+    "title": "Seitenleiste",
+    "description": "Zeigt die mobile Seitenleiste an."
+  }
+}

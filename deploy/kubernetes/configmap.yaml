@@ -1,0 +1,43 @@
+# Non-sensitive configuration. Credentials belong in the Secret; see
+# secret.example.yaml. After changing either, restart the application with
+# `kubectl -n bedrock rollout restart deployment/bedrock`.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bedrock-config
+data:
+  # The public https URL, exactly as users reach it. It is the OIDC issuer and
+  # the passkey relying party: a contract that must never change.
+  BETTER_AUTH_URL: https://bedrock.example.com
+
+  SEED_ADMIN_EMAIL: admin@example.com
+  SEED_ADMIN_NAME: Admin
+
+  # Any S3-compatible storage: Cloudflare R2, MinIO, AWS S3. See "Object
+  # storage" in the README for CORS and the staging lifecycle rule.
+  S3_REGION: auto
+  S3_BUCKET: bedrock-media
+  S3_ENDPOINT: https://ACCOUNT_ID.r2.cloudflarestorage.com
+  S3_FORCE_PATH_STYLE: "true"
+  S3_PUBLIC_URL: https://media.example.com
+
+  EMAIL_SENDER_NAME: Bedrock
+  EMAIL_SENDER_ADDRESS: bedrock@example.com
+  # EMAIL_REPLY_TO_ADDRESS: support@example.com
+  SMTP_HOST: smtp.example.com
+  SMTP_PORT: "587"
+  # true for implicit TLS on 465; STARTTLS on 587 leaves it false.
+  SMTP_SECURE: "false"
+
+  PWNED_PASSWORD_CHECK: "true"
+  # Both default to true. Set false only if something else runs `bedrock
+  # migrate` before each rollout, or `bedrock housekeep` on a schedule.
+  # MIGRATE_ON_START: "true"
+  # HOUSEKEEPING_ENABLED: "true"
+  # Unset keeps the audit log forever. Minimum 30.
+  AUDIT_RETENTION_DAYS: "365"
+  ORGANIZATION_RETENTION_DAYS: "30"
+
+  # Optional. Unset leaves OpenTelemetry off.
+  # OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.observability:4318
+  OTEL_SERVICE_NAME: bedrock

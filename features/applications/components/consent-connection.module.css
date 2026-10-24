@@ -1,0 +1,276 @@
+/*
+ * The person and the application, joined by a hand-drawn arrow, which draws
+ * itself once when the page opens and then rests. Allowing plays one pass: the arrow redraws in the brand
+ * colour, the two tiles glide together and merge into one, and that tile
+ * fills with the brand colour and takes a check mark.
+ *
+ * Every state is a set of resting styles reached by transitions, so an error
+ * eases back to idle and reduced motion simply jumps to the final state.
+ */
+
+.root {
+  --line: var(--brand, var(--primary));
+  --on-line: var(--brand-foreground, var(--primary-foreground));
+  --rest-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  /* A pen: it eases onto the page, travels at an even pace, and eases off. */
+  --draw-ease: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  --out-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* An underdamped spring, settling with a 4% overshoot. */
+  --spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+  position: relative;
+  width: 240px;
+  height: 64px;
+  flex-shrink: 0;
+  margin-inline: auto;
+}
+
+@supports (transition-timing-function: linear(0, 1)) {
+  .root {
+    --spring: linear(
+      0,
+      0.055,
+      0.183,
+      0.341,
+      0.502,
+      0.648,
+      0.77,
+      0.866,
+      0.936,
+      0.984,
+      1.015,
+      1.031,
+      1.038,
+      1.038,
+      1.034,
+      1.028,
+      1.022,
+      1.016,
+      1.011,
+      1.007,
+      1.004,
+      1.001,
+      1
+    );
+  }
+}
+
+:global(.dark) .root {
+  /* A dark brand colour would disappear against a dark background. */
+  --line: color-mix(in oklab, var(--brand, var(--primary)) 78%, white);
+  --rest-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+}
+
+/* The arrow */
+
+.arrow {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* A gap a unit longer than the path, hidden one unit past its start: with
+   round caps, a dash ending exactly at the start still leaves a dot. */
+.pencil path,
+.ink path {
+  stroke-dasharray: 100 101;
+}
+
+.pencil {
+  stroke: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+}
+
+/* Drawn once when the page opens: the shaft and its loop, the pen lifts, then
+   the head in one short stroke. */
+.pencil .shaft {
+  animation: draw 1100ms var(--draw-ease) 250ms both;
+}
+
+.pencil .head {
+  animation: draw 380ms var(--draw-ease) 1450ms both;
+}
+
+.ink {
+  stroke: var(--line);
+}
+
+.ink path {
+  stroke-dashoffset: 101;
+}
+
+/* The tiles */
+
+.tile {
+  position: absolute;
+  top: 4px;
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--rest-shadow);
+}
+
+/* The picture is the tile: it fills it edge to edge, inside the border. */
+.tile > [data-slot="avatar"] {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.person {
+  left: 0;
+}
+
+.application {
+  left: 184px;
+}
+
+/* One soft glow as the merged tile lights up, never repeated. */
+.application::after {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+.seal {
+  position: absolute;
+  inset: -1px;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  background: var(--line);
+  color: var(--on-line);
+  clip-path: circle(0% at 50% 50%);
+}
+
+.checkMark {
+  width: 28px;
+  height: 28px;
+  scale: 0.6;
+}
+
+.check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100 101;
+  stroke-dashoffset: 101;
+}
+
+/* Back to rest, quickly and all at once: an error, or a page restored from
+   the back/forward cache. */
+.root :where(.arrow, .ink path, .tile, .seal, .checkMark, .check) {
+  transition-property:
+    opacity, stroke-dashoffset, translate, scale, border-color, filter,
+    clip-path;
+  transition-duration: 220ms;
+  transition-timing-function: ease-out;
+}
+
+/* Allowed. a: the arrow redraws in ink, the shaft and then the head. */
+
+.root[data-phase="allowing"] .ink .shaft {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 560ms var(--draw-ease);
+}
+
+.root[data-phase="allowing"] .ink .head {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 240ms var(--draw-ease) 620ms;
+}
+
+/* b: the arrow steps aside and the tiles glide into one. */
+
+.root[data-phase="allowing"] .arrow {
+  opacity: 0;
+  transition: opacity 200ms ease 870ms;
+}
+
+.root[data-phase="allowing"] .person {
+  translate: 92px 0;
+  scale: 0.9;
+  opacity: 0;
+  transition:
+    translate 600ms var(--spring) 850ms,
+    scale 300ms ease-in 920ms,
+    opacity 160ms ease-in 1100ms;
+}
+
+.root[data-phase="allowing"] .application {
+  translate: -92px 0;
+  border-color: var(--line);
+  transition:
+    translate 600ms var(--spring) 850ms,
+    border-color 200ms ease-out 1260ms;
+}
+
+/* c: the merged tile fills, takes its check mark, and glows once. */
+
+.root[data-phase="allowing"] .seal {
+  clip-path: circle(75% at 50% 50%);
+  transition: clip-path 300ms var(--out-ease) 1260ms;
+}
+
+.root[data-phase="allowing"] .checkMark {
+  scale: 1;
+  transition: scale 500ms var(--spring) 1340ms;
+}
+
+.root[data-phase="allowing"] .check {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 260ms var(--out-ease) 1360ms;
+}
+
+.root[data-phase="allowing"] .application::after {
+  animation: glow 700ms ease-out 1300ms;
+}
+
+/* Cancelled: the arrow and the application quietly recede. */
+
+.root[data-phase="cancelled"] .arrow {
+  opacity: 0.35;
+}
+
+.root[data-phase="cancelled"] .application {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .root *,
+  .root *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 101;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--line) 35%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
