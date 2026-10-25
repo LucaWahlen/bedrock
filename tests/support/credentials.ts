@@ -8,7 +8,6 @@ export async function givePassword(userId: string, password: string) {
     userId,
     providerId: "credential",
     accountId: userId,
-    issuer: "local:credential",
     password: await context.password.hash(password),
   })
 }

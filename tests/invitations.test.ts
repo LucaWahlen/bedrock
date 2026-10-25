@@ -293,17 +293,17 @@ describe("finding an invitation without the token", () => {
 // strand people: the page offered "accept", the action wanted a session, and the
 // login page refused them for not being a member of the organization they were
 // being invited to. All three ways in now settle on the same claim.
+async function resolvedInvitation(email: string) {
+  const { token } = await insertInvitation(email)
+  const resolution = await resolveInvitationByToken(token)
+
+  if (!resolution.ok)
+    throw new Error(`unexpected refusal: ${resolution.refusal}`)
+
+  return resolution.invitation
+}
+
 describe("claiming an invitation", () => {
-  async function resolvedInvitation(email: string) {
-    const { token } = await insertInvitation(email)
-    const resolution = await resolveInvitationByToken(token)
-
-    if (!resolution.ok)
-      throw new Error(`unexpected refusal: ${resolution.refusal}`)
-
-    return resolution.invitation
-  }
-
   test("grants exactly the membership the invitation named", async () => {
     const claimant = await createClaimant("grant")
     const invited = await resolvedInvitation(claimant.email)

@@ -333,7 +333,7 @@ language with `LocaleLabel` from `features/shared/components/locale-flag.tsx`.
   passes its message; Zod's English defaults are never shown. Infer types with
   `z.infer<ReturnType<typeof createLoginSchema>>`.
 - Dates and numbers go through `format.dateTime(value, "date" | "dateTime" |
-"preciseDateTime")`, `format.number` and `format.relativeTime`; never
+  "preciseDateTime")`, `format.number` and `format.relativeTime`; never
   `Intl.*Format` or `toLocale*` directly.
 - Mail: pick the language with `emailLocale(recipient.locale, sender.locale)`
   from `features/shared/lib/email/locale.ts`, pass `locale` to the template,

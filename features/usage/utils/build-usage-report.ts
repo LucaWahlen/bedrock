@@ -165,29 +165,35 @@ export function usageIndex({
     }))
   }
 
-  // Successful sign-ins over all attempts, across the days recorded.
+  // Successful sign-ins over all attempts, across the days given.
+  function successRateOf(days: string[]) {
+    const succeeded = sum(days, base, "sign_ins").total
+    const attempts = succeeded + sum(days, base, "sign_in_failures").total
+    return attempts > 0 ? succeeded / attempts : null
+  }
+
   function successRate(): UsageRate {
-    const rate = (days: string[]) => {
-      const succeeded = sum(days, base, "sign_ins").total
-      const attempts = succeeded + sum(days, base, "sign_in_failures").total
-      return attempts > 0 ? succeeded / attempts : null
+    return {
+      current: successRateOf(current),
+      previous: successRateOf(previous),
     }
-    return { current: rate(current), previous: rate(previous) }
   }
 
   // How many of the month's people come on an average day.
+  function stickinessOf(days: string[]) {
+    const ratios = days
+      .filter((day) => detail(day) && get(day, "monthly_active_users") > 0)
+      .map((day) => get(day, "active_users") / get(day, "monthly_active_users"))
+    return ratios.length > 0
+      ? ratios.reduce((total, ratio) => total + ratio, 0) / ratios.length
+      : null
+  }
+
   function stickiness(): UsageRate {
-    const rate = (days: string[]) => {
-      const ratios = days
-        .filter((day) => detail(day) && get(day, "monthly_active_users") > 0)
-        .map(
-          (day) => get(day, "active_users") / get(day, "monthly_active_users")
-        )
-      return ratios.length > 0
-        ? ratios.reduce((total, ratio) => total + ratio, 0) / ratios.length
-        : null
+    return {
+      current: stickinessOf(current),
+      previous: stickinessOf(previous),
     }
-    return { current: rate(current), previous: rate(previous) }
   }
 
   function heatmap(): SignInHeatmap {
@@ -231,25 +237,22 @@ export function usageIndex({
         holders: get(today, snapshot.part),
         total: get(today, snapshot.whole),
       },
-      activity: current.map(
-        (day): ActivityPoint =>
-          base(day)
-            ? {
-                day,
-                signIns: get(day, "sign_ins"),
-                activeUsers: get(day, "active_users"),
-                failures: get(day, "sign_in_failures"),
-              }
-            : { day, signIns: null, activeUsers: null, failures: null }
+      activity: current.map((day): ActivityPoint =>
+        base(day)
+          ? {
+              day,
+              signIns: get(day, "sign_ins"),
+              activeUsers: get(day, "active_users"),
+              failures: get(day, "sign_in_failures"),
+            }
+          : { day, signIns: null, activeUsers: null, failures: null }
       ),
-      engagement: current.map(
-        (day): EngagementPoint => ({
-          day,
-          daily: base(day) ? get(day, "active_users") : null,
-          weekly: detail(day) ? get(day, "weekly_active_users") : null,
-          monthly: detail(day) ? get(day, "monthly_active_users") : null,
-        })
-      ),
+      engagement: current.map((day): EngagementPoint => ({
+        day,
+        daily: base(day) ? get(day, "active_users") : null,
+        weekly: detail(day) ? get(day, "weekly_active_users") : null,
+        monthly: detail(day) ? get(day, "monthly_active_users") : null,
+      })),
       authentication: {
         methods: breakdown("sign_in_methods", SIGN_IN_METHODS),
         failureReasons: breakdown(

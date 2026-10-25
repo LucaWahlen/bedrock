@@ -84,15 +84,15 @@ describe("health reads", () => {
   })
 })
 
-describe("housekeeping runs", () => {
-  async function row() {
-    const [found] = await db
-      .select()
-      .from(systemTaskRun)
-      .where(eq(systemTaskRun.task, task))
-    return found
-  }
+async function row() {
+  const [found] = await db
+    .select()
+    .from(systemTaskRun)
+    .where(eq(systemTaskRun.task, task))
+  return found
+}
 
+describe("housekeeping runs", () => {
   test("a success is upserted with what the task reported", async () => {
     const first = await recordTaskRun(task, async () => ({ deleted: 1 }))
     expect(first).toEqual({ ok: true, result: { deleted: 1 } })

@@ -46,7 +46,9 @@ export async function HealthSummary({
   const statuses = settled.map((result) => result.status)
   const failing = statuses.filter((status) => status === "error").length
   const attention = statuses.filter((status) => status !== "ok").length
-  // Rendered on the server, so the zone is said rather than assumed.
+  // Rendered on the server, once per request, so the zone is said rather than
+  // assumed and reading the clock here is the point.
+  // oxlint-disable-next-line react/purity
   const checkedAt = format.dateTime(new Date(), {
     timeStyle: "medium",
     timeZone: "UTC",

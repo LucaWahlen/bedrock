@@ -265,13 +265,13 @@ describe("deleting and restoring an organization", () => {
   })
 })
 
-describe("inviting someone", () => {
-  const invite = (organizationId: string, label: string) => ({
-    organizationId,
-    email: `authz-${label}-${fixture.suffix}@example.test`,
-    role: "member" as const,
-  })
+const invite = (organizationId: string, label: string) => ({
+  organizationId,
+  email: `authz-${label}-${fixture.suffix}@example.test`,
+  role: "member" as const,
+})
 
+describe("inviting someone", () => {
   // Root membership confers nothing inside a tenant.
   test.each([
     ["another tenant's owner", bob],
@@ -307,25 +307,25 @@ describe("inviting someone", () => {
   })
 })
 
+async function openInvitation(label: string) {
+  await actAs(alice)
+  const email = `authz-revoke-${label}-${fixture.suffix}@example.test`
+  const result = await inviteMember({
+    organizationId: orgA.id,
+    email,
+    role: "member",
+  })
+  if (!result.success) throw new Error(result.error)
+
+  const [row] = await db
+    .select({ id: invitation.id })
+    .from(invitation)
+    .where(eq(invitation.email, email))
+
+  return row.id
+}
+
 describe("withdrawing an invitation", () => {
-  async function openInvitation(label: string) {
-    await actAs(alice)
-    const email = `authz-revoke-${label}-${fixture.suffix}@example.test`
-    const result = await inviteMember({
-      organizationId: orgA.id,
-      email,
-      role: "member",
-    })
-    if (!result.success) throw new Error(result.error)
-
-    const [row] = await db
-      .select({ id: invitation.id })
-      .from(invitation)
-      .where(eq(invitation.email, email))
-
-    return row.id
-  }
-
   test.each([
     ["another tenant's owner", bob],
     ["a plain member", carol],

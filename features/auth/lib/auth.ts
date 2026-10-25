@@ -1,5 +1,6 @@
 import { oauthProvider } from "@better-auth/oauth-provider"
 import { passkey } from "@better-auth/passkey"
+import type { BetterAuthPlugin } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
 import { betterAuth } from "better-auth/minimal"
@@ -78,6 +79,16 @@ function applicationClientId(metadata?: Record<string, unknown>) {
 // credential to the relying party it was created for, so moving the instance to
 // another domain leaves every registered passkey unusable.
 const relyingParty = new URL(env.auth.url)
+
+// The `invitation` table is Bedrock's own: `inviteMember` keeps open invitations
+// only, as a token digest, and the organization plugin's invitation endpoints
+// are never called. Marking it unmigrated keeps Better Auth's startup schema
+// check, which otherwise blocks every auth request over the plugin's differing
+// shape, and `auth generate` away from it; every other table is still checked.
+const bedrockOwnedInvitations = {
+  id: "bedrock-owned-invitations",
+  schema: { invitation: { fields: {}, disableMigration: true } },
+} satisfies BetterAuthPlugin
 
 export const auth = betterAuth({
   secret: env.auth.secret,
@@ -163,6 +174,7 @@ export const auth = betterAuth({
         },
       },
     }),
+    bedrockOwnedInvitations,
     jwt({
       jwks: {
         keyPairConfig: { alg: OIDC_SIGNING_ALGORITHM, modulusLength: 2048 },

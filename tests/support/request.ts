@@ -51,13 +51,13 @@ type CookieOptions = { maxAge?: number; expires?: Date | number | string }
 const nameOf = (cookie: string | Cookie) =>
   typeof cookie === "string" ? cookie : cookie.name
 
+const entries = () =>
+  Array.from(cookieJar, ([name, value]): Cookie => ({ name, value }))
+
 // What Better Auth's `nextCookies` plugin writes to after a call that sets a
 // cookie. Read back only under `browse`; otherwise the session cookie from
 // `actAs` is what identifies a caller.
 function cookieStore() {
-  const entries = () =>
-    Array.from(cookieJar, ([name, value]): Cookie => ({ name, value }))
-
   const store = {
     get: (cookie: string | Cookie) =>
       entries().find((entry) => entry.name === nameOf(cookie)),

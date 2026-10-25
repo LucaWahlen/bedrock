@@ -420,14 +420,14 @@ describe("security notices", () => {
   })
 })
 
-describe("new sign-in notices", () => {
-  async function signIn(person: FixtureUser, slug = orgA.slug) {
-    return mailedBy(async () => {
-      browse()
-      return login({ email: person.email, password: PASSWORD }, slug)
-    })
-  }
+async function signIn(person: FixtureUser, slug = orgA.slug) {
+  return mailedBy(async () => {
+    browse()
+    return login({ email: person.email, password: PASSWORD }, slug)
+  })
+}
 
+describe("new sign-in notices", () => {
   test("a new account's first sign-in is not news", async () => {
     const person = await memberOf(orgA.id, "first-sign-in")
 

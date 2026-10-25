@@ -71,9 +71,10 @@ export function GroupMembersDialog({
           setError(result.error)
           return
         }
-        const people = result.data.map(
-          (person): PersonSelection => ({ kind: "user", ...person })
-        )
+        const people = result.data.map((person): PersonSelection => ({
+          kind: "user",
+          ...person,
+        }))
         setCurrent(people)
         setSelected(people)
       })

@@ -1,4 +1,10 @@
-import { metrics } from "@opentelemetry/api"
+import { context, metrics, propagation, trace } from "@opentelemetry/api"
+import { AsyncLocalStorageContextManager } from "@opentelemetry/context-async-hooks"
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from "@opentelemetry/core"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
 import {
@@ -10,10 +16,7 @@ import {
   MeterProvider,
   PeriodicExportingMetricReader,
 } from "@opentelemetry/sdk-metrics"
-import {
-  BatchSpanProcessor,
-  NodeTracerProvider,
-} from "@opentelemetry/sdk-trace-node"
+import { BatchSpanProcessor, TracerProvider } from "@opentelemetry/sdk-trace"
 
 /**
  * Registers OTLP/HTTP trace and metric exporters for the Node.js runtime.
@@ -32,11 +35,27 @@ export function startTelemetry(serviceName: string) {
     resourceFromAttributes({ "service.name": serviceName })
   )
 
-  const tracerProvider = new NodeTracerProvider({
-    resource,
-    spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter())],
-  })
-  tracerProvider.register()
+  // What the 2.x `NodeTracerProvider.register()` did: spans follow async work,
+  // and W3C trace context and baggage travel with requests.
+  const contextManager = new AsyncLocalStorageContextManager()
+  contextManager.enable()
+  context.setGlobalContextManager(contextManager)
+  propagation.setGlobalPropagator(
+    new CompositePropagator({
+      propagators: [
+        new W3CTraceContextPropagator(),
+        new W3CBaggagePropagator(),
+      ],
+    })
+  )
+  trace.setGlobalTracerProvider(
+    new TracerProvider({
+      resource,
+      spanProcessors: [
+        new BatchSpanProcessor({ exporter: new OTLPTraceExporter() }),
+      ],
+    })
+  )
 
   metrics.setGlobalMeterProvider(
     new MeterProvider({
