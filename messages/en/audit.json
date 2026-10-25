@@ -68,6 +68,7 @@
       "invitationId": "Invitation ID",
       "userAgent": "User agent",
       "redirectUris": "Redirect URIs",
+      "postLogoutRedirectUris": "Post-logout redirect URIs",
       "launchUrl": "Launch URL",
       "clientId": "Client ID",
       "organizationId": "Organization ID",

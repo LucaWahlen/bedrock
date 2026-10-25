@@ -35,6 +35,7 @@ export type Application = {
   clientId: string
   name: string
   redirectUris: string[]
+  postLogoutRedirectUris: string[]
   uri: string | null
   icon: string | null
   // A trusted first-party application is not asked for consent.
@@ -168,6 +169,7 @@ export type CreateApplicationInput = {
   organizationId: string
   name: string
   redirectUris: string[]
+  postLogoutRedirectUris?: string[]
   uri?: string | null
   // A client that cannot keep a secret, such as a browser or mobile app.
   isPublic?: boolean
@@ -181,6 +183,7 @@ export type UpdateApplicationInput = {
   clientId: string
   name: string
   redirectUris: string[]
+  postLogoutRedirectUris?: string[]
   uri?: string | null
   skipConsent?: boolean
   // Absent leaves the icon alone; null removes it; a key replaces it.

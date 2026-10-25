@@ -9,6 +9,7 @@ import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import { auth, getAccessContext } from "@/features/auth"
 import { db } from "@/features/shared/lib/db/client"
 import { session } from "@/features/shared/lib/db/schema"
+import { revokeSessionOAuthTokens } from "@/features/shared/lib/oauth-session-tokens"
 import type { ActionResult } from "@/features/shared/types"
 
 // The id is the browser's only handle on a session; the delete is matched on
@@ -37,9 +38,19 @@ export async function revokeSession(sessionId: string): Promise<ActionResult> {
     }
   }
 
+  const owned = and(eq(session.id, parsed.data), eq(session.userId, user.id))
+  const [ending] = await db
+    .select({ id: session.id })
+    .from(session)
+    .where(owned)
+  if (!ending) return { success: false, error: t("errors.sessionNotFound") }
+
+  // What applications were issued from that session ends with it.
+  await revokeSessionOAuthTokens([ending.id])
+
   const [revoked] = await db
     .delete(session)
-    .where(and(eq(session.id, parsed.data), eq(session.userId, user.id)))
+    .where(owned)
     .returning({ id: session.id, userAgent: session.userAgent })
 
   if (!revoked) return { success: false, error: t("errors.sessionNotFound") }

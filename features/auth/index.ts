@@ -31,6 +31,10 @@ export {
 } from "@/features/auth/lib/mutation-subject"
 export { oidcEndpoint } from "@/features/auth/lib/oidc-endpoint"
 export {
+  recordRefusedTokenRequest,
+  summarizeTokenRequest,
+} from "@/features/auth/lib/token-request-log"
+export {
   hasRole,
   memberAdministers,
   memberHasRole,

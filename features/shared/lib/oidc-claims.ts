@@ -111,6 +111,27 @@ const REFUSAL_ERRORS: Record<AuthorizationRefusal["reason"], string> = {
     "The organization owning this application requires a second factor",
 }
 
+const ACCESS_REFUSED = "ApplicationAccessRefused"
+
+// Told apart from a database fault by name rather than `instanceof`: the
+// provider configuration imports this module at call time, and a refusal is an
+// answer for the application while a fault is not.
+export class ApplicationAccessRefused extends Error {
+  readonly reason: AuthorizationRefusal["reason"]
+
+  constructor(reason: AuthorizationRefusal["reason"]) {
+    super(REFUSAL_ERRORS[reason])
+    this.name = ACCESS_REFUSED
+    this.reason = reason
+  }
+}
+
+export function isApplicationAccessRefused(
+  error: unknown
+): error is ApplicationAccessRefused {
+  return error instanceof Error && error.name === ACCESS_REFUSED
+}
+
 // Whether this person may receive a token for this application at all, and what
 // it says about them. A live session is not an answer: the token belongs to the
 // organization that owns the application, so the membership is rechecked here
@@ -121,12 +142,12 @@ export async function resolveApplicationAccess(
 ): Promise<ApplicationAccess> {
   const owner = await findApplicationOwner(userId, clientId)
 
-  if (!owner) throw new Error(REFUSAL_ERRORS.unknown_application)
+  if (!owner) throw new ApplicationAccessRefused("unknown_application")
 
   const refusal = refusalFor(owner)
-  if (refusal) throw new Error(REFUSAL_ERRORS[refusal.reason])
+  if (refusal) throw new ApplicationAccessRefused(refusal.reason)
   // Narrowed for the compiler; `refusalFor` has already refused without one.
-  if (!owner.memberId) throw new Error(REFUSAL_ERRORS.not_member)
+  if (!owner.memberId) throw new ApplicationAccessRefused("not_member")
 
   // A role reaches the token held directly or through one of the member's
   // groups, the same effective set the members table shows, and either way only

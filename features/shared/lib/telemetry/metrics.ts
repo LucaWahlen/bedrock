@@ -28,6 +28,9 @@ function createInstruments() {
     tokensIssued: meter.createCounter("bedrock.oidc.tokens_issued", {
       description: "Successful responses from the OpenID token endpoint",
     }),
+    tokensRefused: meter.createCounter("bedrock.oidc.tokens_refused", {
+      description: "Refused token requests, by OAuth error and grant type",
+    }),
     requestErrors: meter.createCounter("bedrock.request.errors", {
       description: "Errors captured by Next.js while serving a request",
     }),
@@ -53,6 +56,13 @@ export function recordEmailSent(outcome: EmailOutcome) {
 
 export function recordTokenIssued() {
   getInstruments().tokensIssued.add(1)
+}
+
+export function recordTokenRefused(error: string, grantType: string) {
+  getInstruments().tokensRefused.add(1, {
+    "oauth.error": error,
+    "oauth.grant_type": grantType,
+  })
 }
 
 /**

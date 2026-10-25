@@ -68,6 +68,7 @@
       "invitationId": "Einladungs-ID",
       "userAgent": "User-Agent",
       "redirectUris": "Weiterleitungs-URIs",
+      "postLogoutRedirectUris": "Weiterleitungs-URIs nach der Abmeldung",
       "launchUrl": "Start-URL",
       "clientId": "Client-ID",
       "organizationId": "Organisations-ID",

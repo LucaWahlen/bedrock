@@ -481,12 +481,36 @@ member or a role to members changes only direct assignments; a role held
 through a group goes away only when the member leaves the group or the group
 stops granting it.
 
-Only the authorization code flow is supported. There are no refresh tokens, no
+The authorization code flow is supported, with refresh tokens. There are no
 client credentials and no dynamic registration. Requests must include the
 `openid` scope. Only current members of the organization that owns the
 application can sign in to it. A signed-in non-member is sent to that
 organization's access page instead of getting a code. The same check runs again
 when the token is issued, so a membership removed in between is also refused.
+
+An application that asks for `offline_access` also gets a refresh token. Every
+refresh resolves the membership, roles and groups again, so a refresh is how an
+application learns that a role was taken away; once the person has left the
+organization, been disabled or the organization is suspended, the refresh is
+refused with `invalid_grant`. Access and ID tokens live for an hour and refresh
+tokens for seven days, rotating on every use, with a 30-second grace period for
+an application that refreshes the same token in parallel. A refresh token never
+outlives the Bedrock session it was issued from: signing out, resetting the
+password or revoking the session on the account page revokes it too.
+
+Applications that sign people in only once and keep their own session never
+hear about a revoked role until that session ends. Give them a refresh token
+and refresh often, for example oauth2-proxy with `offline_access` in its scope
+and `--cookie-refresh=5m`, or keep their sessions short.
+
+Every application may use the end-session endpoint to sign someone out of
+Bedrock with the ID token it was given. It is then sent to one of the
+application's registered post-logout redirect URIs, matched exactly like
+redirect URIs, or left on Bedrock's signed-out page when none is registered.
+
+A refused token request is logged as one `[oidc] token request refused` line
+with the client id, grant type and OAuth error, and counted in
+`bedrock.oidc.tokens_refused`. Codes, secrets and tokens are never logged.
 
 Redirect URIs must use https. The exception is development, which also accepts
 http on `localhost`, `127.0.0.1` and `[::1]` so you can test against a local
@@ -810,8 +834,8 @@ https. `next build` is exempt, so the image builds with the placeholder values
 the `Dockerfile` sets in its build stage only.
 
 OpenTelemetry is opt-in. Setting an OTLP/HTTP endpoint exports Next.js's own
-request spans and the application's metrics (sign-ins, sent email, issued
-tokens, request errors):
+request spans and the application's metrics (sign-ins, sent email, issued and
+refused tokens, request errors):
 
 ```env
 OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318

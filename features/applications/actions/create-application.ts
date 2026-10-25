@@ -11,6 +11,7 @@ import {
 } from "@/features/applications/lib/icon-storage"
 import {
   createApplicationSchema,
+  endSessionSettings,
   isLoopbackRedirectUri,
   oauthApplicationType,
 } from "@/features/applications/schemas/application"
@@ -39,7 +40,10 @@ export async function createApplication(
   }
   if (
     !env.security.allowLoopbackRedirectUris &&
-    parsed.data.redirectUris.some(isLoopbackRedirectUri)
+    [
+      ...parsed.data.redirectUris,
+      ...(parsed.data.postLogoutRedirectUris ?? []),
+    ].some(isLoopbackRedirectUri)
   ) {
     return { success: false, error: t("errors.httpsRedirectRequired") }
   }
@@ -100,6 +104,7 @@ export async function createApplication(
       .update(oauthClient)
       .set({
         ...(icon && { icon: icon.publicUrl }),
+        ...endSessionSettings(parsed.data.postLogoutRedirectUris),
         metadata: {
           clientId: client.client_id,
           organizationId: organization.id,
@@ -122,6 +127,7 @@ export async function createApplication(
       },
       metadata: {
         redirectUris: parsed.data.redirectUris,
+        postLogoutRedirectUris: parsed.data.postLogoutRedirectUris ?? [],
         launchUrl: parsed.data.uri ?? null,
         confidential: !parsed.data.isPublic,
       },

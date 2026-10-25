@@ -8,6 +8,7 @@
         "@aws-sdk/client-s3": "^3.1156.0",
         "@aws-sdk/s3-request-presigner": "^3.1156.0",
         "@base-ui/react": "^1.9.0",
+        "@better-auth/core": "1.7.12",
         "@better-auth/oauth-provider": "1.7.12",
         "@better-auth/passkey": "1.7.12",
         "@hookform/resolvers": "^6.0.0",

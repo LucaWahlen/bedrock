@@ -1,3 +1,4 @@
+import { getCurrentAdapter } from "@better-auth/core/context"
 import { oauthProvider } from "@better-auth/oauth-provider"
 import { passkey } from "@better-auth/passkey"
 import type { BetterAuthPlugin } from "better-auth"
@@ -26,7 +27,21 @@ export const OIDC_SCOPES = [
   "email",
   "roles",
   "groups",
+  "offline_access",
 ] as const
+
+// A refresh is where an application learns that a role was taken away, so the
+// tokens it renews are short-lived. The ID token matches the access token,
+// which bounds how long a relying party that ignores a refused refresh can go
+// on trusting the one it already holds.
+const ACCESS_TOKEN_LIFETIME = 60 * 60
+const ID_TOKEN_LIFETIME = 60 * 60
+// No longer than a Bedrock session lives, which is what it is bound to.
+const REFRESH_TOKEN_LIFETIME = 7 * 24 * 60 * 60
+// A relying party fanning out requests can refresh with the same token more
+// than once before it stores the rotated one. Within this window the replay
+// gets the same answer instead of revoking the whole family as stolen.
+const REFRESH_TOKEN_REUSE_INTERVAL = 30
 
 // RS256 is what every relying party accepts. EdDSA, the plugin default, is
 // refused by Cloudflare Access among others.
@@ -73,6 +88,32 @@ function applicationClientId(metadata?: Record<string, unknown>) {
   }
 
   return clientId
+}
+
+// What a token says, or an `invalid_grant` when the person may no longer have
+// one. On a refresh this is the only check there is, so it has to reach the
+// application as a refusal it understands rather than as a server fault.
+async function tokenClaims(
+  userId: string,
+  scopes: readonly string[],
+  metadata?: Record<string, unknown>
+) {
+  const { isApplicationAccessRefused } =
+    await import("@/features/shared/lib/oidc-claims")
+
+  try {
+    return applicationClaims(
+      await applicationAccess(userId, applicationClientId(metadata)),
+      scopes
+    )
+  } catch (error) {
+    if (!isApplicationAccessRefused(error)) throw error
+
+    throw new APIError("BAD_REQUEST", {
+      error: "invalid_grant",
+      error_description: error.message,
+    })
+  }
 }
 
 // Passkeys are bound to this host for good: an authenticator only offers a
@@ -152,6 +193,29 @@ export const auth = betterAuth({
           }
         },
       },
+      delete: {
+        // Signing out, a password reset and an expired session all come
+        // through here, and none of them should leave an application able to
+        // renew access the person no longer has a session for.
+        //
+        // Written through Better Auth's adapter so it joins any transaction
+        // the deletion runs in; a second connection could wait on locks that
+        // transaction holds while the transaction waits on this hook.
+        before: async (session, hookContext) => {
+          if (hookContext) {
+            const adapter = await getCurrentAdapter(hookContext.context.adapter)
+            await adapter.deleteMany({
+              model: "oauthRefreshToken",
+              where: [{ field: "sessionId", value: session.id }],
+            })
+            return
+          }
+
+          const { revokeSessionRefreshTokens } =
+            await import("@/features/shared/lib/oauth-session-tokens")
+          await revokeSessionRefreshTokens([session.id])
+        },
+      },
     },
   },
   plugins: [
@@ -184,10 +248,15 @@ export const auth = betterAuth({
       loginPage: "/oauth2/login",
       consentPage: "/oauth2/consent",
       scopes: [...OIDC_SCOPES],
-      // Sign-in only. `client_credentials` would make an application an actor
-      // in its own right, and `refresh_token` needs `offline_access`, which is
-      // not offered. Both are advertised in discovery unless narrowed here.
-      grantTypes: ["authorization_code"],
+      // `client_credentials` would make an application an actor in its own
+      // right. A refresh token is issued only for `offline_access`, and every
+      // refresh resolves the membership and roles again, so it is how an
+      // application keeps up with a role being taken away.
+      grantTypes: ["authorization_code", "refresh_token"],
+      accessTokenExpiresIn: ACCESS_TOKEN_LIFETIME,
+      idTokenExpiresIn: ID_TOKEN_LIFETIME,
+      refreshTokenExpiresIn: REFRESH_TOKEN_LIFETIME,
+      refreshTokenReuseInterval: REFRESH_TOKEN_REUSE_INTERVAL,
       // Registration is an authenticated, audited action in the applications
       // feature. An open endpoint would let anyone create a client.
       allowDynamicClientRegistration: false,
@@ -195,27 +264,16 @@ export const auth = betterAuth({
       advertisedMetadata: {
         claims_supported: [ORGANIZATION_CLAIM, ROLES_CLAIM, GROUPS_CLAIM],
       },
-      // Every claim callback throws for someone who is not a current member of
-      // the organization owning the application. A throw here refuses the
-      // token, which is the point: a live Bedrock session is not by itself
-      // permission to enter a tenant's application.
-      customIdTokenClaims: async ({ user, scopes, metadata }) => {
-        const access = await applicationAccess(
-          user.id,
-          applicationClientId(metadata)
-        )
-
-        return applicationClaims(access, scopes)
-      },
+      // Every claim callback refuses someone who is not a current member of the
+      // organization owning the application. A refusal here stops the token,
+      // which is the point: a live Bedrock session or an earlier refresh token
+      // is not by itself permission to enter a tenant's application.
+      customIdTokenClaims: async ({ user, scopes, metadata }) =>
+        tokenClaims(user.id, scopes, metadata),
       customAccessTokenClaims: async ({ user, scopes, metadata }) => {
         if (!user) return {}
 
-        const access = await applicationAccess(
-          user.id,
-          applicationClientId(metadata)
-        )
-
-        return applicationClaims(access, scopes)
+        return tokenClaims(user.id, scopes, metadata)
       },
       // The access token names its client, which is all userinfo has to go on.
       // The membership is resolved again here rather than read from the token,

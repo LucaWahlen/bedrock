@@ -4,7 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Plus, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form"
+import {
+  type Control,
+  Controller,
+  useFieldArray,
+  useForm,
+  useFormState,
+  useWatch,
+} from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -45,9 +52,40 @@ import { isMediaAllowed } from "@/features/shared/lib/storage/media"
 
 const MAX_REDIRECT_URIS = 20
 
-// One input per redirect URI, checked by the same schema the server applies.
-// They are matched exactly by the provider, so nothing here tidies a URI into a
+// One input per URI, checked by the same schema the server applies. They are
+// matched exactly by the provider, so nothing here tidies a URI into a
 // different one beyond trimming whitespace.
+function createUriRowsSchema(t: Translator<"applications">) {
+  return z
+    .array(
+      z.object({
+        value: z
+          .string()
+          .trim()
+          .min(1, t("validation.redirectUriRequired"))
+          .pipe(createRedirectUriSchema(t)),
+      })
+    )
+    .max(
+      MAX_REDIRECT_URIS,
+      t("validation.redirectUrisTooMany", { max: MAX_REDIRECT_URIS })
+    )
+    .superRefine((rows, context) => {
+      const seen = new Set<string>()
+      rows.forEach((row, index) => {
+        const value = row.value.trim()
+        if (value && seen.has(value)) {
+          context.addIssue({
+            code: "custom",
+            path: [index, "value"],
+            message: t("validation.redirectUriDuplicate"),
+          })
+        }
+        seen.add(value)
+      })
+    })
+}
+
 function createFormSchema(t: Translator<"applications">) {
   return z.object({
     name: z
@@ -55,35 +93,10 @@ function createFormSchema(t: Translator<"applications">) {
       .trim()
       .min(1, t("validation.nameRequired"))
       .max(100, t("validation.tooLong", { max: 100 })),
-    redirectUris: z
-      .array(
-        z.object({
-          value: z
-            .string()
-            .trim()
-            .min(1, t("validation.redirectUriRequired"))
-            .pipe(createRedirectUriSchema(t)),
-        })
-      )
-      .min(1, t("validation.redirectUrisRequired"))
-      .max(
-        MAX_REDIRECT_URIS,
-        t("validation.redirectUrisTooMany", { max: MAX_REDIRECT_URIS })
-      )
-      .superRefine((rows, context) => {
-        const seen = new Set<string>()
-        rows.forEach((row, index) => {
-          const value = row.value.trim()
-          if (value && seen.has(value)) {
-            context.addIssue({
-              code: "custom",
-              path: [index, "value"],
-              message: t("validation.redirectUriDuplicate"),
-            })
-          }
-          seen.add(value)
-        })
-      }),
+    redirectUris: createUriRowsSchema(t).refine((rows) => rows.length > 0, {
+      message: t("validation.redirectUrisRequired"),
+    }),
+    postLogoutRedirectUris: createUriRowsSchema(t),
     uri: z
       .string()
       .trim()
@@ -128,16 +141,14 @@ export function ApplicationDialog({
       redirectUris: application?.redirectUris.map((value) => ({ value })) ?? [
         { value: "" },
       ],
+      postLogoutRedirectUris:
+        application?.postLogoutRedirectUris.map((value) => ({ value })) ?? [],
       uri: application?.uri ?? "",
       isPublic: application ? !application.isConfidential : false,
       skipConsent: application?.skipConsent ?? false,
       icon: undefined,
       iconCleared: false,
     },
-  })
-  const redirectUriRows = useFieldArray({
-    control: form.control,
-    name: "redirectUris",
   })
   const [iconCleared, name] = useWatch({
     control: form.control,
@@ -148,6 +159,9 @@ export function ApplicationDialog({
     setSubmitting(true)
 
     const redirectUris = values.redirectUris.map((row) => row.value)
+    const postLogoutRedirectUris = values.postLogoutRedirectUris.map(
+      (row) => row.value
+    )
 
     let uploaded: UploadedMedia | undefined
 
@@ -171,6 +185,7 @@ export function ApplicationDialog({
         organizationId,
         name: values.name,
         redirectUris,
+        postLogoutRedirectUris,
         uri: values.uri || null,
         skipConsent: values.skipConsent,
         icon,
@@ -269,119 +284,39 @@ export function ApplicationDialog({
                 )}
               />
 
-              <Field
-                data-invalid={Boolean(
-                  form.formState.errors.redirectUris?.root ??
-                  form.formState.errors.redirectUris?.message
-                )}
-              >
-                <FieldLabel htmlFor="application-redirect-uri-0">
-                  {t("applicationDialog.redirectUris")}
-                </FieldLabel>
-                <p className="-mt-1 text-xs text-muted-foreground">
-                  {t("applicationDialog.redirectUrisHint")}
-                </p>
-                <ul className="flex flex-col gap-2">
-                  {redirectUriRows.fields.map((row, index) => (
-                    <li key={row.id}>
-                      <Controller
-                        name={`redirectUris.${index}.value`}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <div className="flex flex-col gap-1">
-                            <div className="flex gap-2">
-                              <Input
-                                {...field}
-                                id={`application-redirect-uri-${index}`}
-                                type="url"
-                                inputMode="url"
-                                spellCheck={false}
-                                autoCapitalize="none"
-                                autoComplete="off"
-                                className="font-mono text-xs"
-                                placeholder="https://app.example.com/callback"
-                                aria-label={t("applicationDialog.redirectUri", {
-                                  index: index + 1,
-                                })}
-                                aria-invalid={fieldState.invalid}
-                                onKeyDown={(event) => {
-                                  if (event.key !== "Enter") return
-                                  event.preventDefault()
-                                  if (
-                                    redirectUriRows.fields.length <
-                                    MAX_REDIRECT_URIS
-                                  ) {
-                                    redirectUriRows.insert(index + 1, {
-                                      value: "",
-                                    })
-                                  }
-                                }}
-                                onPaste={(event) => {
-                                  // Several URIs pasted at once become rows.
-                                  const pasted = event.clipboardData
-                                    .getData("text")
-                                    .split(/[\s,]+/)
-                                    .filter(Boolean)
-                                  if (pasted.length < 2) return
-                                  event.preventDefault()
-                                  const room =
-                                    MAX_REDIRECT_URIS -
-                                    redirectUriRows.fields.length +
-                                    1
-                                  const [first, ...rest] = pasted.slice(0, room)
-                                  field.onChange(first)
-                                  redirectUriRows.insert(
-                                    index + 1,
-                                    rest.map((value) => ({ value }))
-                                  )
-                                }}
-                              />
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                aria-label={t(
-                                  "applicationDialog.removeRedirectUri",
-                                  { index: index + 1 }
-                                )}
-                                disabled={redirectUriRows.fields.length === 1}
-                                onClick={() => redirectUriRows.remove(index)}
-                              >
-                                <X />
-                              </Button>
-                            </div>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </div>
-                        )}
-                      />
-                    </li>
-                  ))}
-                </ul>
-                {redirectUriRows.fields.length < MAX_REDIRECT_URIS && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="self-start"
-                    onClick={() => redirectUriRows.append({ value: "" })}
-                  >
-                    <Plus />
-                    {t("applicationDialog.addRedirectUri")}
-                  </Button>
-                )}
-                <FieldError
-                  errors={[
-                    form.formState.errors.redirectUris?.root ??
-                      (form.formState.errors.redirectUris?.message
-                        ? {
-                            message: form.formState.errors.redirectUris.message,
-                          }
-                        : undefined),
-                  ]}
-                />
-              </Field>
+              <UriListField
+                control={form.control}
+                name="redirectUris"
+                idPrefix="application-redirect-uri"
+                label={t("applicationDialog.redirectUris")}
+                hint={t("applicationDialog.redirectUrisHint")}
+                placeholder="https://app.example.com/callback"
+                rowLabel={(index) =>
+                  t("applicationDialog.redirectUri", { index })
+                }
+                removeLabel={(index) =>
+                  t("applicationDialog.removeRedirectUri", { index })
+                }
+                addLabel={t("applicationDialog.addRedirectUri")}
+                minRows={1}
+              />
+
+              <UriListField
+                control={form.control}
+                name="postLogoutRedirectUris"
+                idPrefix="application-post-logout-redirect-uri"
+                label={t("applicationDialog.postLogoutRedirectUris")}
+                hint={t("applicationDialog.postLogoutRedirectUrisHint")}
+                placeholder="https://app.example.com/"
+                rowLabel={(index) =>
+                  t("applicationDialog.postLogoutRedirectUri", { index })
+                }
+                removeLabel={(index) =>
+                  t("applicationDialog.removePostLogoutRedirectUri", { index })
+                }
+                addLabel={t("applicationDialog.addPostLogoutRedirectUri")}
+                minRows={0}
+              />
 
               <Controller
                 name="icon"
@@ -501,5 +436,130 @@ export function ApplicationDialog({
         </form>
       </DialogContent>
     </Dialog>
+  )
+}
+
+type UriListFieldProps = {
+  control: Control<FormValues>
+  name: "redirectUris" | "postLogoutRedirectUris"
+  idPrefix: string
+  label: string
+  hint: string
+  placeholder: string
+  rowLabel: (index: number) => string
+  removeLabel: (index: number) => string
+  addLabel: string
+  // Below this the last row cannot be removed.
+  minRows: number
+}
+
+function UriListField({
+  control,
+  name,
+  idPrefix,
+  label,
+  hint,
+  placeholder,
+  rowLabel,
+  removeLabel,
+  addLabel,
+  minRows,
+}: UriListFieldProps) {
+  const rows = useFieldArray({ control, name })
+  const { errors } = useFormState({ control, name })
+  const listError = errors[name]?.root ?? errors[name]
+
+  return (
+    <Field data-invalid={Boolean(listError?.message)}>
+      <FieldLabel htmlFor={rows.fields.length ? `${idPrefix}-0` : undefined}>
+        {label}
+      </FieldLabel>
+      <p className="-mt-1 text-xs text-muted-foreground">{hint}</p>
+      {rows.fields.length > 0 && (
+        <ul className="flex flex-col gap-2">
+          {rows.fields.map((row, index) => (
+            <li key={row.id}>
+              <Controller
+                name={`${name}.${index}.value`}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex gap-2">
+                      <Input
+                        {...field}
+                        id={`${idPrefix}-${index}`}
+                        type="url"
+                        inputMode="url"
+                        spellCheck={false}
+                        autoCapitalize="none"
+                        autoComplete="off"
+                        className="font-mono text-xs"
+                        placeholder={placeholder}
+                        aria-label={rowLabel(index + 1)}
+                        aria-invalid={fieldState.invalid}
+                        onKeyDown={(event) => {
+                          if (event.key !== "Enter") return
+                          event.preventDefault()
+                          if (rows.fields.length < MAX_REDIRECT_URIS) {
+                            rows.insert(index + 1, { value: "" })
+                          }
+                        }}
+                        onPaste={(event) => {
+                          // Several URIs pasted at once become rows.
+                          const pasted = event.clipboardData
+                            .getData("text")
+                            .split(/[\s,]+/)
+                            .filter(Boolean)
+                          if (pasted.length < 2) return
+                          event.preventDefault()
+                          const room =
+                            MAX_REDIRECT_URIS - rows.fields.length + 1
+                          const [first, ...rest] = pasted.slice(0, room)
+                          field.onChange(first)
+                          rows.insert(
+                            index + 1,
+                            rest.map((value) => ({ value }))
+                          )
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label={removeLabel(index + 1)}
+                        disabled={rows.fields.length <= minRows}
+                        onClick={() => rows.remove(index)}
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </div>
+                )}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+      {rows.fields.length < MAX_REDIRECT_URIS && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="self-start"
+          onClick={() => rows.append({ value: "" })}
+        >
+          <Plus />
+          {addLabel}
+        </Button>
+      )}
+      <FieldError
+        errors={[
+          listError?.message ? { message: listError.message } : undefined,
+        ]}
+      />
+    </Field>
   )
 }

@@ -13,6 +13,7 @@ import {
 } from "@/features/applications/lib/icon-storage"
 import {
   createApplicationSchema,
+  endSessionSettings,
   isLoopbackRedirectUri,
   oauthApplicationType,
 } from "@/features/applications/schemas/application"
@@ -39,7 +40,10 @@ export async function updateApplication(
   }
   if (
     !env.security.allowLoopbackRedirectUris &&
-    parsed.data.redirectUris.some(isLoopbackRedirectUri)
+    [
+      ...parsed.data.redirectUris,
+      ...(parsed.data.postLogoutRedirectUris ?? []),
+    ].some(isLoopbackRedirectUri)
   ) {
     return { success: false, error: t("errors.httpsRedirectRequired") }
   }
@@ -110,6 +114,9 @@ export async function updateApplication(
         // The plugin reads an absent `client_uri` as "unchanged", so clearing
         // the launch URL has to be written here.
         uri: parsed.data.uri ?? null,
+        // Written here for the same reason: an empty list would otherwise
+        // leave the old one in place.
+        ...endSessionSettings(parsed.data.postLogoutRedirectUris),
         metadata: {
           clientId: input.clientId,
           organizationId: organization.id,
@@ -145,6 +152,7 @@ export async function updateApplication(
       },
       metadata: {
         redirectUris: parsed.data.redirectUris,
+        postLogoutRedirectUris: parsed.data.postLogoutRedirectUris ?? [],
         launchUrl: parsed.data.uri ?? null,
       },
     })

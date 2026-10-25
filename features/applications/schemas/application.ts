@@ -16,6 +16,18 @@ export function oauthApplicationType(redirectUris: string[]) {
   return redirectUris.some(isLoopbackRedirectUri) ? "native" : "web"
 }
 
+// Every application may end the Bedrock session it signed someone in with,
+// which is what makes signing out of it sign them out here too. Without a
+// registered post-logout URI they are left on Bedrock's own signed-out page.
+export function endSessionSettings(postLogoutRedirectUris?: string[]) {
+  return {
+    enableEndSession: true,
+    postLogoutRedirectUris: postLogoutRedirectUris?.length
+      ? postLogoutRedirectUris
+      : null,
+  }
+}
+
 // Exact allowlist, matched literally at authorize time. A wildcard or a prefix
 // match is what turns a redirect into an open redirect.
 export function createRedirectUriSchema(t: Translator<"applications">) {
@@ -67,6 +79,12 @@ export function createApplicationSchema(t: Translator<"applications">) {
       .array(createRedirectUriSchema(t))
       .min(1, t("validation.redirectUrisRequired"))
       .max(20, t("validation.redirectUrisTooMany", { max: 20 })),
+    // Where the end-session endpoint may send someone after signing them out,
+    // matched exactly like a redirect URI. None means it stays on Bedrock.
+    postLogoutRedirectUris: z
+      .array(createRedirectUriSchema(t))
+      .max(20, t("validation.redirectUrisTooMany", { max: 20 }))
+      .optional(),
     uri: createLaunchUrlSchema(t).nullish(),
     isPublic: z.boolean().optional(),
     skipConsent: z.boolean().optional(),
