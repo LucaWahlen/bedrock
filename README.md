@@ -548,10 +548,51 @@ development data. The reset is for someone who has lost both their authenticator
 and their backup codes: it turns two-factor authentication off, forgets their
 trusted devices, and records `account.two_factor_reset` in the audit log. They
 sign in with their password afterwards and can set it up again. Confirm who is
-asking before using it; it is exactly what an attacker would ask for. Because
-root membership grants no authority inside a tenant, this script is the only way to restore an
-organization that has lost its last owner. Seeding is refused when `NODE_ENV` is
-`production`.
+asking before using it; it is exactly what an attacker would ask for. Root
+administrators can make the same reset from the Directory (see
+[Supporting accounts](#supporting-accounts)); the script is for when nobody can
+sign in to do it. Seeding is refused when `NODE_ENV` is `production`.
+
+## Supporting accounts
+
+A root administrator supports accounts from the **Directory** row menu. Every
+act is recorded in the audit log:
+
+| Act                                               | Needs the administrator's second factor | Tells the person      |
+| ------------------------------------------------- | --------------------------------------- | --------------------- |
+| Send a password reset link                        | No                                      | The reset mail        |
+| Resend verification, or mark the address verified | No                                      | The verification mail |
+| Sign out everywhere                               | Yes                                     | No                    |
+| Reset the second factor                           | Yes                                     | Yes                   |
+| Delete the account                                | Yes                                     | Yes                   |
+
+Signing out ends every session and the OAuth tokens issued on them. Deleting is
+refused while the account is the last owner of an organization. Root can never
+change someone's name or email address, act on their own account here, or act on
+a root member's account unless they are a root owner: taking over an
+administrator's account would change who runs the instance.
+
+## Break-glass access
+
+A root administrator can enter an active organization as its owner from the
+**Organizations** row menu (**Enter as owner**) to repair what nobody inside
+can, such as a tenant that has lost every owner. It needs a second factor on
+their own account and a written reason, and lasts 60 minutes unless they end it
+from the banner shown on every page meanwhile. It also ends when they stop
+administering root or lose their second factor.
+
+It is never a membership: applications never see it in a token or userinfo
+response. Starting and ending it appear in the organization's audit log and the
+instance's, its owners are emailed with the reason, and everything done under
+it is recorded as root's, with the grant it happened under.
+
+## Deleting organizations
+
+Deleting an organization hides it at once and keeps it restorable for
+`ORGANIZATION_RETENTION_DAYS`, after which housekeeping purges it. A root
+administrator can purge a deleted organization straight away with **Delete
+permanently**, confirmed by typing its slug. Only an organization that is
+already deleted can be purged, and its audit history stays.
 
 ## Disabled accounts
 
@@ -578,9 +619,18 @@ bun run admin enable person@example.com
 
 Housekeeping purges organizations whose retention period has elapsed along
 with their stored media, removes invitations nobody took up, applies the audit
-retention period, removes stale rate limit counters, and rolls up usage (see
-[Usage](#usage)). Each task is independent, so one failure does not skip the
-others.
+retention period, removes stale rate limit counters, rolls up usage (see
+[Usage](#usage)), and removes expired sessions, OAuth access and refresh
+tokens, and verification values. Each task is independent, so one failure does
+not skip the others.
+
+Better Auth only deletes an expired session or token when someone presents it,
+and refresh tokens rotate on every use, so without the last task those tables
+grow for good. A refresh token never outlives the session it was issued from:
+an expired session is deleted together with every token issued from it, even
+one not yet past its own expiry. A rotated refresh token is kept until it
+expires, since presenting it again until then is what revokes its whole family
+as stolen.
 
 The server runs it in process: every task a minute or two after start-up, then
 hourly. Each run holds a Postgres advisory lock for its task, so replicas never

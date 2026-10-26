@@ -94,6 +94,16 @@ export type AccessMembership = {
   status: (typeof organizationStatus.enumValues)[number]
   role: string
   requireTwoFactor: boolean
+  // Set when this ownership comes from a root administrator's break-glass grant
+  // rather than a membership. It authorizes the management UI only: tokens and
+  // claims read memberships and never see it.
+  breakGlass?: BreakGlassAccess
+}
+
+export type BreakGlassAccess = {
+  grantId: string
+  expiresAt: string
+  reason: string
 }
 
 // The server's answer to "who is asking, and what do they belong to". Resolved

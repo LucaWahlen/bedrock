@@ -59,7 +59,7 @@ export function createDirectoryColumns(
         // One badge: being disabled outranks the state of the address.
         return disabled ? (
           <Badge
-            className="bg-red-500/15 text-red-700 dark:text-red-300"
+            variant="destructive"
             title={
               disabled.reason
                 ? t("directory.disabledSinceBecause", {

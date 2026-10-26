@@ -20,9 +20,7 @@ export function ApplicationNameCell({
         name={application.name}
         avatar={{ seed: application.clientId, logo: application.icon }}
       />
-      {application.disabled && (
-        <Badge variant="secondary">{t("disabled")}</Badge>
-      )}
+      {application.disabled && <Badge variant="muted">{t("disabled")}</Badge>}
       {application.skipConsent && <TrustedBadge />}
     </div>
   )

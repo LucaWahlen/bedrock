@@ -11,23 +11,22 @@ import type {
 } from "@/features/organizations/types"
 
 // Single source for how a status looks, so a badge and a filter option cannot
-// drift apart. Its label is `organizations.memberStatus.<status>`. None of these may be amber or violet, which the
-// role badges beside them already own.
+// drift apart. Its label is `organizations.memberStatus.<status>`.
 export const MEMBER_STATUS_DISPLAY: Record<
   MemberStatus,
   {
     icon: LucideIcon
-    variant?: "outline"
-    className: string
+    variant: "success" | "muted" | "outline"
+    className?: string
   }
 > = {
   confirmed: {
     icon: BadgeCheck,
-    className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+    variant: "success",
   },
   unconfirmed: {
     icon: CircleDashed,
-    className: "bg-muted text-muted-foreground",
+    variant: "muted",
   },
   // Outlined rather than filled: nobody is in the organization yet.
   invited: {

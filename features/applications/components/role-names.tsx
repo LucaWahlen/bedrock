@@ -24,7 +24,6 @@ export function RoleNames({ roles }: RoleNamesProps) {
       title={t("lists.roles.title")}
       singularLabel={t("lists.roles.singular")}
       pluralLabel={t("lists.roles.plural")}
-      variant="secondary"
       items={roles.map((role) => ({
         id: role.id,
         key: role.key,

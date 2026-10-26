@@ -19,7 +19,7 @@ export function RoleBadges({ roles }: RoleBadgesProps) {
   }
 
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-1">
+    <div className="flex shrink-0 items-center gap-1">
       {sortRoles(roles).map((role) => {
         if (!isOrganizationRole(role)) {
           return (
@@ -33,8 +33,12 @@ export function RoleBadges({ roles }: RoleBadgesProps) {
         const RoleIcon = display.icon
 
         return (
-          <Badge key={role} className={display.className}>
-            <RoleIcon data-icon="inline-start" aria-hidden="true" />
+          <Badge key={role} variant="outline">
+            <RoleIcon
+              data-icon="inline-start"
+              aria-hidden="true"
+              className={display.iconClassName}
+            />
             {t(`roles.${role}.label`)}
           </Badge>
         )

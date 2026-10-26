@@ -205,6 +205,47 @@
       "loadFailed": "Die Organisationen konnten nicht geladen werden"
     }
   },
+  "userAdmin": {
+    "sendReset": {
+      "menu": "Link zum Zurücksetzen des Passworts senden",
+      "sent": "Link zum Zurücksetzen an {email} gesendet"
+    },
+    "sendVerification": {
+      "menu": "Bestätigungs-E-Mail erneut senden",
+      "sent": "Bestätigungs-E-Mail an {email} gesendet"
+    },
+    "markVerified": {
+      "menu": "E-Mail als bestätigt markieren",
+      "done": "{email} als bestätigt markiert"
+    },
+    "signOut": {
+      "menu": "Überall abmelden",
+      "title": "{name} überall abmelden?",
+      "description": "Alle Sitzungen enden, und Anwendungen verlieren den Zugriff, den sie darüber erhalten haben. {name} kann sich wieder anmelden.",
+      "done": "{name} wurde überall abgemeldet"
+    },
+    "resetSecondFactor": {
+      "menu": "Zweiten Faktor zurücksetzen",
+      "title": "Zweiten Faktor von {name} zurücksetzen?",
+      "description": "Authenticator-App, Backup-Codes und vertrauenswürdige Geräte werden entfernt, sodass die Person sich nur mit ihrem Passwort anmeldet, bis sie ihn neu einrichtet. Sie wird per E-Mail informiert. Passkeys bleiben erhalten.",
+      "done": "Zweiter Faktor von {name} zurückgesetzt"
+    },
+    "delete": {
+      "menu": "Konto löschen",
+      "title": "Konto von {name} löschen?",
+      "description": "{email} verliert sofort den Zugriff auf alle Organisationen, samt aller Sitzungen und Tokens. Das kann nicht rückgängig gemacht werden; der Audit-Verlauf bleibt erhalten.",
+      "done": "Das Konto von {name} wurde gelöscht"
+    },
+    "errors": {
+      "denied": "Du kannst dieses Konto nicht verwalten",
+      "secondFactor": "Richte zuerst für dein eigenes Konto einen zweiten Faktor ein",
+      "rootMember": "Nur ein Root-Inhaber kann das Konto eines Root-Administrators verwalten",
+      "alreadyVerified": "Diese E-Mail-Adresse ist bereits bestätigt",
+      "tooOften": "Zu oft gesendet. Versuche es später erneut.",
+      "failed": "Das hat nicht geklappt. Versuche es erneut.",
+      "soleOwner": "{organizations} hätte dann keinen Inhaber mehr. Mache zuerst jemand anderen zum Inhaber."
+    }
+  },
   "organizationsTable": {
     "statusChangedBy": "Geändert von {name} am {date}",
     "statusChanged": "Von einem Administrator geändert am {date}",
@@ -273,10 +314,46 @@
       "description": "{name} ist wieder aktiv und die Mitglieder können sich anmelden.",
       "confirm": "Wiederherstellen",
       "succeeded": "{name} wurde wiederhergestellt"
+    },
+    "purge": {
+      "menu": "Endgültig löschen",
+      "title": "Organisation endgültig löschen?",
+      "description": "{name} und alles, was ihr gehört, wird jetzt statt am Ende der Aufbewahrungsfrist entfernt: Mitglieder, Anwendungen, Rollen, Gruppen und Branding. Das kann nicht rückgängig gemacht werden. Der Audit-Verlauf bleibt erhalten.",
+      "confirm": "Endgültig löschen",
+      "succeeded": "{name} wurde endgültig gelöscht"
+    }
+  },
+  "breakGlass": {
+    "menu": "Als Inhaber betreten",
+    "dialog": {
+      "title": "{organization} als Inhaber betreten?",
+      "description": "Der Notfallzugriff macht dich für {minutes, number} Minuten zum Inhaber von {organization}, ohne Mitgliedschaft.",
+      "disclosure": "Nutze ihn nur für das, was niemand von innen beheben kann. Die Inhaber der Organisation erhalten eine E-Mail, alles, was du tust, wird im Audit-Log der Organisation und der Instanz festgehalten, und er wirkt nie auf Anmeldungen bei Anwendungen.",
+      "reason": "Grund",
+      "reasonPlaceholder": "Warum musst du diese Organisation betreten?",
+      "reasonHint": "Wird an die Inhaber der Organisation gesendet und in beiden Audit-Logs gespeichert.",
+      "confirm": "Als Inhaber betreten",
+      "entering": "Wird betreten…"
+    },
+    "banner": {
+      "title": "Notfallzugriff.",
+      "description": "Du handelst bis {time} als Inhaber von {organization}. Alles, was du tust, wird protokolliert.",
+      "reason": "Grund: {reason}",
+      "end": "Jetzt beenden",
+      "ended": "Notfallzugriff beendet"
+    },
+    "errors": {
+      "denied": "Du kannst keinen Notfallzugriff verwenden",
+      "secondFactorRequired": "Richte Zwei-Faktor-Authentifizierung oder einen Passkey ein, bevor du den Notfallzugriff verwendest",
+      "inactive": "Nur aktive Organisationen können betreten werden",
+      "alreadyOwner": "Du bist bereits Inhaber dieser Organisation",
+      "notActive": "Hier ist kein Notfallzugriff geöffnet"
     }
   },
   "actionDialog": {
-    "typeToConfirm": "Gib zur Bestätigung <code>{slug}</code> ein"
+    "typeToConfirm": "Gib zur Bestätigung <code>{slug}</code> ein",
+    "copyConfirmation": "{value} kopieren",
+    "confirmationLabel": "Bestätigungstext"
   },
   "settings": {
     "discard": "Verwerfen",

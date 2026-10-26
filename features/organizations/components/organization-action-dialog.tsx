@@ -1,5 +1,6 @@
 "use client"
 
+import { Copy } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 
@@ -15,6 +16,7 @@ import {
 } from "@/features/shared/components/ui/dialog"
 import { Field, FieldLabel } from "@/features/shared/components/ui/field"
 import { Input } from "@/features/shared/components/ui/input"
+import { copyToClipboard } from "@/features/shared/lib/ui/clipboard"
 
 // A tag renderer for `t.rich`, built outside the component so it is not a new
 // component type on every render.
@@ -52,6 +54,7 @@ export function OrganizationActionDialog({
 }: OrganizationActionDialogProps) {
   const t = useTranslations("organizations.actionDialog")
   const tCommon = useTranslations("common")
+  const tClipboard = useTranslations("common.clipboard")
   const [confirmation, setConfirmation] = useState("")
   const confirmed = !confirmSlug || confirmation === confirmSlug
 
@@ -70,9 +73,28 @@ export function OrganizationActionDialog({
         </DialogHeader>
         {confirmSlug && (
           <Field>
-            <FieldLabel htmlFor="organization-action-confirmation">
-              {t.rich("typeToConfirm", { slug: confirmSlug, code })}
-            </FieldLabel>
+            <div className="flex items-center gap-1">
+              <FieldLabel htmlFor="organization-action-confirmation">
+                {t.rich("typeToConfirm", { slug: confirmSlug, code })}
+              </FieldLabel>
+              {/* Copied rather than filled in, so confirming still takes a
+                  deliberate paste into the field. */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                aria-label={t("copyConfirmation", { value: confirmSlug })}
+                onClick={() => {
+                  const label = t("confirmationLabel")
+                  void copyToClipboard(confirmSlug, {
+                    copied: tClipboard("copied", { label }),
+                    failed: tClipboard("failed", { label }),
+                  })
+                }}
+              >
+                <Copy />
+              </Button>
+            </div>
             <Input
               id="organization-action-confirmation"
               autoComplete="off"

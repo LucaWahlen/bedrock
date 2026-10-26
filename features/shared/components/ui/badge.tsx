@@ -16,6 +16,11 @@ const badgeVariants = cva(
           "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
         outline:
           "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+        // State tones. Colour in a table says how something stands; the values
+        // a row lists, such as roles and groups, stay outlined.
+        success: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+        warning: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+        muted: "bg-muted text-muted-foreground",
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",

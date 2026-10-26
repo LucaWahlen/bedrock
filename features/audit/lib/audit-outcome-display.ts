@@ -11,18 +11,9 @@ import type { AuditOutcome } from "@/features/audit/types"
 // filter options. It reads as `audit.outcomes.<outcome>`.
 export const AUDIT_OUTCOME_DISPLAY: Record<
   AuditOutcome,
-  { icon: LucideIcon; className: string }
+  { icon: LucideIcon; variant: "success" | "warning" | "destructive" }
 > = {
-  success: {
-    icon: CircleCheck,
-    className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-  },
-  failure: {
-    icon: TriangleAlert,
-    className: "bg-destructive/15 text-destructive",
-  },
-  denied: {
-    icon: CircleSlash,
-    className: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-  },
+  success: { icon: CircleCheck, variant: "success" },
+  failure: { icon: TriangleAlert, variant: "destructive" },
+  denied: { icon: CircleSlash, variant: "warning" },
 }

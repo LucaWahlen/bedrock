@@ -1,10 +1,11 @@
-import { and, asc, eq, like } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 
 import { recordAuditEvent } from "@/features/audit"
 import { auth } from "@/features/auth/lib/auth"
 import { changeAccountStanding } from "@/features/organizations/lib/account-standing"
+import { resetSecondFactor } from "@/features/organizations/lib/second-factor-reset"
 import { db } from "@/features/shared/lib/db/client"
-import { twoFactor, user, verification } from "@/features/shared/lib/db/schema"
+import { user } from "@/features/shared/lib/db/schema"
 
 const SYSTEM_ACTOR = { type: "system" } as const
 
@@ -42,42 +43,16 @@ export async function createUser(input: {
 
 export type TwoFactorReset = { ok: true } | { ok: false; error: string }
 
-// Recovery for someone who has lost both their authenticator and their backup
-// codes. Done from a shell, never the web application: whoever can run this
-// already controls the deployment, which no session in the product does. Every
-// device trusted to skip the second factor is forgotten with it, so the
-// account's next sign-in is a plain password sign-in, and they can enrol again.
+// The same reset a root administrator can make from the Directory, for when
+// nobody can sign in to do it: whoever can run this already controls the
+// deployment.
 export async function resetTwoFactor(target: {
   id: string
   name: string
   email: string
 }): Promise<TwoFactorReset> {
   const reset = await db.transaction(async (tx) => {
-    const [updated] = await tx
-      .update(user)
-      .set({ twoFactorEnabled: false })
-      .where(eq(user.id, target.id))
-      .returning({ id: user.id })
-    if (!updated) return false
-
-    await tx.delete(twoFactor).where(eq(twoFactor.userId, target.id))
-    // Trusted devices, and any sign-in halfway through its second step.
-    await tx
-      .delete(verification)
-      .where(
-        and(
-          eq(verification.value, target.id),
-          like(verification.identifier, "trust-device-%")
-        )
-      )
-    await tx
-      .delete(verification)
-      .where(
-        and(
-          eq(verification.value, target.id),
-          like(verification.identifier, "2fa-%")
-        )
-      )
+    if (!(await resetSecondFactor(tx, target.id))) return false
 
     await recordAuditEvent(
       {

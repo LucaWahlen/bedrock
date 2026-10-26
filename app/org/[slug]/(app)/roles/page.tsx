@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { AppHeader, requireOrganizationAdministration } from "@/features/app"
@@ -18,12 +19,15 @@ export async function generateMetadata({
   params,
 }: RolesPageProps): Promise<Metadata> {
   const { slug } = await params
-  const currentOrganization = await getOrganizationBySlug(slug)
+  const [currentOrganization, t] = await Promise.all([
+    getOrganizationBySlug(slug),
+    getTranslations("app.navigation.items"),
+  ])
 
   return {
     title: currentOrganization
-      ? `Roles | ${currentOrganization.name}`
-      : "Roles",
+      ? `${t("roles")} | ${currentOrganization.name}`
+      : t("roles"),
   }
 }
 
@@ -33,7 +37,10 @@ export default async function RolesPage({
 }: RolesPageProps) {
   const [{ slug }, { search, application, sort, direction, page }] =
     await Promise.all([params, loadApplicationRolesSearchParams(searchParams)])
-  const currentOrganization = await getOrganizationBySlug(slug)
+  const [currentOrganization, t] = await Promise.all([
+    getOrganizationBySlug(slug),
+    getTranslations("app.navigation.items"),
+  ])
   if (!currentOrganization) notFound()
 
   // Roles name people inside an application, and root registers none, so there
@@ -60,7 +67,7 @@ export default async function RolesPage({
 
   return (
     <>
-      <AppHeader title="Roles" organization={currentOrganization} />
+      <AppHeader title={t("roles")} organization={currentOrganization} />
       <RolesPanel
         organizationId={currentOrganization.id}
         organizationSlug={currentOrganization.slug}

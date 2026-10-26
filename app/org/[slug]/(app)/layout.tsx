@@ -9,8 +9,10 @@ import {
   getAccessContext,
   heldMembershipIn,
   isRootAdministrator,
+  rootAdministration,
 } from "@/features/auth"
 import {
+  BreakGlassBanner,
   getOrganizationBySlug,
   getRootOrganization,
   listOrganizations,
@@ -93,6 +95,15 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
         userPromise={userPromise}
       />
       <SidebarInset className="min-h-0 overflow-hidden">
+        {membership.breakGlass && (
+          <BreakGlassBanner
+            organizationId={currentOrganization.id}
+            organizationName={currentOrganization.name}
+            expiresAt={membership.breakGlass.expiresAt}
+            reason={membership.breakGlass.reason}
+            returnTo={`/org/${rootAdministration(access)?.slug ?? slug}/organizations`}
+          />
+        )}
         {children}
       </SidebarInset>
     </SidebarProvider>

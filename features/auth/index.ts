@@ -29,6 +29,11 @@ export {
   resolveMutationSubject,
   type MutationOrganization,
 } from "@/features/auth/lib/mutation-subject"
+export { organizationCallback } from "@/features/auth/lib/email-links"
+export {
+  authorizeUserAdministration,
+  type AdministeredUser,
+} from "@/features/auth/lib/user-administration"
 export { oidcEndpoint } from "@/features/auth/lib/oidc-endpoint"
 export {
   recordRefusedTokenRequest,

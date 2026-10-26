@@ -61,6 +61,8 @@ const actionIcons: Record<AuditAction, LucideIcon> = {
   "organization.deleted": Trash2,
   "organization.restored": RotateCcw,
   "organization.purged": Flame,
+  "organization.break_glass_started": ShieldAlert,
+  "organization.break_glass_ended": ShieldCheck,
   "organization.member_added": UserRoundPlus,
   "organization.member_removed": UserRoundMinus,
   "organization.member_role_changed": UserRoundCog,
@@ -86,6 +88,12 @@ const actionIcons: Record<AuditAction, LucideIcon> = {
   "user.created": UserPlus,
   "user.disabled": Ban,
   "user.enabled": UserRoundCheck,
+  "user.email_verified": MailCheck,
+  "user.verification_sent": Send,
+  "user.password_reset_sent": KeyRound,
+  "user.signed_out": LogOut,
+  "user.two_factor_reset": ShieldOff,
+  "user.deleted": UserRoundX,
   "account.profile_updated": UserRoundPen,
   "account.password_changed": KeyRound,
   "account.email_change_requested": AtSign,
@@ -165,7 +173,7 @@ function createOutcomeColumn({ t }: ColumnContext): AuditColumn {
       const OutcomeIcon = outcome.icon
 
       return (
-        <Badge className={outcome.className}>
+        <Badge variant={outcome.variant}>
           <OutcomeIcon data-icon="inline-start" aria-hidden="true" />
           {t(`outcomes.${row.original.outcome}`)}
         </Badge>

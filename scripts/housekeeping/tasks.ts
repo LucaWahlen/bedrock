@@ -4,6 +4,7 @@ import { housekeepInvitations } from "@/scripts/housekeeping/invitations"
 import { housekeepOrganizations } from "@/scripts/housekeeping/organizations"
 import { housekeepRateLimits } from "@/scripts/housekeeping/rate-limits"
 import type { HousekeepingTaskDefinition } from "@/scripts/housekeeping/run-task"
+import { housekeepSessionsAndTokens } from "@/scripts/housekeeping/sessions-and-tokens"
 import { housekeepUsage } from "@/scripts/housekeeping/usage"
 
 // Every task is hourly. `lockKey` names the task's advisory lock; keep each
@@ -19,4 +20,5 @@ export const TASKS: (HousekeepingTaskDefinition & {
   // and the sooner after midnight it runs the closer its snapshot is to the
   // end of the day.
   { name: "usage", lockKey: 5, run: () => housekeepUsage() },
+  { name: "sessionsAndTokens", lockKey: 6, run: housekeepSessionsAndTokens },
 ]

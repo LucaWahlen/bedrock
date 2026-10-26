@@ -68,6 +68,8 @@
       "invitationId": "Invitation ID",
       "userAgent": "User agent",
       "redirectUris": "Redirect URIs",
+      "breakGlassGrantId": "Break-glass session",
+      "expiresAt": "Expires",
       "postLogoutRedirectUris": "Post-logout redirect URIs",
       "launchUrl": "Launch URL",
       "clientId": "Client ID",
@@ -106,6 +108,8 @@
       "reactivated": "Organization reactivated",
       "deleted": "Organization deleted",
       "restored": "Organization restored",
+      "breakGlassStarted": "Break-glass access started",
+      "breakGlassEnded": "Break-glass access ended",
       "purged": "Organization purged",
       "memberAdded": "Member added",
       "memberRemoved": "Member removed",
@@ -137,7 +141,13 @@
     "user": {
       "created": "User created",
       "disabled": "User disabled",
-      "enabled": "User enabled"
+      "enabled": "User enabled",
+      "emailVerified": "Email marked as verified",
+      "verificationSent": "Verification email sent",
+      "passwordResetSent": "Password reset link sent",
+      "signedOut": "User signed out everywhere",
+      "twoFactorReset": "Second factor reset",
+      "deleted": "User deleted"
     },
     "account": {
       "profileUpdated": "Profile updated",
@@ -172,6 +182,8 @@
       "reactivated": "Reactivated",
       "deleted": "Deleted",
       "restored": "Restored",
+      "breakGlassStarted": "Break-glass started",
+      "breakGlassEnded": "Break-glass ended",
       "purged": "Purged",
       "memberAdded": "Member added",
       "memberRemoved": "Member removed",
@@ -203,7 +215,13 @@
     "user": {
       "created": "Created",
       "disabled": "Disabled",
-      "enabled": "Enabled"
+      "enabled": "Enabled",
+      "emailVerified": "Email verified",
+      "verificationSent": "Verification sent",
+      "passwordResetSent": "Reset link sent",
+      "signedOut": "Signed out",
+      "twoFactorReset": "Second factor reset",
+      "deleted": "Deleted"
     },
     "account": {
       "profileUpdated": "Profile updated",

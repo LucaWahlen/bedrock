@@ -54,7 +54,7 @@ export function createOrganizationColumns(
         const status = ORGANIZATION_STATUS_DISPLAY[organization.status]
         const StatusIcon = status.icon
         const statusBadge = (
-          <Badge className={status.className}>
+          <Badge variant={status.variant}>
             <StatusIcon data-icon="inline-start" aria-hidden="true" />
             {t(`organizationStatus.${organization.status}`)}
           </Badge>

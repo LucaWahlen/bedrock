@@ -1,6 +1,7 @@
 "use server"
 
 import { and, asc, eq, ilike, or } from "drizzle-orm"
+import { getTranslations } from "next-intl/server"
 
 import { requireGroupAdministration } from "@/features/groups/lib/group-read"
 import type { OrganizationPerson } from "@/features/organizations"
@@ -17,17 +18,15 @@ export async function findGroupCandidates(
   search: string,
   organizationId?: string
 ): Promise<QueryResult<OrganizationPerson[]>> {
+  const t = await getTranslations("groups")
   if (!organizationId) {
-    return { success: false, error: "You cannot manage groups here" }
+    return { success: false, error: t("errors.manageDenied") }
   }
 
   try {
-    await requireGroupAdministration(
-      organizationId,
-      "You cannot manage groups here"
-    )
+    await requireGroupAdministration(organizationId, t("errors.manageDenied"))
   } catch {
-    return { success: false, error: "You cannot manage groups here" }
+    return { success: false, error: t("errors.manageDenied") }
   }
 
   const term = normalizeSearch(search)

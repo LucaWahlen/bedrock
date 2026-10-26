@@ -1,6 +1,7 @@
 "use server"
 
 import { and, asc, eq } from "drizzle-orm"
+import { getTranslations } from "next-intl/server"
 
 import { requireGroupAdministration } from "@/features/groups/lib/group-read"
 import type { GroupMember } from "@/features/groups/types"
@@ -21,13 +22,14 @@ export async function getGroupMembers(
   organizationId: string,
   groupId: string
 ): Promise<QueryResult<GroupMember[]>> {
+  const t = await getTranslations("groups")
   try {
     await requireGroupAdministration(
       organizationId,
-      "You cannot view these members"
+      t("errors.viewMembersDenied")
     )
   } catch {
-    return { success: false, error: "You cannot view these members" }
+    return { success: false, error: t("errors.viewMembersDenied") }
   }
 
   const rows = await db

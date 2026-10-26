@@ -1,34 +1,41 @@
 "use server"
 
 import { and, eq } from "drizzle-orm"
+import { getTranslations } from "next-intl/server"
 
 import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import {
+  type AssignmentRefusal,
   changeGroupMembers,
   describeKeyed,
   describePeople,
   replaceGroupRoles,
 } from "@/features/groups/lib/group-assignment"
 import { authorizeGroupMutation } from "@/features/groups/lib/group-mutation"
-import { groupSchema } from "@/features/groups/schemas/group"
+import { createGroupSchema } from "@/features/groups/schemas/group"
 import type { GroupInput } from "@/features/groups/types"
 import { db } from "@/features/shared/lib/db/client"
 import { group } from "@/features/shared/lib/db/schema"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
 import type { ActionResult } from "@/features/shared/types"
 
-class AssignmentRefused extends Error {}
+class AssignmentRefused extends Error {
+  constructor(readonly reason: AssignmentRefusal) {
+    super(reason)
+  }
+}
 
 // Creates a group, or renames an existing one. The key is what applications
 // match on, so an update keeps the stored one whatever the input says.
 export async function saveGroup(
   input: GroupInput & { groupId?: string }
 ): Promise<ActionResult> {
-  const parsed = groupSchema.safeParse(input)
+  const t = await getTranslations("groups")
+  const parsed = createGroupSchema(t).safeParse(input)
   if (!parsed.success) {
     return {
       success: false,
-      error: parsed.error.issues[0]?.message ?? "Invalid group details",
+      error: parsed.error.issues[0]?.message ?? t("errors.invalidGroup"),
     }
   }
 
@@ -37,17 +44,14 @@ export async function saveGroup(
   const editing = typeof input.groupId === "string"
 
   if (editing && (memberUserIds.length > 0 || roleIds.length > 0)) {
-    return {
-      success: false,
-      error: "Change a group's members and roles separately",
-    }
+    return { success: false, error: t("errors.membersRolesSeparately") }
   }
 
   const action = editing ? "group.updated" : "group.created"
   const authorization = await authorizeGroupMutation({
     action,
     organizationId: parsed.data.organizationId,
-    deniedError: "You cannot manage groups here",
+    deniedError: t("errors.manageDenied"),
     target: () => ({
       type: "group",
       id: input.groupId ?? parsed.data.key,
@@ -80,7 +84,7 @@ export async function saveGroup(
           )
           .limit(1)
 
-        if (!existing) throw new AssignmentRefused("Unknown group")
+        if (!existing) throw new AssignmentRefused("unknownGroup")
 
         await tx
           .update(group)
@@ -147,7 +151,7 @@ export async function saveGroup(
     })
   } catch (error) {
     if (error instanceof AssignmentRefused) {
-      return { success: false, error: error.message }
+      return { success: false, error: t(`errors.${error.reason}`) }
     }
 
     const duplicate =
@@ -158,9 +162,7 @@ export async function saveGroup(
 
     return {
       success: false,
-      error: duplicate
-        ? "A group with this key already exists"
-        : "Could not save the group",
+      error: duplicate ? t("errors.keyTaken") : t("errors.saveFailed"),
     }
   }
 

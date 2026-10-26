@@ -68,6 +68,8 @@
       "invitationId": "Einladungs-ID",
       "userAgent": "User-Agent",
       "redirectUris": "Weiterleitungs-URIs",
+      "breakGlassGrantId": "Notfallzugriff",
+      "expiresAt": "Läuft ab",
       "postLogoutRedirectUris": "Weiterleitungs-URIs nach der Abmeldung",
       "launchUrl": "Start-URL",
       "clientId": "Client-ID",
@@ -106,6 +108,8 @@
       "reactivated": "Organisation reaktiviert",
       "deleted": "Organisation gelöscht",
       "restored": "Organisation wiederhergestellt",
+      "breakGlassStarted": "Notfallzugriff gestartet",
+      "breakGlassEnded": "Notfallzugriff beendet",
       "purged": "Organisation endgültig gelöscht",
       "memberAdded": "Mitglied hinzugefügt",
       "memberRemoved": "Mitglied entfernt",
@@ -137,7 +141,13 @@
     "user": {
       "created": "Benutzer erstellt",
       "disabled": "Benutzer deaktiviert",
-      "enabled": "Benutzer aktiviert"
+      "enabled": "Benutzer aktiviert",
+      "emailVerified": "E-Mail als bestätigt markiert",
+      "verificationSent": "Bestätigungs-E-Mail gesendet",
+      "passwordResetSent": "Link zum Zurücksetzen des Passworts gesendet",
+      "signedOut": "Benutzer überall abgemeldet",
+      "twoFactorReset": "Zweiter Faktor zurückgesetzt",
+      "deleted": "Benutzer gelöscht"
     },
     "account": {
       "profileUpdated": "Profil aktualisiert",
@@ -172,6 +182,8 @@
       "reactivated": "Reaktiviert",
       "deleted": "Gelöscht",
       "restored": "Wiederhergestellt",
+      "breakGlassStarted": "Notfallzugriff gestartet",
+      "breakGlassEnded": "Notfallzugriff beendet",
       "purged": "Endgültig gelöscht",
       "memberAdded": "Mitglied hinzugefügt",
       "memberRemoved": "Mitglied entfernt",
@@ -203,7 +215,13 @@
     "user": {
       "created": "Erstellt",
       "disabled": "Deaktiviert",
-      "enabled": "Aktiviert"
+      "enabled": "Aktiviert",
+      "emailVerified": "E-Mail bestätigt",
+      "verificationSent": "Bestätigung gesendet",
+      "passwordResetSent": "Reset-Link gesendet",
+      "signedOut": "Abgemeldet",
+      "twoFactorReset": "Zweiter Faktor zurückgesetzt",
+      "deleted": "Gelöscht"
     },
     "account": {
       "profileUpdated": "Profil aktualisiert",

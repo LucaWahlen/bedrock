@@ -1,14 +1,16 @@
 "use server"
 
-import { and, asc, eq, lt, or, isNull, sql } from "drizzle-orm"
+import { and, asc, eq, gt, lt, or, isNull, sql } from "drizzle-orm"
 import { headers } from "next/headers"
 import { after } from "next/server"
 import { cache } from "react"
 
 import { auth } from "@/features/auth/lib/auth"
 import type { AccessContext } from "@/features/auth/types"
+import { isRootAdministrator } from "@/features/auth/utils/access"
 import { db } from "@/features/shared/lib/db/client"
 import {
+  breakGlassGrant,
   member,
   organization,
   passkey,
@@ -76,7 +78,7 @@ const readAccessContext = cache(async (): Promise<AccessContext> => {
 
   recordActivity(session.user.id)
 
-  return {
+  return withBreakGlass({
     user: {
       id: session.user.id,
       name: session.user.name,
@@ -87,8 +89,61 @@ const readAccessContext = cache(async (): Promise<AccessContext> => {
       locale: isLocale(standing.locale) ? standing.locale : null,
     },
     memberships,
-  }
+  })
 })
+
+// A break-glass grant makes its holder an owner of the organization for as long
+// as it is open, and only while they still administer the instance with a
+// second factor: losing root, or the factor, ends it on the next request.
+// Suspended and deleted organizations stay closed to it.
+async function withBreakGlass(access: AccessContext): Promise<AccessContext> {
+  if (!access.user?.hasSecondFactor || !isRootAdministrator(access)) {
+    return access
+  }
+
+  const grants = await db
+    .select({
+      grantId: breakGlassGrant.id,
+      expiresAt: breakGlassGrant.expiresAt,
+      reason: breakGlassGrant.reason,
+      organizationId: organization.id,
+      slug: organization.slug,
+      status: organization.status,
+      requireTwoFactor: organization.requireTwoFactor,
+    })
+    .from(breakGlassGrant)
+    .innerJoin(
+      organization,
+      eq(organization.id, breakGlassGrant.organizationId)
+    )
+    .where(
+      and(
+        eq(breakGlassGrant.userId, access.user.id),
+        isNull(breakGlassGrant.endedAt),
+        gt(breakGlassGrant.expiresAt, sql`now()`),
+        eq(organization.status, "active"),
+        eq(organization.isRoot, false)
+      )
+    )
+  if (grants.length === 0) return access
+
+  const memberships = [...access.memberships]
+  for (const { grantId, expiresAt, reason, ...held } of grants) {
+    const elevated = {
+      ...held,
+      isRoot: false,
+      role: "owner",
+      breakGlass: { grantId, expiresAt: expiresAt.toISOString(), reason },
+    }
+    const index = memberships.findIndex(
+      (membership) => membership.organizationId === held.organizationId
+    )
+    if (index === -1) memberships.push(elevated)
+    else memberships[index] = elevated
+  }
+
+  return { ...access, memberships }
+}
 
 export async function getAccessContext() {
   return readAccessContext()

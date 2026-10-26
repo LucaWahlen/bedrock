@@ -1,8 +1,9 @@
 "use client"
 
+import { UsersRound } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { Badge, badgeVariants } from "@/features/shared/components/ui/badge"
+import { badgeVariants } from "@/features/shared/components/ui/badge"
 import {
   Popover,
   PopoverContent,
@@ -22,13 +23,21 @@ import { cn } from "@/features/shared/lib/ui/utils"
 
 const MAX_BADGES = 2
 
+// Every value a cell lists looks the same, whether it is a role, a group or
+// anything else, so colour is left to the state columns beside it.
+const VALUE_BADGE_CLASS = cn(badgeVariants({ variant: "outline" }), "max-w-32")
+const OVERFLOW_BADGE_CLASS = cn(
+  badgeVariants({ variant: "outline" }),
+  "text-muted-foreground tabular-nums"
+)
+
 // Anything an organization names with a stable key, as a table cell lists it.
 export type KeyedBadge = {
   id: string
   key: string
   name: string
   // Held through something else, such as a role granted by a group, rather
-  // than given outright. Drawn dashed so it reads as borrowed.
+  // than given outright. Marked with a group icon; the note says which.
   inherited?: boolean
   // Where it comes from, when that is worth saying.
   note?: string | null
@@ -39,34 +48,45 @@ type KeyedBadgesProps = {
   title: string
   singularLabel: string
   pluralLabel: string
-  // Roles are filled and groups outlined, so the two columns never blur.
-  variant: "secondary" | "outline"
 }
 
-function NameBadge({
-  item,
-  variant,
-}: {
-  item: KeyedBadge
-  variant: KeyedBadgesProps["variant"]
-}) {
-  const className = cn(
-    badgeVariants({ variant: item.inherited ? "outline" : variant }),
-    "max-w-32",
-    item.inherited && "border-dashed text-muted-foreground"
+function InheritedIcon({ className }: { className?: string }) {
+  return (
+    <UsersRound
+      data-icon="inline-start"
+      aria-hidden="true"
+      className={cn("shrink-0 text-muted-foreground", className)}
+    />
   )
-  const name = <span className="truncate">{item.name}</span>
+}
 
-  if (!item.note) return <span className={className}>{name}</span>
+function NameBadge({ item }: { item: KeyedBadge }) {
+  const content = (
+    <>
+      {item.inherited && <InheritedIcon />}
+      <span className="truncate">{item.name}</span>
+    </>
+  )
+
+  if (!item.note) {
+    return (
+      <span className={VALUE_BADGE_CLASS} title={item.name}>
+        {content}
+      </span>
+    )
+  }
 
   // A span rather than the tooltip's own button, since the badges already sit
   // inside the popover trigger and a button cannot hold another.
   return (
     <Tooltip>
-      <TooltipTrigger render={<span className={className} />}>
-        {name}
+      <TooltipTrigger render={<span className={VALUE_BADGE_CLASS} />}>
+        {content}
       </TooltipTrigger>
-      <TooltipContent>{item.note}</TooltipContent>
+      <TooltipContent className="flex-col items-start gap-0.5">
+        <span className="font-medium">{item.name}</span>
+        <span>{item.note}</span>
+      </TooltipContent>
     </Tooltip>
   )
 }
@@ -76,7 +96,6 @@ export function KeyedBadges({
   title,
   singularLabel,
   pluralLabel,
-  variant,
 }: KeyedBadgesProps) {
   const t = useTranslations("common")
 
@@ -96,13 +115,15 @@ export function KeyedBadges({
   return (
     <Popover>
       <PopoverTrigger
-        className="flex h-8 items-center gap-1 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="flex h-8 max-w-full items-center gap-1 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         aria-label={t("keyed.view", { label })}
       >
         {shown.map((item) => (
-          <NameBadge key={item.id} item={item} variant={variant} />
+          <NameBadge key={item.id} item={item} />
         ))}
-        {remaining > 0 && <Badge variant="outline">+{remaining}</Badge>}
+        {remaining > 0 && (
+          <span className={OVERFLOW_BADGE_CLASS}>+{remaining}</span>
+        )}
       </PopoverTrigger>
       <PopoverContent align="start" className="w-72 gap-0 p-0">
         <PopoverHeader className="p-2">
@@ -118,8 +139,9 @@ export function KeyedBadges({
                 className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm"
               >
                 <span className="min-w-0">
-                  <span className="block truncate font-medium">
-                    {item.name}
+                  <span className="flex items-center gap-1.5 font-medium">
+                    {item.inherited && <InheritedIcon className="size-3.5" />}
+                    <span className="truncate">{item.name}</span>
                   </span>
                   {item.note && (
                     <span className="block truncate text-xs text-muted-foreground">

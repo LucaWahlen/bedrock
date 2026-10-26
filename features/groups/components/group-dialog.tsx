@@ -1,7 +1,8 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -9,7 +10,7 @@ import { z } from "zod"
 import type { ApplicationRoleOption } from "@/features/applications"
 import { findGroupCandidates } from "@/features/groups/actions/find-group-candidates"
 import { saveGroup } from "@/features/groups/actions/save-group"
-import { groupKeySchema } from "@/features/groups/schemas/group"
+import { createGroupKeySchema } from "@/features/groups/schemas/group"
 import type { Group } from "@/features/groups/types"
 import { UserPicker, type PersonSelection } from "@/features/organizations"
 import { KeyedOptionPicker } from "@/features/shared/components/keyed-option-picker"
@@ -32,16 +33,19 @@ import {
 } from "@/features/shared/components/ui/field"
 import { Input } from "@/features/shared/components/ui/input"
 import { Textarea } from "@/features/shared/components/ui/textarea"
+import type { Translator } from "@/features/shared/lib/i18n/translator"
 
-const formSchema = z.object({
-  key: groupKeySchema,
-  name: z.string().trim().min(1, "Give the group a name"),
-  description: z.string().trim(),
-  roleIds: z.array(z.string()),
-  members: z.array(z.custom<PersonSelection>()),
-})
+function createFormSchema(t: Translator<"groups">) {
+  return z.object({
+    key: createGroupKeySchema(t),
+    name: z.string().trim().min(1, t("validation.nameRequired")),
+    description: z.string().trim(),
+    roleIds: z.array(z.string()),
+    members: z.array(z.custom<PersonSelection>()),
+  })
+}
 
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<ReturnType<typeof createFormSchema>>
 
 type GroupDialogProps = {
   organizationId: string
@@ -58,6 +62,9 @@ export function GroupDialog({
   open,
   onOpenChange,
 }: GroupDialogProps) {
+  const t = useTranslations("groups")
+  const tCommon = useTranslations("common")
+  const formSchema = useMemo(() => createFormSchema(t), [t])
   const editing = group !== undefined
   const [submitting, setSubmitting] = useState(false)
   const form = useForm<FormValues>({
@@ -97,7 +104,7 @@ export function GroupDialog({
 
     onOpenChange(false)
     form.reset()
-    toast.success(`${values.name} was saved`)
+    toast.success(t("dialog.saved", { name: values.name }))
   }
 
   return (
@@ -109,11 +116,10 @@ export function GroupDialog({
           className="flex min-h-0 flex-col gap-4"
         >
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit group" : "New group"}</DialogTitle>
-            <DialogDescription>
-              Everyone in a group holds the roles it grants, and applications
-              that ask for groups are told which ones they are in.
-            </DialogDescription>
+            <DialogTitle>
+              {editing ? t("dialog.editTitle") : t("dialog.createTitle")}
+            </DialogTitle>
+            <DialogDescription>{t("dialog.description")}</DialogDescription>
           </DialogHeader>
 
           <DialogBody>
@@ -123,11 +129,13 @@ export function GroupDialog({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="group-name">Name</FieldLabel>
+                    <FieldLabel htmlFor="group-name">
+                      {t("dialog.name")}
+                    </FieldLabel>
                     <Input
                       {...field}
                       id="group-name"
-                      placeholder="Engineering"
+                      placeholder={t("dialog.namePlaceholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -141,7 +149,9 @@ export function GroupDialog({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="group-key">Key</FieldLabel>
+                    <FieldLabel htmlFor="group-key">
+                      {t("dialog.key")}
+                    </FieldLabel>
                     <Input
                       {...field}
                       id="group-key"
@@ -149,12 +159,10 @@ export function GroupDialog({
                       spellCheck={false}
                       autoCapitalize="none"
                       className="font-mono text-xs"
-                      placeholder="engineering"
+                      placeholder={t("dialog.keyPlaceholder")}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {editing
-                        ? "The key cannot change once applications rely on it."
-                        : "What appears in the token. It cannot be changed later."}
+                      {editing ? t("dialog.keyLocked") : t("dialog.keyHint")}
                     </p>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -169,7 +177,7 @@ export function GroupDialog({
                 render={({ field }) => (
                   <Field>
                     <FieldLabel htmlFor="group-description">
-                      Description (optional)
+                      {t("dialog.descriptionLabel")}
                     </FieldLabel>
                     <Textarea {...field} id="group-description" rows={2} />
                   </Field>
@@ -184,7 +192,7 @@ export function GroupDialog({
                     render={({ field }) => (
                       <Field>
                         <FieldLabel htmlFor="group-roles">
-                          Roles (optional)
+                          {t("dialog.roles")}
                         </FieldLabel>
                         <KeyedOptionPicker
                           id="group-roles"
@@ -192,10 +200,10 @@ export function GroupDialog({
                           value={field.value}
                           onChange={field.onChange}
                           disabled={submitting || roles.length === 0}
-                          placeholder="Search roles..."
-                          noneMessage="Define a role on the Roles page first."
-                          allTakenMessage="Every role is already granted."
-                          noMatchMessage="No role matches that."
+                          placeholder={t("rolePicker.placeholder")}
+                          noneMessage={t("rolePicker.none")}
+                          allTakenMessage={t("rolePicker.allTaken")}
+                          noMatchMessage={t("rolePicker.noMatch")}
                         />
                       </Field>
                     )}
@@ -207,7 +215,7 @@ export function GroupDialog({
                     render={({ field }) => (
                       <Field>
                         <FieldLabel htmlFor="group-members">
-                          Members (optional)
+                          {t("dialog.members")}
                         </FieldLabel>
                         <UserPicker
                           id="group-members"
@@ -235,10 +243,10 @@ export function GroupDialog({
               render={<Button variant="outline" type="button" />}
               disabled={submitting}
             >
-              Cancel
+              {tCommon("actions.cancel")}
             </DialogClose>
             <Button type="submit" disabled={submitting}>
-              {submitting ? "Saving..." : "Save group"}
+              {submitting ? tCommon("states.saving") : t("dialog.save")}
             </Button>
           </DialogFooter>
         </form>

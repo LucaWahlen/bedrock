@@ -16,6 +16,7 @@ export { recipientLocale } from "@/features/notifications/actions/recipient-loca
 export { noticeAccountHolder } from "@/features/notifications/lib/account-holder-notice"
 export { deliverAfterResponse } from "@/features/notifications/lib/deliver"
 export {
+  sendBreakGlassStartedNotice,
   sendInvitationAcceptedNotice,
   sendMemberAddedNotice,
   sendMemberRemovedNotice,

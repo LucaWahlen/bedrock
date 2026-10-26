@@ -73,7 +73,7 @@ export function UsageOrganizationsTable({
                     {organization.name}
                   </Link>
                   {organization.status === "suspended" && (
-                    <Badge variant="outline">{t("suspended")}</Badge>
+                    <Badge variant="warning">{t("suspended")}</Badge>
                   )}
                 </div>
               </TableCell>

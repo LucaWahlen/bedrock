@@ -17,27 +17,20 @@ function useSecondFactorDescription({ totp, passkeys }: SecondFactorStatus) {
     : t("none")
 }
 
-// Whether a member holds a second factor at all. Sky rather than emerald, which
-// the address status beside it already uses.
+// Whether a member holds a second factor at all, in the same tones as the
+// address status beside it: green when it is in place, grey when it is not.
 export function SecondFactorBadge({ status }: { status: SecondFactorStatus }) {
   const t = useTranslations("organizations.secondFactor")
   const description = useSecondFactorDescription(status)
   const enabled = status.totp || status.passkeys > 0
 
   return enabled ? (
-    <Badge
-      className="bg-sky-500/15 text-sky-700 dark:text-sky-300"
-      title={description}
-    >
+    <Badge variant="success" title={description}>
       <ShieldCheck data-icon="inline-start" aria-hidden="true" />
       {t("on")}
     </Badge>
   ) : (
-    <Badge
-      variant="outline"
-      className="text-muted-foreground"
-      title={description}
-    >
+    <Badge variant="muted" title={description}>
       <ShieldOff data-icon="inline-start" aria-hidden="true" />
       {t("off")}
     </Badge>

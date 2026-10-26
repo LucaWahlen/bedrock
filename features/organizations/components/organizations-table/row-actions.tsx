@@ -4,7 +4,9 @@ import {
   CirclePause,
   CirclePlay,
   Ellipsis,
+  Flame,
   RotateCcw,
+  ShieldAlert,
   Trash2,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -12,9 +14,11 @@ import { useState, useTransition } from "react"
 import { toast } from "sonner"
 
 import { deleteOrganization } from "@/features/organizations/actions/delete-organization"
+import { purgeOrganization } from "@/features/organizations/actions/purge-organization"
 import { restoreOrganization } from "@/features/organizations/actions/restore-organization"
 import { setOrganizationSuspended } from "@/features/organizations/actions/set-organization-suspended"
 import { OrganizationActionDialog } from "@/features/organizations/components/organization-action-dialog"
+import { BreakGlassDialog } from "@/features/organizations/components/organizations-table/break-glass-dialog"
 import type { OrganizationDisplay } from "@/features/organizations/types"
 import { Button } from "@/features/shared/components/ui/button"
 import {
@@ -55,6 +59,11 @@ const ROW_ACTIONS = {
     confirmsBySlug: false,
     run: restoreOrganization,
   },
+  purge: {
+    variant: "destructive",
+    confirmsBySlug: true,
+    run: purgeOrganization,
+  },
 } satisfies Record<string, RowAction>
 
 type RowActionKey = keyof typeof ROW_ACTIONS
@@ -68,7 +77,9 @@ export function OrganizationRowActions({
 }: OrganizationRowActionsProps) {
   const t = useTranslations("organizations.rowActions")
   const tCommon = useTranslations("common")
+  const tBreakGlass = useTranslations("organizations.breakGlass")
   const [pendingKey, setPendingKey] = useState<RowActionKey | null>(null)
+  const [breakGlassOpen, setBreakGlassOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const isSuspended = organization.status === "suspended"
   const isDeleted = organization.status === "deleted"
@@ -119,11 +130,26 @@ export function OrganizationRowActions({
             {isSuspended ? <CirclePlay /> : <CirclePause />}
             {isSuspended ? t("reactivate.menu") : t("suspend.menu")}
           </DropdownMenuItem>
-          {isDeleted ? (
-            <DropdownMenuItem onClick={() => setPendingKey("restore")}>
-              <RotateCcw />
-              {t("restore.menu")}
+          {organization.status === "active" && !organization.isRoot && (
+            <DropdownMenuItem onClick={() => setBreakGlassOpen(true)}>
+              <ShieldAlert />
+              {tBreakGlass("menu")}
             </DropdownMenuItem>
+          )}
+          {isDeleted ? (
+            <>
+              <DropdownMenuItem onClick={() => setPendingKey("restore")}>
+                <RotateCcw />
+                {t("restore.menu")}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => setPendingKey("purge")}
+              >
+                <Flame />
+                {t("purge.menu")}
+              </DropdownMenuItem>
+            </>
           ) : (
             <DropdownMenuItem
               variant="destructive"
@@ -155,6 +181,12 @@ export function OrganizationRowActions({
         }
         pending={isPending}
         onConfirm={submitAction}
+      />
+
+      <BreakGlassDialog
+        organization={organization}
+        open={breakGlassOpen}
+        onOpenChange={setBreakGlassOpen}
       />
     </>
   )

@@ -77,7 +77,7 @@ export function GroupsPanel({
 
       const { name } = removal
       setRemoval(null)
-      toast.success(`${name} was deleted`)
+      toast.success(t("table.deleted", { name }))
     })
   }
 
@@ -118,7 +118,7 @@ export function GroupsPanel({
         pending={isNavigating}
         toolbar={
           <DataTableToolbar
-            entityLabel="groups"
+            entityLabel={t("table.entity")}
             search={search}
             onSearchChange={(nextSearch) =>
               setQuery(
@@ -134,13 +134,13 @@ export function GroupsPanel({
             action={
               <Button onClick={() => setDialog({ open: true })}>
                 <Plus />
-                New group
+                {t("table.newGroup")}
               </Button>
             }
           >
             {roles.length > 0 && (
               <DataTableFacetedFilter
-                title="Role"
+                title={t("table.roleFilter")}
                 options={roleOptions}
                 selected={role}
                 onChange={(values) => setQuery({ role: values, page: 0 })}
@@ -151,15 +151,15 @@ export function GroupsPanel({
         pagination={
           <DataTablePagination
             table={table}
-            singularLabel="group"
-            pluralLabel="groups"
+            singularLabel={t("table.singular")}
+            pluralLabel={t("table.plural")}
           />
         }
       >
         <DataTable
           table={table}
-          emptyMessage="No groups found."
-          ariaLabel="Groups"
+          emptyMessage={t("table.empty")}
+          ariaLabel={t("table.ariaLabel")}
           shrinkColumnIds={["actions"]}
         />
       </DataTableLayout>
@@ -199,13 +199,16 @@ export function GroupsPanel({
         onOpenChange={(open) => {
           if (!open) setRemoval(null)
         }}
-        title="Delete group?"
+        title={t("table.deleteDialog.title")}
         description={
           removal
-            ? `Everyone in ${removal.name} loses the roles it grants, and applications stop receiving ${removal.key}.`
+            ? t("table.deleteDialog.description", {
+                name: removal.name,
+                key: removal.key,
+              })
             : undefined
         }
-        confirmLabel="Delete group"
+        confirmLabel={t("table.deleteDialog.confirm")}
         variant="destructive"
         pending={isPending}
         onConfirm={confirmRemoval}

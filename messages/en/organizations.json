@@ -205,6 +205,47 @@
       "loadFailed": "Organizations could not be loaded"
     }
   },
+  "userAdmin": {
+    "sendReset": {
+      "menu": "Send password reset link",
+      "sent": "Password reset link sent to {email}"
+    },
+    "sendVerification": {
+      "menu": "Resend verification email",
+      "sent": "Verification email sent to {email}"
+    },
+    "markVerified": {
+      "menu": "Mark email as verified",
+      "done": "{email} marked as verified"
+    },
+    "signOut": {
+      "menu": "Sign out everywhere",
+      "title": "Sign {name} out everywhere?",
+      "description": "Every session ends, and applications lose the access they were given through them. {name} can sign in again.",
+      "done": "{name} was signed out everywhere"
+    },
+    "resetSecondFactor": {
+      "menu": "Reset second factor",
+      "title": "Reset {name}'s second factor?",
+      "description": "Their authenticator app, backup codes and trusted devices are removed, so they sign in with their password alone until they set it up again. They are told by email. Passkeys are kept.",
+      "done": "Second factor reset for {name}"
+    },
+    "delete": {
+      "menu": "Delete account",
+      "title": "Delete {name}'s account?",
+      "description": "{email} loses access to every organization at once, along with every session and token. This cannot be undone; the audit history stays.",
+      "done": "{name}'s account was deleted"
+    },
+    "errors": {
+      "denied": "You cannot manage this account",
+      "secondFactor": "Set up a second factor on your own account first",
+      "rootMember": "Only a root owner can manage the account of a root administrator",
+      "alreadyVerified": "This email address is already verified",
+      "tooOften": "Sent too often. Try again later.",
+      "failed": "That did not work. Try again.",
+      "soleOwner": "{organizations} would be left without an owner. Make someone else an owner first."
+    }
+  },
   "organizationsTable": {
     "statusChangedBy": "Changed by {name} on {date}",
     "statusChanged": "Changed by an administrator on {date}",
@@ -273,10 +314,46 @@
       "description": "{name} becomes active again and its members can sign in.",
       "confirm": "Restore",
       "succeeded": "{name} was restored"
+    },
+    "purge": {
+      "menu": "Delete permanently",
+      "title": "Delete organization permanently?",
+      "description": "{name} and everything it owns are removed now instead of at the end of the retention period: members, applications, roles, groups and branding. This cannot be undone. Its audit history stays.",
+      "confirm": "Delete permanently",
+      "succeeded": "{name} was deleted permanently"
+    }
+  },
+  "breakGlass": {
+    "menu": "Enter as owner",
+    "dialog": {
+      "title": "Enter {organization} as owner?",
+      "description": "Break-glass access makes you an owner of {organization} for {minutes, number} minutes, without a membership.",
+      "disclosure": "Use it only for what nobody inside can fix. The organization's owners are emailed, everything you do is recorded in its audit log and the instance log, and it never reaches application sign-ins.",
+      "reason": "Reason",
+      "reasonPlaceholder": "Why do you need to enter this organization?",
+      "reasonHint": "Sent to the organization's owners and kept in both audit logs.",
+      "confirm": "Enter as owner",
+      "entering": "Entering…"
+    },
+    "banner": {
+      "title": "Break-glass access.",
+      "description": "You are acting as an owner of {organization} until {time}. Everything you do is audited.",
+      "reason": "Reason: {reason}",
+      "end": "End now",
+      "ended": "Break-glass access ended"
+    },
+    "errors": {
+      "denied": "You cannot use break-glass access",
+      "secondFactorRequired": "Set up two-factor authentication or a passkey before using break-glass access",
+      "inactive": "Only active organizations can be entered",
+      "alreadyOwner": "You already own this organization",
+      "notActive": "No break-glass access is open here"
     }
   },
   "actionDialog": {
-    "typeToConfirm": "Type <code>{slug}</code> to confirm"
+    "typeToConfirm": "Type <code>{slug}</code> to confirm",
+    "copyConfirmation": "Copy {value}",
+    "confirmationLabel": "Confirmation text"
   },
   "settings": {
     "discard": "Discard",

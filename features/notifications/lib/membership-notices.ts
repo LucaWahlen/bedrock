@@ -35,6 +35,7 @@ type MembershipNotice = {
   paragraphs: string[]
   guidance: string
   action?: NoticeAction
+  details?: { label: string; value: string }[]
 }
 
 // A membership is the organization's business, so these carry its branding.
@@ -71,6 +72,7 @@ function sendMembershipNotice(
         details: [
           { label: t("details.organization"), value: organization.name },
           { label: t("details.when"), value: formatNoticeTime(at, locale) },
+          ...(notice.details ?? []),
         ],
         guidance: notice.guidance,
         action: notice.action,
@@ -145,6 +147,51 @@ export function sendMemberRoleChangedNotice({
           organization: organizationName,
         }),
         url: organizationUrl(organization.slug),
+      },
+    })
+  )
+}
+
+// Sent to every owner of the organization, whose own audit log shows the rest.
+export function sendBreakGlassStartedNotice({
+  recipient,
+  organization,
+  actorName,
+  reason,
+  expiresAt,
+  at = new Date(),
+}: MembershipNoticeInput & { reason: string; expiresAt: Date }) {
+  const minutes = Math.max(
+    1,
+    Math.round((expiresAt.getTime() - at.getTime()) / 60_000)
+  )
+
+  return sendMembershipNotice(
+    "break-glass-started",
+    { recipient, organization, at },
+    ({ t, locale, name, organization: organizationName }) => ({
+      subject: t("breakGlassStarted.subject", {
+        organization: organizationName,
+      }),
+      paragraphs: [
+        t("breakGlassStarted.body", {
+          name,
+          actor: actorName,
+          organization: organizationName,
+          minutes,
+        }),
+      ],
+      details: [
+        { label: t("details.reason"), value: reason },
+        {
+          label: t("details.expires"),
+          value: formatNoticeTime(expiresAt, locale),
+        },
+      ],
+      guidance: t("breakGlassStarted.guidance"),
+      action: {
+        label: t("actions.openAuditLog"),
+        url: organizationUrl(organization.slug, "/audit-log"),
       },
     })
   )

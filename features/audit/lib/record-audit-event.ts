@@ -1,3 +1,5 @@
+import { and, eq, gt, isNull, sql } from "drizzle-orm"
+
 import {
   ACCOUNT_AUDIT_ACTIONS,
   AUTHENTICATION_AUDIT_ACTIONS,
@@ -8,7 +10,11 @@ import {
 } from "@/features/audit/types"
 import { clientAddress } from "@/features/shared/lib/client-address"
 import { db } from "@/features/shared/lib/db/client"
-import { auditEvent } from "@/features/shared/lib/db/schema"
+import {
+  auditEvent,
+  breakGlassGrant,
+  organization,
+} from "@/features/shared/lib/db/schema"
 
 // Deliberately not a Server Action: exposing the audit sink as an endpoint
 // would let any client forge log entries. Callers authorize first, then write.
@@ -70,11 +76,60 @@ export function auditScopeOf(input: AuditEventInput): AuditScope {
     : "tenant"
 }
 
+// Inside an open break-glass grant an administrator acts with root's authority,
+// whatever membership the action believed it was using. Recording it as root's
+// makes the event platform-scoped, so it shows in the instance log as well as
+// the organization's own, and names the grant it happened under.
+async function underBreakGlass(input: AuditEventInput) {
+  const actor = input.actor
+  const organizationId = input.organization?.id
+  if (
+    actor.type !== "user" ||
+    !organizationId ||
+    actor.organizationId !== organizationId
+  ) {
+    return null
+  }
+
+  const [grant] = await db
+    .select({
+      grantId: breakGlassGrant.id,
+      rootOrganizationId: sql<string>`(select ${organization.id} from ${organization} where ${organization.isRoot} = true limit 1)`,
+    })
+    .from(breakGlassGrant)
+    .where(
+      and(
+        eq(breakGlassGrant.userId, actor.userId),
+        eq(breakGlassGrant.organizationId, organizationId),
+        isNull(breakGlassGrant.endedAt),
+        gt(breakGlassGrant.expiresAt, sql`now()`)
+      )
+    )
+    .limit(1)
+
+  return grant ?? null
+}
+
 export async function recordAuditEvent(
-  input: AuditEventInput,
+  event: AuditEventInput,
   writer: AuditWriter = db
 ) {
   const { ipAddress, userAgent } = await readRequestContext()
+  const breakGlass = await underBreakGlass(event)
+  const input: AuditEventInput =
+    breakGlass && event.actor.type === "user"
+      ? {
+          ...event,
+          actor: {
+            ...event.actor,
+            organizationId: breakGlass.rootOrganizationId,
+          },
+          metadata: {
+            ...event.metadata,
+            breakGlassGrantId: breakGlass.grantId,
+          },
+        }
+      : event
   const actor = input.actor
 
   await writer.insert(auditEvent).values({

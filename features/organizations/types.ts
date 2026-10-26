@@ -350,6 +350,8 @@ export type DirectoryPerson = {
   // Disabled accounts cannot sign in anywhere until a root administrator
   // enables them again.
   disabled: { at: string; reason: string | null } | null
+  // Whether there is an authenticator a root administrator could reset.
+  twoFactorEnabled: boolean
   isSelf: boolean
 }
 
@@ -500,4 +502,13 @@ export type AccountDisablePreview = {
 
 export type DisableAccountResult =
   | { success: true; soleOwnedOrganizations: OwnedOrganization[] }
+  | { success: false; error: string }
+
+export type StartBreakGlassInput = {
+  organizationId: string
+  reason: string
+}
+
+export type StartBreakGlassResult =
+  | { success: true; slug: string }
   | { success: false; error: string }

@@ -16,6 +16,7 @@
     "passkey": "Passkey",
     "signedInTo": "Angemeldet bei",
     "reason": "Grund",
+    "expires": "Endet",
     "organization": "Organisation"
   },
   "roles": {
@@ -28,7 +29,8 @@
     "reviewSessions": "Sitzungen überprüfen",
     "signIn": "Anmelden",
     "openOrganization": "{organization} öffnen",
-    "viewMembers": "Mitglieder ansehen"
+    "viewMembers": "Mitglieder ansehen",
+    "openAuditLog": "Audit-Log öffnen"
   },
   "notYouWithoutAccess": "Falls du das nicht warst, wende dich sofort an deine Administratoren.",
   "passwordChanged": {
@@ -101,6 +103,11 @@
     "subject": "Deine Rolle in {organization} wurde geändert",
     "body": "Hallo {name}, {actor} hat deine Rolle in {organization} von {from} auf {to} geändert.",
     "guidance": "Falls du das für einen Fehler hältst, wende dich an einen Administrator von {organization}."
+  },
+  "breakGlassStarted": {
+    "subject": "Ein Root-Administrator hat {organization} betreten",
+    "body": "Hallo {name}, {actor} administriert diese Bedrock-Instanz und hat einen Notfallzugriff auf {organization} geöffnet. In den nächsten {minutes, number} Minuten kann diese Person dort als Inhaber handeln, und alles, was sie tut, wird im Audit-Log festgehalten.",
+    "guidance": "Notfallzugriff dient dazu, eine Organisation zu reparieren, die niemand von innen mehr beheben kann. Falls du nicht damit gerechnet hast, wende dich an die Administratoren dieser Instanz."
   },
   "memberRemoved": {
     "subject": "Du wurdest aus {organization} entfernt",

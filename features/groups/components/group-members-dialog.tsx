@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 
@@ -33,6 +34,10 @@ type GroupMembersDialogProps = {
   onOpenChange: (open: boolean) => void
 }
 
+function code(chunks: React.ReactNode) {
+  return <span className="font-mono text-xs">{chunks}</span>
+}
+
 function userIdsOf(people: PersonSelection[]) {
   return people.flatMap((person) => (person.kind === "user" ? [person.id] : []))
 }
@@ -43,6 +48,8 @@ export function GroupMembersDialog({
   open,
   onOpenChange,
 }: GroupMembersDialogProps) {
+  const t = useTranslations("groups")
+  const tCommon = useTranslations("common")
   const [current, setCurrent] = useState<PersonSelection[] | null>(null)
   const [selected, setSelected] = useState<PersonSelection[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -79,13 +86,13 @@ export function GroupMembersDialog({
         setSelected(people)
       })
       .catch(() => {
-        if (active) setError("Members could not be loaded")
+        if (active) setError(t("groupMembers.loadFailed"))
       })
 
     return () => {
       active = false
     }
-  }, [open, organizationId, group.id])
+  }, [open, organizationId, group.id, t])
 
   function save() {
     if (!current) return
@@ -107,7 +114,7 @@ export function GroupMembersDialog({
       }
 
       onOpenChange(false)
-      toast.success(`Members of ${group.name} were saved`)
+      toast.success(t("groupMembers.saved", { name: group.name }))
     })
   }
 
@@ -117,17 +124,19 @@ export function GroupMembersDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Members of {group.name}</DialogTitle>
+          <DialogTitle>
+            {t("groupMembers.title", { name: group.name })}
+          </DialogTitle>
           <DialogDescription>
-            Applications that ask for groups receive{" "}
-            <span className="font-mono text-xs">{group.key}</span> for these
-            people, along with every role the group grants.
+            {t.rich("groupMembers.description", { key: group.key, code })}
           </DialogDescription>
         </DialogHeader>
 
         <DialogBody>
           <Field data-invalid={error !== null}>
-            <FieldLabel htmlFor="group-members-picker">Members</FieldLabel>
+            <FieldLabel htmlFor="group-members-picker">
+              {t("groupMembers.label")}
+            </FieldLabel>
             {/* Rendered at once and filled in when loaded, so nothing jumps. */}
             <UserPicker
               id="group-members-picker"
@@ -141,8 +150,10 @@ export function GroupMembersDialog({
             {error && <FieldError>{error}</FieldError>}
             {current && group.memberCount > current.length && (
               <FieldDescription>
-                Showing {current.length} of {group.memberCount}. The others stay
-                in the group.
+                {t("groupMembers.showing", {
+                  shown: current.length,
+                  total: group.memberCount,
+                })}
               </FieldDescription>
             )}
           </Field>
@@ -152,10 +163,10 @@ export function GroupMembersDialog({
           <DialogClose
             render={<Button variant="outline" disabled={isPending} />}
           >
-            Cancel
+            {tCommon("actions.cancel")}
           </DialogClose>
           <Button disabled={isPending || loading} onClick={save}>
-            {isPending ? "Saving..." : "Save members"}
+            {isPending ? tCommon("states.saving") : t("groupMembers.save")}
           </Button>
         </DialogFooter>
       </DialogContent>

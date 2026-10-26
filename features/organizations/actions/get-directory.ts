@@ -146,6 +146,7 @@ export async function getDirectory(
       lastActiveAt: user.lastActiveAt,
       disabledAt: user.disabledAt,
       disabledReason: user.disabledReason,
+      twoFactorEnabled: user.twoFactorEnabled,
       organizationCount: count(member.id),
     })
     .from(user)
@@ -221,16 +222,19 @@ export async function getDirectory(
   }
 
   return {
-    people: people.map(({ disabledAt, disabledReason, ...person }) => ({
-      ...person,
-      createdAt: person.createdAt.toISOString(),
-      lastActiveAt: person.lastActiveAt?.toISOString() ?? null,
-      organizationPreview: previewByUser.get(person.id) ?? [],
-      disabled: disabledAt
-        ? { at: disabledAt.toISOString(), reason: disabledReason }
-        : null,
-      isSelf: person.id === access.user?.id,
-    })),
+    people: people.map(
+      ({ disabledAt, disabledReason, twoFactorEnabled, ...person }) => ({
+        ...person,
+        twoFactorEnabled: twoFactorEnabled ?? false,
+        createdAt: person.createdAt.toISOString(),
+        lastActiveAt: person.lastActiveAt?.toISOString() ?? null,
+        organizationPreview: previewByUser.get(person.id) ?? [],
+        disabled: disabledAt
+          ? { at: disabledAt.toISOString(), reason: disabledReason }
+          : null,
+        isSelf: person.id === access.user?.id,
+      })
+    ),
     total,
     page,
     pageSize,

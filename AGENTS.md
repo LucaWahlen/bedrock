@@ -69,7 +69,9 @@ types. Do not rely on remembered APIs.
   to it at once, and every tenant-facing route answers 404 rather than
   explaining itself. Only a root administrator can still see it, in the
   organizations table, and only they can restore it; housekeeping purges it
-  once `ORGANIZATION_RETENTION_DAYS` have passed.
+  once `ORGANIZATION_RETENTION_DAYS` have passed. A root administrator may
+  also purge it at once, but only once it is already deleted, so purging is
+  always the second of two steps.
 - A disabled account (`user.disabledAt`) is nobody: `getAccessContext` returns
   no user, the session-create hook refuses every sign-in path, and OIDC claims
   refuse it. Only root administration disables or enables one, never oneself,
@@ -78,10 +80,22 @@ types. Do not rely on remembered APIs.
   passkey: `membershipIn` returns null for them, so every guard built on it
   refuses, while `heldMembershipIn` lets routing send them to
   `/org/[slug]/setup-security`.
-- Since root membership grants nothing inside a tenant, no one in the product
-  can restore a tenant that has lost every owner. `bun run admin` is the
-  recovery path, for that and for root itself, and it is deliberately outside
-  the web application.
+- Break-glass access is the one way root acts inside a tenant. A root
+  administrator with a second factor opens a `break_glass_grant` for one active
+  organization, with a written reason, for 60 minutes; `getAccessContext` then
+  adds a flagged owner membership (`membership.breakGlass`) for as long as the
+  grant is open and they still administer root with a second factor. It is never
+  a `member` row, so it never reaches OIDC claims. Starting and ending it are
+  audited where root and the organization both see them, its owners are mailed,
+  and every event recorded under it is attributed to root's authority with the
+  grant id. It is how a tenant that lost every owner is recovered from the web;
+  `bun run admin` remains the recovery path for root itself.
+- Root supports accounts from the Directory row menu: verification, password
+  reset links, signing out everywhere, resetting the second factor and deleting.
+  Never their own account, never a root member's unless the actor is a root
+  owner, and never the name or email address, which stay the person's own.
+  Signing out, resetting and deleting need the administrator's own second
+  factor.
 
 ## Audit log
 
@@ -204,12 +218,13 @@ features/<feature>/
   not spread string comparisons such as `role === "owner"` through the UI.
 - Treat root permissions and tenant permissions as separate scopes. A tenant
   owner is not automatically an instance administrator.
-- Root membership confers no authority inside a tenant. Someone who administers
-  the instance and also belongs to a tenant acts there with that tenant's role
-  and nothing more, so a root administrator who is a plain member elsewhere can
-  do only what any member can.
+- Root membership confers no authority inside a tenant outside an open
+  break-glass grant. Someone who administers the instance and also belongs to a
+  tenant acts there with that tenant's role and nothing more, so a root
+  administrator who is a plain member elsewhere can do only what any member
+  can.
 - OIDC sessions and token claims use actual tenant memberships and permissions;
-  they never inherit root administrative elevation.
+  they never inherit root administrative elevation, break-glass included.
 - Return `401` for no valid session, `403` for insufficient permission, and
   `404` when concealing a tenant resource is appropriate.
 

@@ -7,10 +7,7 @@ export function TrustedBadge() {
   const t = useTranslations("applications.badges")
 
   return (
-    <Badge
-      title={t("trustedTitle")}
-      className="bg-emerald-500/15 px-1 text-emerald-700 dark:text-emerald-300"
-    >
+    <Badge variant="success" title={t("trustedTitle")} className="px-1">
       <ShieldCheck aria-hidden="true" />
       <span className="sr-only">{t("trusted")}</span>
     </Badge>

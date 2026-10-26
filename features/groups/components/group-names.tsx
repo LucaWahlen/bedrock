@@ -13,7 +13,6 @@ export function GroupNames({ groups }: { groups: GroupSummary[] }) {
       title={t("title")}
       singularLabel={t("singular")}
       pluralLabel={t("plural")}
-      variant="outline"
       items={groups}
     />
   )

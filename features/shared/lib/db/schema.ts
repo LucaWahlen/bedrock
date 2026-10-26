@@ -290,6 +290,35 @@ export const invitation = pgTable(
   ]
 )
 
+// A root administrator acting as an organization's owner for a bounded time and
+// a stated reason. Never a membership: tokens and claims read `member` and so
+// never see it, and it grants nothing once it has ended or expired. Ended rows
+// are kept; what was done under them is in the audit log.
+export const breakGlassGrant = pgTable(
+  "break_glass_grant",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    reason: text("reason").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    endedAt: timestamp("ended_at"),
+  },
+  (table) => [
+    index("break_glass_grant_userId_idx").on(table.userId),
+    // One open grant per administrator and organization, so a double-submitted
+    // dialog cannot stack two windows.
+    uniqueIndex("break_glass_grant_open_uidx")
+      .on(table.userId, table.organizationId)
+      .where(sql`${table.endedAt} is null`),
+  ]
+)
+
 // Append-only. Rows are never updated or deleted, so references are recorded as
 // plain values rather than foreign keys: `on delete set null` would rewrite
 // history, and an event describes a subject as it was, not as it still is.

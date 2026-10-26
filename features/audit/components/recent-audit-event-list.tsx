@@ -6,7 +6,6 @@ import { describeAuditAction } from "@/features/audit/utils/describe-audit-actio
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import { badgeVariants } from "@/features/shared/components/ui/badge"
 import type { Translator } from "@/features/shared/lib/i18n/translator"
-import { cn } from "@/features/shared/lib/ui/utils"
 
 // Who acted, in as few words as the log allows. The display has already
 // redacted anyone the reader is not entitled to see.
@@ -60,7 +59,7 @@ export function RecentAuditEventList({
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {event.outcome !== "success" && (
-                <span className={cn(badgeVariants(), outcome.className)}>
+                <span className={badgeVariants({ variant: outcome.variant })}>
                   <OutcomeIcon data-icon="inline-start" aria-hidden="true" />
                   {t(`outcomes.${event.outcome}`)}
                 </span>

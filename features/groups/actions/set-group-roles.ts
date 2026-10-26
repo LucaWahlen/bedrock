@@ -1,7 +1,10 @@
 "use server"
 
+import { getTranslations } from "next-intl/server"
+
 import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import {
+  type AssignmentRefusal,
   describeKeyed,
   replaceGroupRoles,
 } from "@/features/groups/lib/group-assignment"
@@ -12,22 +15,29 @@ import { db } from "@/features/shared/lib/db/client"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
 import type { ActionResult } from "@/features/shared/types"
 
-class AssignmentRefused extends Error {}
+class AssignmentRefused extends Error {
+  constructor(readonly reason: AssignmentRefusal) {
+    super(reason)
+  }
+}
 
 // Replaces the roles a group grants. The organization's roles are all listed in
 // the picker, so the whole set is the caller's to state.
 export async function setGroupRoles(
   input: SetGroupRolesInput
 ): Promise<ActionResult> {
+  const t = await getTranslations("groups")
   const parsed = groupRolesSchema.safeParse(input)
-  if (!parsed.success) return { success: false, error: "Invalid roles" }
+  if (!parsed.success) {
+    return { success: false, error: t("errors.invalidRoles") }
+  }
 
   const { organizationId, groupId, roleIds } = parsed.data
 
   const authorization = await authorizeGroupMutation({
     action: "group.roles_changed",
     organizationId,
-    deniedError: "You cannot manage groups here",
+    deniedError: t("errors.manageDenied"),
     target: () => ({ type: "group", id: groupId }),
   })
 
@@ -74,7 +84,7 @@ export async function setGroupRoles(
     })
   } catch (error) {
     if (error instanceof AssignmentRefused) {
-      return { success: false, error: error.message }
+      return { success: false, error: t(`errors.${error.reason}`) }
     }
     throw error
   }

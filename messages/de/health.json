@@ -74,7 +74,8 @@
       "invitations": "Abgelaufene Einladungen entfernen",
       "rateLimits": "Rate-Limit-Zähler aufräumen",
       "auditEvents": "Audit-Aufbewahrung anwenden",
-      "usage": "Nutzung zusammenfassen"
+      "usage": "Nutzung zusammenfassen",
+      "sessionsAndTokens": "Abgelaufene Sitzungen und Tokens entfernen"
     }
   },
   "notices": {

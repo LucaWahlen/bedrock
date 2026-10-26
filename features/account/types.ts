@@ -169,3 +169,13 @@ export type DeleteAccountResult =
       // Set when the refusal is sole ownership, so the dialog can name them.
       soleOwnedOrganizations?: SoleOwnedOrganization[]
     }
+
+// Root deleting someone else's account, refused while it is the last owner of
+// an organization.
+export type DeleteUserResult =
+  | { success: true }
+  | {
+      success: false
+      error: string
+      soleOwnedOrganizations?: { id: string; name: string; slug: string }[]
+    }

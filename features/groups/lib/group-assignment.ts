@@ -21,7 +21,10 @@ type PersonStatement = {
   email: string
 }
 
-type Refusal = { ok: false; error: string }
+// A key of `groups.errors`, so the action can say it in the reader's language.
+export type AssignmentRefusal = "unknownGroup" | "unknownRole" | "notMember"
+
+type Refusal = { ok: false; error: AssignmentRefusal }
 
 // Matched inside `organizationId`, so a group from another tenant cannot be
 // named. The composite foreign keys refuse the same thing again in the database.
@@ -60,7 +63,7 @@ export async function changeGroupMembers(
   const named = [...add, ...remove]
 
   const target = await groupIn(writer, organizationId, groupId)
-  if (!target) return { ok: false, error: "Unknown group" }
+  if (!target) return { ok: false, error: "unknownGroup" }
   if (named.length === 0) {
     return { ok: true, group: target, added: [], removed: [] }
   }
@@ -82,7 +85,7 @@ export async function changeGroupMembers(
     )
 
   if (people.length !== named.length) {
-    return { ok: false, error: "Not a member of this organization" }
+    return { ok: false, error: "notMember" }
   }
 
   const current = await writer
@@ -167,7 +170,7 @@ export async function replaceMemberGroups(
     )
     .limit(1)
 
-  if (!person) return { ok: false, error: "Not a member of this organization" }
+  if (!person) return { ok: false, error: "notMember" }
 
   const owned = wanted.length
     ? await writer
@@ -182,7 +185,7 @@ export async function replaceMemberGroups(
     : []
 
   if (owned.length !== wanted.length) {
-    return { ok: false, error: "Unknown group" }
+    return { ok: false, error: "unknownGroup" }
   }
 
   const current = await writer
@@ -244,7 +247,7 @@ export async function replaceGroupRoles(
 > {
   const wanted = [...new Set(roleIds)]
   const target = await groupIn(writer, organizationId, groupId)
-  if (!target) return { ok: false, error: "Unknown group" }
+  if (!target) return { ok: false, error: "unknownGroup" }
 
   const owned = wanted.length
     ? await writer
@@ -263,7 +266,7 @@ export async function replaceGroupRoles(
     : []
 
   if (owned.length !== wanted.length) {
-    return { ok: false, error: "Unknown role" }
+    return { ok: false, error: "unknownRole" }
   }
 
   const current = await writer

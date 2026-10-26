@@ -164,7 +164,6 @@ export function createRoleColumns(
             title={t("lists.groups.title")}
             singularLabel={t("lists.groups.singular")}
             pluralLabel={t("lists.groups.plural")}
-            variant="outline"
             items={row.original.groups}
           />
         )

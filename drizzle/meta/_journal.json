@@ -22,6 +22,13 @@
       "when": 1792932147100,
       "tag": "0002_enable_end_session",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792936695549,
+      "tag": "0003_break_glass_grant",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 "use server"
 
 import { and, eq } from "drizzle-orm"
+import { getTranslations } from "next-intl/server"
 
 import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import { authorizeGroupMutation } from "@/features/groups/lib/group-mutation"
@@ -15,14 +16,15 @@ export async function deleteGroup(
   organizationId: string,
   groupId: string
 ): Promise<ActionResult> {
+  const t = await getTranslations("groups")
   if (typeof organizationId !== "string" || typeof groupId !== "string") {
-    return { success: false, error: "Invalid group" }
+    return { success: false, error: t("errors.invalid") }
   }
 
   const authorization = await authorizeGroupMutation({
     action: "group.deleted",
     organizationId,
-    deniedError: "You cannot manage groups here",
+    deniedError: t("errors.manageDenied"),
     target: () => ({ type: "group", id: groupId }),
   })
 
@@ -60,7 +62,7 @@ export async function deleteGroup(
     return true
   })
 
-  if (!deleted) return { success: false, error: "Unknown group" }
+  if (!deleted) return { success: false, error: t("errors.unknownGroup") }
 
   revalidateEverywhere()
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { AppHeader, requireOrganizationAdministration } from "@/features/app"
@@ -17,12 +18,15 @@ export async function generateMetadata({
   params,
 }: GroupsPageProps): Promise<Metadata> {
   const { slug } = await params
-  const currentOrganization = await getOrganizationBySlug(slug)
+  const [currentOrganization, t] = await Promise.all([
+    getOrganizationBySlug(slug),
+    getTranslations("app.navigation.items"),
+  ])
 
   return {
     title: currentOrganization
-      ? `Groups | ${currentOrganization.name}`
-      : "Groups",
+      ? `${t("groups")} | ${currentOrganization.name}`
+      : t("groups"),
   }
 }
 
@@ -33,7 +37,10 @@ export default async function GroupsPage({
   const [{ slug }, { search, role, sort, direction, page }] = await Promise.all(
     [params, loadGroupsSearchParams(searchParams)]
   )
-  const currentOrganization = await getOrganizationBySlug(slug)
+  const [currentOrganization, t] = await Promise.all([
+    getOrganizationBySlug(slug),
+    getTranslations("app.navigation.items"),
+  ])
   if (!currentOrganization) notFound()
 
   // Groups exist to grant application roles, and root owns no applications.
@@ -56,7 +63,7 @@ export default async function GroupsPage({
 
   return (
     <>
-      <AppHeader title="Groups" organization={currentOrganization} />
+      <AppHeader title={t("groups")} organization={currentOrganization} />
       <GroupsPanel
         organizationId={currentOrganization.id}
         roles={roles}

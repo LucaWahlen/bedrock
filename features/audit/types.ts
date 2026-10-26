@@ -14,6 +14,8 @@ export const ORGANIZATION_AUDIT_ACTIONS = [
   "organization.deleted",
   "organization.restored",
   "organization.purged",
+  "organization.break_glass_started",
+  "organization.break_glass_ended",
   "organization.member_added",
   "organization.member_removed",
   "organization.member_role_changed",
@@ -37,6 +39,10 @@ export const ORGANIZATION_LIFECYCLE_ACTIONS = [
   "organization.deleted",
   "organization.restored",
   "organization.purged",
+  // Root entering an organization as its owner is the instance's act, and the
+  // organization sees it too because it names the organization.
+  "organization.break_glass_started",
+  "organization.break_glass_ended",
 ] as const
 
 export const APPLICATION_AUDIT_ACTIONS = [
@@ -70,6 +76,13 @@ export const USER_AUDIT_ACTIONS = [
   "user.created",
   "user.disabled",
   "user.enabled",
+  // A root administrator supporting someone's account from the Directory.
+  "user.email_verified",
+  "user.verification_sent",
+  "user.password_reset_sent",
+  "user.signed_out",
+  "user.two_factor_reset",
+  "user.deleted",
 ] as const
 
 // What a person does to their own account. An account is one instance-wide

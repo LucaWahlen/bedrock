@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { AppHeader, requireOrganizationAdministration } from "@/features/app"
@@ -19,12 +20,15 @@ export async function generateMetadata({
   params,
 }: ApplicationsPageProps): Promise<Metadata> {
   const { slug } = await params
-  const currentOrganization = await getOrganizationBySlug(slug)
+  const [currentOrganization, t] = await Promise.all([
+    getOrganizationBySlug(slug),
+    getTranslations("app.navigation.items"),
+  ])
 
   return {
     title: currentOrganization
-      ? `Applications | ${currentOrganization.name}`
-      : "Applications",
+      ? `${t("applications")} | ${currentOrganization.name}`
+      : t("applications"),
   }
 }
 
@@ -35,7 +39,10 @@ export default async function ApplicationsPage({
   const [{ slug }, { search, type, sort, direction, page }] = await Promise.all(
     [params, loadApplicationsSearchParams(searchParams)]
   )
-  const currentOrganization = await getOrganizationBySlug(slug)
+  const [currentOrganization, t] = await Promise.all([
+    getOrganizationBySlug(slug),
+    getTranslations("app.navigation.items"),
+  ])
   if (!currentOrganization) notFound()
 
   await requireOrganizationAdministration(currentOrganization.id, slug)
@@ -56,7 +63,10 @@ export default async function ApplicationsPage({
   if (currentOrganization.isRoot) {
     return (
       <>
-        <AppHeader title="Applications" organization={currentOrganization} />
+        <AppHeader
+          title={t("applications")}
+          organization={currentOrganization}
+        />
         <InstanceApplicationsPanel
           result={await getAllApplications(query)}
           configuration={configuration}
@@ -72,7 +82,7 @@ export default async function ApplicationsPage({
 
   return (
     <>
-      <AppHeader title="Applications" organization={currentOrganization} />
+      <AppHeader title={t("applications")} organization={currentOrganization} />
       <ApplicationsPanel
         organizationId={currentOrganization.id}
         result={result}

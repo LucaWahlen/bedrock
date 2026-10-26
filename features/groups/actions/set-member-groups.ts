@@ -1,7 +1,10 @@
 "use server"
 
+import { getTranslations } from "next-intl/server"
+
 import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import {
+  type AssignmentRefusal,
   describePeople,
   replaceMemberGroups,
 } from "@/features/groups/lib/group-assignment"
@@ -12,7 +15,11 @@ import { db } from "@/features/shared/lib/db/client"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
 import type { ActionResult } from "@/features/shared/types"
 
-class AssignmentRefused extends Error {}
+class AssignmentRefused extends Error {
+  constructor(readonly reason: AssignmentRefusal) {
+    super(reason)
+  }
+}
 
 // The member's side of group membership: the whole set for one person, so
 // leaving a group is the same act as joining one. Each group that changed is
@@ -20,15 +27,18 @@ class AssignmentRefused extends Error {}
 export async function setMemberGroups(
   input: SetMemberGroupsInput
 ): Promise<ActionResult> {
+  const t = await getTranslations("groups")
   const parsed = memberGroupsSchema.safeParse(input)
-  if (!parsed.success) return { success: false, error: "Invalid groups" }
+  if (!parsed.success) {
+    return { success: false, error: t("errors.invalidGroups") }
+  }
 
   const { organizationId, userId, groupIds } = parsed.data
 
   const authorization = await authorizeGroupMutation({
     action: "group.members_changed",
     organizationId,
-    deniedError: "You cannot manage groups here",
+    deniedError: t("errors.manageDenied"),
     target: () => ({ type: "user", id: userId }),
   })
 
@@ -82,7 +92,7 @@ export async function setMemberGroups(
     })
   } catch (error) {
     if (error instanceof AssignmentRefused) {
-      return { success: false, error: error.message }
+      return { success: false, error: t(`errors.${error.reason}`) }
     }
     throw error
   }

@@ -4,24 +4,26 @@ import { MEMBER_ROLES, type MemberRole } from "@/features/organizations/types"
 
 // Single source for how a role looks, so a badge and a filter option cannot
 // drift apart. Its label and description are `organizations.roles.<role>`.
+// Only the icon is tinted: a role is a value like any other in its row, and the
+// filled colours belong to the state columns beside it.
 export const MEMBER_ROLE_DISPLAY: Record<
   MemberRole,
   {
     icon: LucideIcon
-    className: string
+    iconClassName: string
   }
 > = {
   owner: {
     icon: Crown,
-    className: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+    iconClassName: "text-amber-600 dark:text-amber-400",
   },
   admin: {
     icon: ShieldUser,
-    className: "bg-violet-500/15 text-violet-700 dark:text-violet-300",
+    iconClassName: "text-violet-600 dark:text-violet-400",
   },
   member: {
     icon: User,
-    className: "bg-muted text-muted-foreground",
+    iconClassName: "text-muted-foreground",
   },
 }
 

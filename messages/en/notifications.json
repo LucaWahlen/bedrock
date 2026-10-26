@@ -16,6 +16,7 @@
     "passkey": "Passkey",
     "signedInTo": "Signed in to",
     "reason": "Reason",
+    "expires": "Ends",
     "organization": "Organization"
   },
   "roles": {
@@ -28,7 +29,8 @@
     "reviewSessions": "Review your sessions",
     "signIn": "Sign in",
     "openOrganization": "Open {organization}",
-    "viewMembers": "View members"
+    "viewMembers": "View members",
+    "openAuditLog": "Open the audit log"
   },
   "notYouWithoutAccess": "If this wasn't you, contact your administrator right away.",
   "passwordChanged": {
@@ -101,6 +103,11 @@
     "subject": "Your role in {organization} changed",
     "body": "Hi {name}, {actor} changed your role in {organization} from {from} to {to}.",
     "guidance": "If you think this is a mistake, contact an administrator of {organization}."
+  },
+  "breakGlassStarted": {
+    "subject": "A root administrator entered {organization}",
+    "body": "Hi {name}, {actor} administers this Bedrock instance and has opened break-glass access to {organization}. For the next {minutes, number} minutes they can act as an owner there, and everything they do is recorded in its audit log.",
+    "guidance": "Break-glass access exists to repair an organization nobody inside can fix any more. If you did not expect it, contact the administrators of this instance."
   },
   "memberRemoved": {
     "subject": "You were removed from {organization}",

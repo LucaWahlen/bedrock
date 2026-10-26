@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 
@@ -35,6 +36,8 @@ export function MemberGroupsDialog({
   open,
   onOpenChange,
 }: MemberGroupsDialogProps) {
+  const t = useTranslations("groups")
+  const tCommon = useTranslations("common")
   const joined = memberGroups.map((held) => held.id)
   const [selected, setSelected] = useState(joined)
   const [wasOpen, setWasOpen] = useState(open)
@@ -54,8 +57,10 @@ export function MemberGroupsDialog({
     name: option.name,
     note:
       option.roles.length > 0
-        ? `Grants ${option.roles.map((role) => role.name).join(", ")}`
-        : "Grants no roles",
+        ? t("memberGroups.grants", {
+            roles: option.roles.map((role) => role.name).join(", "),
+          })
+        : t("memberGroups.grantsNone"),
   }))
 
   function save() {
@@ -72,7 +77,7 @@ export function MemberGroupsDialog({
       }
 
       onOpenChange(false)
-      toast.success(`Groups for ${member.name} were saved`)
+      toast.success(t("memberGroups.saved", { name: member.name }))
     })
   }
 
@@ -80,21 +85,18 @@ export function MemberGroupsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Groups</DialogTitle>
+          <DialogTitle>{t("memberGroups.title")}</DialogTitle>
           <DialogDescription>
-            Choose the groups {member.name} is in. {member.name} holds every
-            role a group grants, in addition to any given directly.
+            {t("memberGroups.description", { name: member.name })}
           </DialogDescription>
         </DialogHeader>
 
         {groups.length === 0 ? (
-          <FieldDescription>
-            This organization has no groups yet. Create one on the Groups page.
-          </FieldDescription>
+          <FieldDescription>{t("memberGroups.noGroups")}</FieldDescription>
         ) : (
           <KeyedChecklist
             id="member-groups"
-            label="Groups"
+            label={t("memberGroups.label")}
             options={options}
             value={selected}
             onChange={setSelected}
@@ -106,10 +108,10 @@ export function MemberGroupsDialog({
           <DialogClose
             render={<Button variant="outline" disabled={isPending} />}
           >
-            Cancel
+            {tCommon("actions.cancel")}
           </DialogClose>
           <Button disabled={isPending || groups.length === 0} onClick={save}>
-            {isPending ? "Saving..." : "Save groups"}
+            {isPending ? tCommon("states.saving") : t("memberGroups.save")}
           </Button>
         </DialogFooter>
       </DialogContent>

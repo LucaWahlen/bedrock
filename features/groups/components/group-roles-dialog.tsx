@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 
@@ -39,6 +40,8 @@ export function GroupRolesDialog({
   open,
   onOpenChange,
 }: GroupRolesDialogProps) {
+  const t = useTranslations("groups")
+  const tCommon = useTranslations("common")
   const granted = group.roles.map((role) => role.id)
   const [selected, setSelected] = useState(granted)
   const [wasOpen, setWasOpen] = useState(open)
@@ -64,7 +67,7 @@ export function GroupRolesDialog({
       }
 
       onOpenChange(false)
-      toast.success(`Roles of ${group.name} were saved`)
+      toast.success(t("groupRoles.saved", { name: group.name }))
     })
   }
 
@@ -72,32 +75,32 @@ export function GroupRolesDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Roles of {group.name}</DialogTitle>
+          <DialogTitle>
+            {t("groupRoles.title", { name: group.name })}
+          </DialogTitle>
           <DialogDescription>
-            Everyone in {group.name} holds these roles, in addition to any they
-            were given directly.
+            {t("groupRoles.description", { name: group.name })}
           </DialogDescription>
         </DialogHeader>
 
         <DialogBody>
           <Field>
-            <FieldLabel htmlFor="group-roles-picker">Roles</FieldLabel>
+            <FieldLabel htmlFor="group-roles-picker">
+              {t("groupRoles.label")}
+            </FieldLabel>
             <KeyedOptionPicker
               id="group-roles-picker"
               options={roles}
               value={selected}
               onChange={setSelected}
               disabled={isPending || roles.length === 0}
-              placeholder="Search roles..."
-              noneMessage="Define a role on the Roles page first."
-              allTakenMessage="Every role is already granted."
-              noMatchMessage="No role matches that."
+              placeholder={t("rolePicker.placeholder")}
+              noneMessage={t("rolePicker.none")}
+              allTakenMessage={t("rolePicker.allTaken")}
+              noMatchMessage={t("rolePicker.noMatch")}
             />
             {roles.length === 0 && (
-              <FieldDescription>
-                This organization has no roles yet. Define one on the Roles
-                page.
-              </FieldDescription>
+              <FieldDescription>{t("groupRoles.noRoles")}</FieldDescription>
             )}
           </Field>
         </DialogBody>
@@ -106,10 +109,10 @@ export function GroupRolesDialog({
           <DialogClose
             render={<Button variant="outline" disabled={isPending} />}
           >
-            Cancel
+            {tCommon("actions.cancel")}
           </DialogClose>
           <Button disabled={isPending || roles.length === 0} onClick={save}>
-            {isPending ? "Saving..." : "Save roles"}
+            {isPending ? tCommon("states.saving") : t("groupRoles.save")}
           </Button>
         </DialogFooter>
       </DialogContent>
