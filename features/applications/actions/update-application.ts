@@ -87,6 +87,13 @@ export async function updateApplication(
             application_type: oauthApplicationType(parsed.data.redirectUris),
             client_uri: parsed.data.uri ?? undefined,
             skip_consent: parsed.data.skipConsent ?? false,
+            // A public client authenticates with nothing, so the method is
+            // only changeable while the stored one is confidential.
+            ...(parsed.data.tokenEndpointAuthMethod &&
+              application.tokenEndpointAuthMethod !== null &&
+              application.tokenEndpointAuthMethod !== "none" && {
+                token_endpoint_auth_method: parsed.data.tokenEndpointAuthMethod,
+              }),
           },
         },
       })

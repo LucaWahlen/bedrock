@@ -68,6 +68,7 @@ export function InstanceApplicationsPanel({
         clientId: application.clientId,
         name: application.name,
         isConfidential: application.isConfidential,
+        tokenEndpointAuthMethod: application.tokenEndpointAuthMethod,
       })
   )
 

@@ -1,3 +1,5 @@
+import type { ApplicationTokenAuthMethod } from "@/features/applications/schemas/application"
+
 export type ApplicationRoleSummary = {
   id: string
   key: string
@@ -43,6 +45,8 @@ export type Application = {
   disabled: boolean
   // Derived from the registered authentication method, not stored separately.
   isConfidential: boolean
+  // Null when the client authenticates with nothing (public).
+  tokenEndpointAuthMethod: ApplicationTokenAuthMethod | null
   createdAt: string | null
   roles: ApplicationRoleSummary[]
 }
@@ -174,6 +178,8 @@ export type CreateApplicationInput = {
   // A client that cannot keep a secret, such as a browser or mobile app.
   isPublic?: boolean
   skipConsent?: boolean
+  // Omitted means client_secret_basic. Ignored when isPublic is true.
+  tokenEndpointAuthMethod?: ApplicationTokenAuthMethod
   // A staging key from the upload endpoint, promoted once the client exists.
   icon?: { key: string } | null
 }
@@ -186,6 +192,8 @@ export type UpdateApplicationInput = {
   postLogoutRedirectUris?: string[]
   uri?: string | null
   skipConsent?: boolean
+  // Omitted leaves the stored authentication method alone.
+  tokenEndpointAuthMethod?: ApplicationTokenAuthMethod
   // Absent leaves the icon alone; null removes it; a key replaces it.
   icon?: { key: string } | null
 }

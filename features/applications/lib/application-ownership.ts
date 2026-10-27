@@ -15,6 +15,7 @@ export async function applicationInOrganization(
       clientId: oauthClient.clientId,
       name: oauthClient.name,
       icon: oauthClient.icon,
+      tokenEndpointAuthMethod: oauthClient.tokenEndpointAuthMethod,
     })
     .from(oauthClient)
     .where(

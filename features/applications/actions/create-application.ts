@@ -77,7 +77,7 @@ export async function createApplication(
           client_uri: parsed.data.uri ?? undefined,
           token_endpoint_auth_method: parsed.data.isPublic
             ? "none"
-            : "client_secret_basic",
+            : (parsed.data.tokenEndpointAuthMethod ?? "client_secret_basic"),
           grant_types: ["authorization_code"],
           response_types: ["code"],
           skip_consent: parsed.data.skipConsent ?? false,
@@ -130,6 +130,9 @@ export async function createApplication(
         postLogoutRedirectUris: parsed.data.postLogoutRedirectUris ?? [],
         launchUrl: parsed.data.uri ?? null,
         confidential: !parsed.data.isPublic,
+        tokenEndpointAuthMethod: parsed.data.isPublic
+          ? null
+          : (parsed.data.tokenEndpointAuthMethod ?? "client_secret_basic"),
       },
     })
 

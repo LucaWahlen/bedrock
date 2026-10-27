@@ -3,16 +3,19 @@
 import { useTranslations } from "next-intl"
 
 import { CopyableField } from "@/features/applications/components/copyable-field"
+import type { ApplicationTokenAuthMethod } from "@/features/applications/schemas/application"
 import type { OidcConfiguration } from "@/features/applications/types"
 
 type OidcEndpointFieldsProps = {
   configuration: OidcConfiguration
   isConfidential: boolean
+  tokenEndpointAuthMethod?: ApplicationTokenAuthMethod | null
 }
 
 export function OidcEndpointFields({
   configuration,
   isConfidential,
+  tokenEndpointAuthMethod,
 }: OidcEndpointFieldsProps) {
   const t = useTranslations("applications.endpoints")
 
@@ -65,7 +68,8 @@ export function OidcEndpointFields({
         </dd>
         <dt className="text-muted-foreground">{t("clientAuthentication")}</dt>
         <dd className="font-mono text-xs leading-5">
-          {isConfidential ? "client_secret_basic" : "none"}
+          {tokenEndpointAuthMethod ??
+            (isConfidential ? "client_secret_basic" : "none")}
         </dd>
         <dt className="text-muted-foreground">{t("pkce")}</dt>
         <dd className="font-mono text-xs leading-5">S256</dd>

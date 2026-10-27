@@ -18,6 +18,8 @@ import { z } from "zod"
 import { createApplication } from "@/features/applications/actions/create-application"
 import { updateApplication } from "@/features/applications/actions/update-application"
 import {
+  APPLICATION_TOKEN_AUTH_METHODS,
+  type ApplicationTokenAuthMethod,
   createLaunchUrlSchema,
   createRedirectUriSchema,
 } from "@/features/applications/schemas/application"
@@ -42,6 +44,13 @@ import {
   FieldLabel,
 } from "@/features/shared/components/ui/field"
 import { Input } from "@/features/shared/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/features/shared/components/ui/select"
 import type { Translator } from "@/features/shared/lib/i18n/translator"
 import {
   cleanupMedia,
@@ -102,6 +111,7 @@ function createFormSchema(t: Translator<"applications">) {
       .trim()
       .pipe(z.union([z.literal(""), createLaunchUrlSchema(t)])),
     isPublic: z.boolean(),
+    tokenEndpointAuthMethod: z.enum(APPLICATION_TOKEN_AUTH_METHODS),
     skipConsent: z.boolean(),
     icon: z.custom<File>().optional(),
     iconCleared: z.boolean(),
@@ -119,6 +129,7 @@ type ApplicationDialogProps = {
     clientId: string
     clientSecret: string | null
     name: string
+    tokenEndpointAuthMethod: ApplicationTokenAuthMethod | null
   }) => void
 }
 
@@ -145,14 +156,16 @@ export function ApplicationDialog({
         application?.postLogoutRedirectUris.map((value) => ({ value })) ?? [],
       uri: application?.uri ?? "",
       isPublic: application ? !application.isConfidential : false,
+      tokenEndpointAuthMethod:
+        application?.tokenEndpointAuthMethod ?? "client_secret_basic",
       skipConsent: application?.skipConsent ?? false,
       icon: undefined,
       iconCleared: false,
     },
   })
-  const [iconCleared, name] = useWatch({
+  const [iconCleared, name, isPublic] = useWatch({
     control: form.control,
-    name: ["iconCleared", "name"],
+    name: ["iconCleared", "name", "isPublic"],
   })
 
   async function onSubmit(values: FormValues) {
@@ -188,6 +201,7 @@ export function ApplicationDialog({
         postLogoutRedirectUris,
         uri: values.uri || null,
         skipConsent: values.skipConsent,
+        tokenEndpointAuthMethod: values.tokenEndpointAuthMethod,
         icon,
       }
 
@@ -226,6 +240,9 @@ export function ApplicationDialog({
         clientId: result.clientId,
         clientSecret: result.clientSecret,
         name: values.name,
+        tokenEndpointAuthMethod: values.isPublic
+          ? null
+          : values.tokenEndpointAuthMethod,
       })
     } catch (error) {
       if (uploaded) await cleanupMedia([uploaded])
@@ -390,6 +407,44 @@ export function ApplicationDialog({
                       <FieldLabel htmlFor="application-public">
                         {t("applicationDialog.isPublic")}
                       </FieldLabel>
+                    </Field>
+                  )}
+                />
+              )}
+
+              {/* A public client authenticates with nothing, so the method only
+                  exists for confidential ones. */}
+              {(editing ? application?.isConfidential : !isPublic) && (
+                <Controller
+                  name="tokenEndpointAuthMethod"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Field>
+                      <FieldLabel htmlFor="application-auth-method">
+                        {t("applicationDialog.tokenEndpointAuthMethod")}
+                      </FieldLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        items={APPLICATION_TOKEN_AUTH_METHODS.map((method) => ({
+                          value: method,
+                          label: t(`applicationDialog.authMethods.${method}`),
+                        }))}
+                      >
+                        <SelectTrigger id="application-auth-method">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {APPLICATION_TOKEN_AUTH_METHODS.map((method) => (
+                            <SelectItem key={method} value={method}>
+                              {t(`applicationDialog.authMethods.${method}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        {t("applicationDialog.tokenEndpointAuthMethodHint")}
+                      </p>
                     </Field>
                   )}
                 />

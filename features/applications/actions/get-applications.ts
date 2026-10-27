@@ -135,6 +135,12 @@ export async function getApplications(
       skipConsent: row.skipConsent ?? false,
       disabled: row.disabled ?? false,
       isConfidential: row.tokenEndpointAuthMethod !== "none",
+      tokenEndpointAuthMethod:
+        row.tokenEndpointAuthMethod === "client_secret_post"
+          ? "client_secret_post"
+          : row.tokenEndpointAuthMethod === "client_secret_basic"
+            ? "client_secret_basic"
+            : null,
       createdAt: row.createdAt?.toISOString() ?? null,
       roles: rolesByClient.get(row.clientId) ?? [],
     })),

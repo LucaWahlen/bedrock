@@ -90,6 +90,7 @@ export function ApplicationsPanel({
         clientId: rotated.clientId,
         name: application.name,
         isConfidential: true,
+        tokenEndpointAuthMethod: application.tokenEndpointAuthMethod,
         clientSecret: rotated.clientSecret ?? undefined,
       })
     })
@@ -120,6 +121,7 @@ export function ApplicationsPanel({
           clientId: application.clientId,
           name: application.name,
           isConfidential: application.isConfidential,
+          tokenEndpointAuthMethod: application.tokenEndpointAuthMethod,
         }),
       onEdit: (application) => setDialog({ open: true, application }),
       onRotate: rotate,
@@ -207,11 +209,17 @@ export function ApplicationsPanel({
         application={dialog.application}
         open={dialog.open}
         onOpenChange={(open) => setDialog({ open })}
-        onCreated={({ clientId, clientSecret, name }) =>
+        onCreated={({
+          clientId,
+          clientSecret,
+          name,
+          tokenEndpointAuthMethod,
+        }) =>
           setConnection({
             clientId,
             name,
             isConfidential: clientSecret !== null,
+            tokenEndpointAuthMethod,
             clientSecret: clientSecret ?? undefined,
           })
         }

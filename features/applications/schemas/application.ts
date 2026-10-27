@@ -5,6 +5,17 @@ import type { Translator } from "@/features/shared/lib/i18n/translator"
 
 const LOOPBACK_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 
+// How a confidential client proves itself at the token endpoint. Basic is the
+// default; post exists for clients that send the secret in the request body
+// instead (RustFS, for example, does only that).
+export const APPLICATION_TOKEN_AUTH_METHODS = [
+  "client_secret_basic",
+  "client_secret_post",
+] as const
+
+export type ApplicationTokenAuthMethod =
+  (typeof APPLICATION_TOKEN_AUTH_METHODS)[number]
+
 export function isLoopbackRedirectUri(uri: string) {
   const url = URL.parse(uri)
   return url !== null && LOOPBACK_HOSTS.includes(url.hostname)
@@ -88,6 +99,8 @@ export function createApplicationSchema(t: Translator<"applications">) {
     uri: createLaunchUrlSchema(t).nullish(),
     isPublic: z.boolean().optional(),
     skipConsent: z.boolean().optional(),
+    // Ignored for public clients, which authenticate with nothing.
+    tokenEndpointAuthMethod: z.enum(APPLICATION_TOKEN_AUTH_METHODS).optional(),
   })
 }
 

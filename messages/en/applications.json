@@ -100,6 +100,12 @@
     "launchUrl": "Launch URL (optional)",
     "launchUrlHint": "Where members open the application from their overview.",
     "isPublic": "Cannot keep a secret (browser or mobile app)",
+    "tokenEndpointAuthMethod": "Client authentication",
+    "tokenEndpointAuthMethodHint": "Clients that send the secret in the request body need client_secret_post.",
+    "authMethods": {
+      "client_secret_basic": "HTTP Basic (client_secret_basic)",
+      "client_secret_post": "Request body (client_secret_post)"
+    },
     "skipConsent": "Trusted: do not ask members for consent",
     "saveChanges": "Save changes",
     "create": "Create application",
