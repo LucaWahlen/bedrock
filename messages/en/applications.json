@@ -263,7 +263,7 @@
     "launchUrlHttp": "Use an absolute http or https URL",
     "iconInvalid": "Use a PNG, JPEG, WebP or SVG under 2 MB",
     "roleKeyRequired": "Give the role a key",
-    "roleKeyFormat": "Use lowercase letters, numbers, and - _ : separators",
+    "roleKeyFormat": "Use letters, numbers, and - _ : separators",
     "roleNameRequired": "Give the role a name",
     "applicationsTooMany": "Choose at most {max, number} applications",
     "membersTooMany": "Choose at most {max, number} members"

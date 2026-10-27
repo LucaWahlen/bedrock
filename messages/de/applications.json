@@ -263,7 +263,7 @@
     "launchUrlHttp": "Verwende eine absolute http- oder https-URL",
     "iconInvalid": "Verwende ein PNG, JPEG, WebP oder SVG unter 2 MB",
     "roleKeyRequired": "Gib der Rolle einen Schlüssel",
-    "roleKeyFormat": "Verwende Kleinbuchstaben, Ziffern und die Trennzeichen - _ :",
+    "roleKeyFormat": "Verwende Buchstaben, Ziffern und die Trennzeichen - _ :",
     "roleNameRequired": "Gib der Rolle einen Namen",
     "applicationsTooMany": "Wähle höchstens {max, number} Anwendungen",
     "membersTooMany": "Wähle höchstens {max, number} Mitglieder"

@@ -100,7 +100,9 @@ export function createApplicationRoleSchema(t: Translator<"applications">) {
       .trim()
       .min(1, t("validation.roleKeyRequired"))
       .max(64, t("validation.tooLong", { max: 64 }))
-      .regex(/^[a-z0-9]+(?:[-_:][a-z0-9]+)*$/, t("validation.roleKeyFormat")),
+      // Uppercase is allowed: a role key has to be able to match a relying
+      // party's own policy name, and those are case-sensitive.
+      .regex(/^[A-Za-z0-9]+(?:[-_:][A-Za-z0-9]+)*$/, t("validation.roleKeyFormat")),
     name: z
       .string()
       .trim()
