@@ -20,15 +20,14 @@ RUN useradd -u 1000 -ms /bin/bash vscode \
     && mkdir -p /home/vscode/.config/opencode /home/vscode/.local/share/opencode \
     && chown -R vscode:vscode /home/vscode
 
-# Dependabot's docker ecosystem rewrites image tags only, not ARG pins, so this
-# version is bumped by hand.
-ARG OPENCODE_VERSION=1.18.35
-
+# opencode tracks the current release rather than a pinned version: the host's
+# `~/.local/share/opencode` is bind-mounted into the container, so the CLI in the
+# image has to match the v2 install writing that data.
 RUN set -e; \
     case "$(uname -m)" in \
         x86_64)  oc=x64   ;; \
         aarch64) oc=arm64 ;; \
         *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;; \
     esac; \
-    curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${oc}.tar.gz" | tar -xz -C /usr/local/bin opencode; \
+    curl -fsSL "https://opencode.ai/update/api/latest/cli/opencode/opencode-linux-${oc}.tar.gz" | tar -xz -C /usr/local/bin opencode; \
     chmod +x /usr/local/bin/opencode
