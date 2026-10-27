@@ -92,7 +92,12 @@ export function createApplicationSchema(t: Translator<"applications">) {
 }
 
 // What lands in a token, so it is restricted to what a claim can carry safely
-// and cannot be changed once applications rely on it.
+// and cannot be changed once applications rely on it. Uppercase is kept: a key
+// has to be able to match a relying party's own policy name, and those are
+// case-sensitive. Exported so the form and the action validate identically.
+export const APPLICATION_ROLE_KEY_PATTERN =
+  /^[A-Za-z0-9]+(?:[-_:][A-Za-z0-9]+)*$/
+
 export function createApplicationRoleSchema(t: Translator<"applications">) {
   return z.object({
     key: z
@@ -100,12 +105,7 @@ export function createApplicationRoleSchema(t: Translator<"applications">) {
       .trim()
       .min(1, t("validation.roleKeyRequired"))
       .max(64, t("validation.tooLong", { max: 64 }))
-      // Uppercase is allowed: a role key has to be able to match a relying
-      // party's own policy name, and those are case-sensitive.
-      .regex(
-        /^[A-Za-z0-9]+(?:[-_:][A-Za-z0-9]+)*$/,
-        t("validation.roleKeyFormat")
-      ),
+      .regex(APPLICATION_ROLE_KEY_PATTERN, t("validation.roleKeyFormat")),
     name: z
       .string()
       .trim()

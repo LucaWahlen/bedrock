@@ -10,6 +10,7 @@ import { z } from "zod"
 import { findRoleCandidates } from "@/features/applications/actions/find-role-candidates"
 import { saveApplicationRole } from "@/features/applications/actions/save-application-role"
 import { ApplicationPicker } from "@/features/applications/components/application-picker"
+import { APPLICATION_ROLE_KEY_PATTERN } from "@/features/applications/schemas/application"
 import type {
   ApplicationRole,
   ApplicationSummary,
@@ -43,7 +44,7 @@ function createFormSchema(t: Translator<"applications">) {
       .trim()
       .min(1, t("validation.roleKeyRequired"))
       .max(64, t("validation.tooLong", { max: 64 }))
-      .regex(/^[a-z0-9]+(?:[-_:][a-z0-9]+)*$/, t("validation.roleKeyFormat")),
+      .regex(APPLICATION_ROLE_KEY_PATTERN, t("validation.roleKeyFormat")),
     name: z
       .string()
       .trim()
