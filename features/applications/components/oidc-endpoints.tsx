@@ -3,13 +3,13 @@
 import { useTranslations } from "next-intl"
 
 import { CopyableField } from "@/features/applications/components/copyable-field"
-import type { ApplicationTokenAuthMethod } from "@/features/applications/schemas/application"
+import type { ClientAuthMethod } from "@/features/applications/schemas/application"
 import type { OidcConfiguration } from "@/features/applications/types"
 
 type OidcEndpointFieldsProps = {
   configuration: OidcConfiguration
   isConfidential: boolean
-  tokenEndpointAuthMethod?: ApplicationTokenAuthMethod | null
+  tokenEndpointAuthMethod?: ClientAuthMethod | null
 }
 
 export function OidcEndpointFields({

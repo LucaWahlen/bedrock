@@ -20,7 +20,6 @@ import { authorizationRefusal } from "@/features/shared/lib/oidc-claims"
 const applicationSchema = createApplicationSchema(
   translatorFor("en", "applications")
 )
-
 // The gate in front of `/oauth2/authorize` and `/oauth2/consent`. The claim
 // callbacks only run when a token carries claims, so this is the check that
 // holds for every code the provider issues.

@@ -14,6 +14,7 @@ import {
   endSessionSettings,
   isLoopbackRedirectUri,
   oauthApplicationType,
+  registeredClientAuthMethod,
 } from "@/features/applications/schemas/application"
 import type {
   ApplicationSecretResult,
@@ -60,6 +61,10 @@ export async function createApplication(
   }
 
   const { currentUser, organization } = authorization
+  const tokenEndpointAuthMethod = registeredClientAuthMethod(
+    parsed.data.isPublic,
+    parsed.data.tokenEndpointAuthMethod
+  )
   let createdClientId: string | undefined
   let promotedIconKey: string | undefined
 
@@ -77,7 +82,7 @@ export async function createApplication(
           client_uri: parsed.data.uri ?? undefined,
           token_endpoint_auth_method: parsed.data.isPublic
             ? "none"
-            : (parsed.data.tokenEndpointAuthMethod ?? "client_secret_basic"),
+            : tokenEndpointAuthMethod,
           grant_types: ["authorization_code"],
           response_types: ["code"],
           skip_consent: parsed.data.skipConsent ?? false,
@@ -143,6 +148,7 @@ export async function createApplication(
       clientId: client.client_id,
       // Shown once. Only a hash is kept, so it cannot be recovered later.
       clientSecret: client.client_secret ?? null,
+      tokenEndpointAuthMethod,
     }
   } catch (error) {
     // A half-made client has no owner metadata, so it could never sign anyone in.

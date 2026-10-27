@@ -100,12 +100,6 @@
     "launchUrl": "Start-URL (optional)",
     "launchUrlHint": "Wo Mitglieder die Anwendung aus ihrer Übersicht öffnen.",
     "isPublic": "Kann kein Secret geheim halten (Browser- oder Mobil-App)",
-    "tokenEndpointAuthMethod": "Client-Authentifizierung",
-    "tokenEndpointAuthMethodHint": "Clients, die das Secret im Request-Body senden, brauchen client_secret_post.",
-    "authMethods": {
-      "client_secret_basic": "HTTP Basic (client_secret_basic)",
-      "client_secret_post": "Request-Body (client_secret_post)"
-    },
     "skipConsent": "Vertrauenswürdig: Mitglieder nicht um Zustimmung bitten",
     "saveChanges": "Änderungen speichern",
     "create": "Anwendung erstellen",
@@ -269,7 +263,7 @@
     "launchUrlHttp": "Verwende eine absolute http- oder https-URL",
     "iconInvalid": "Verwende ein PNG, JPEG, WebP oder SVG unter 2 MB",
     "roleKeyRequired": "Gib der Rolle einen Schlüssel",
-    "roleKeyFormat": "Verwende Buchstaben, Ziffern und die Trennzeichen - _ :",
+    "roleKeyFormat": "Verwende ASCII-Buchstaben, Ziffern und die Trennzeichen - _ :; Groß- und Kleinschreibung zählt",
     "roleNameRequired": "Gib der Rolle einen Namen",
     "applicationsTooMany": "Wähle höchstens {max, number} Anwendungen",
     "membersTooMany": "Wähle höchstens {max, number} Mitglieder"

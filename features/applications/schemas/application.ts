@@ -16,6 +16,8 @@ export const APPLICATION_TOKEN_AUTH_METHODS = [
 export type ApplicationTokenAuthMethod =
   (typeof APPLICATION_TOKEN_AUTH_METHODS)[number]
 
+export type ClientAuthMethod = ApplicationTokenAuthMethod | "none"
+
 export function isLoopbackRedirectUri(uri: string) {
   const url = URL.parse(uri)
   return url !== null && LOOPBACK_HOSTS.includes(url.hostname)
@@ -25,6 +27,13 @@ export function isLoopbackRedirectUri(uri: string) {
 // application with one has to be registered as "native" (RFC 8252).
 export function oauthApplicationType(redirectUris: string[]) {
   return redirectUris.some(isLoopbackRedirectUri) ? "native" : "web"
+}
+
+export function registeredClientAuthMethod(
+  isPublic: boolean | undefined,
+  confidentialMethod?: ApplicationTokenAuthMethod
+): ClientAuthMethod {
+  return isPublic ? "none" : (confidentialMethod ?? "client_secret_post")
 }
 
 // Every application may end the Bedrock session it signed someone in with,
@@ -104,13 +113,6 @@ export function createApplicationSchema(t: Translator<"applications">) {
   })
 }
 
-// What lands in a token, so it is restricted to what a claim can carry safely
-// and cannot be changed once applications rely on it. Uppercase is kept: a key
-// has to be able to match a relying party's own policy name, and those are
-// case-sensitive. Exported so the form and the action validate identically.
-export const APPLICATION_ROLE_KEY_PATTERN =
-  /^[A-Za-z0-9]+(?:[-_:][A-Za-z0-9]+)*$/
-
 export function createApplicationRoleSchema(t: Translator<"applications">) {
   return z.object({
     key: z
@@ -118,7 +120,10 @@ export function createApplicationRoleSchema(t: Translator<"applications">) {
       .trim()
       .min(1, t("validation.roleKeyRequired"))
       .max(64, t("validation.tooLong", { max: 64 }))
-      .regex(APPLICATION_ROLE_KEY_PATTERN, t("validation.roleKeyFormat")),
+      .regex(
+        /^[A-Za-z0-9]+(?:[-_:][A-Za-z0-9]+)*$/,
+        t("validation.roleKeyFormat")
+      ),
     name: z
       .string()
       .trim()

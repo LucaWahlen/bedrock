@@ -68,10 +68,12 @@ async function applicationAccess(userId: string, clientId: string) {
 // cannot drift apart. Roles and groups each need their own scope.
 function applicationClaims(
   access: Awaited<ReturnType<typeof applicationAccess>>,
-  scopes: readonly string[]
+  scopes: readonly string[],
+  userName: string
 ) {
   return {
     [ORGANIZATION_CLAIM]: access.organizationSlug,
+    ...(scopes.includes("profile") ? { preferred_username: userName } : {}),
     ...(scopes.includes("roles") ? { [ROLES_CLAIM]: access.roles } : {}),
     ...(scopes.includes("groups") ? { [GROUPS_CLAIM]: access.groups } : {}),
   }
@@ -96,7 +98,8 @@ function applicationClientId(metadata?: Record<string, unknown>) {
 async function tokenClaims(
   userId: string,
   scopes: readonly string[],
-  metadata?: Record<string, unknown>
+  metadata: Record<string, unknown> | undefined,
+  userName: string
 ) {
   const { isApplicationAccessRefused } =
     await import("@/features/shared/lib/oidc-claims")
@@ -104,7 +107,8 @@ async function tokenClaims(
   try {
     return applicationClaims(
       await applicationAccess(userId, applicationClientId(metadata)),
-      scopes
+      scopes,
+      userName
     )
   } catch (error) {
     if (!isApplicationAccessRefused(error)) throw error
@@ -262,18 +266,39 @@ export const auth = betterAuth({
       allowDynamicClientRegistration: false,
       storeClientSecret: "hashed",
       advertisedMetadata: {
-        claims_supported: [ORGANIZATION_CLAIM, ROLES_CLAIM, GROUPS_CLAIM],
+        claims_supported: [
+          "sub",
+          "iss",
+          "aud",
+          "exp",
+          "nbf",
+          "iat",
+          "jti",
+          "email",
+          "email_verified",
+          "name",
+          "picture",
+          "family_name",
+          "given_name",
+          "sid",
+          "scope",
+          "azp",
+          "preferred_username",
+          ORGANIZATION_CLAIM,
+          ROLES_CLAIM,
+          GROUPS_CLAIM,
+        ],
       },
       // Every claim callback refuses someone who is not a current member of the
       // organization owning the application. A refusal here stops the token,
       // which is the point: a live Bedrock session or an earlier refresh token
       // is not by itself permission to enter a tenant's application.
       customIdTokenClaims: async ({ user, scopes, metadata }) =>
-        tokenClaims(user.id, scopes, metadata),
+        tokenClaims(user.id, scopes, metadata, user.name),
       customAccessTokenClaims: async ({ user, scopes, metadata }) => {
         if (!user) return {}
 
-        return tokenClaims(user.id, scopes, metadata)
+        return tokenClaims(user.id, scopes, metadata, user.name)
       },
       // The access token names its client, which is all userinfo has to go on.
       // The membership is resolved again here rather than read from the token,
@@ -291,7 +316,8 @@ export const auth = betterAuth({
         try {
           return applicationClaims(
             await applicationAccess(user.id, clientId),
-            scopes
+            scopes,
+            user.name
           )
         } catch (error) {
           throw new APIError("UNAUTHORIZED", {

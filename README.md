@@ -459,6 +459,23 @@ reconfigured. `sub` is the user's global id. The organization that owns the
 application is sent in `urn:bedrock:organization`. Tokens are signed with
 RS256.
 
+The standard claims depend on the granted scopes:
+
+- `openid` is required and identifies the global account with `sub`.
+- `profile` returns `name`, `picture`, `given_name` and `family_name` from the
+  UserInfo endpoint. Bedrock also sends `preferred_username` in the ID token,
+  access token and UserInfo response, using the account's display name.
+- `email` returns `email` and `email_verified` from UserInfo.
+- `roles` and `groups` add the corresponding namespaced claims described below
+  to the ID token, access token and UserInfo response.
+
+The discovery document advertises these claims, including Bedrock's custom
+claims. Confidential clients support `client_secret_post` and
+`client_secret_basic`; new confidential applications use `client_secret_post`
+by default, and the method can be selected when registering an application.
+Choose the method the relying party supports. Public clients use `none` and
+PKCE.
+
 Two further scopes describe the member inside that organization. Both claims
 appear in the ID token, the access token and the userinfo response, and only
 when their scope was granted:
@@ -470,10 +487,17 @@ when their scope was granted:
   member belongs to in the organization owning the application.
 
 Role and group keys are what applications match on, so neither can be changed
-once created; renaming a role or a group changes only its display name. Both
-come from the current membership whenever a token or userinfo response is
-issued, so someone who leaves the organization loses their groups and every
-role they granted.
+Role and group keys are what applications match on, so neither can be changed
+once created; renaming a role or a group changes only its display name. Role
+keys are case-sensitive and preserve the exact spelling entered. They allow
+ASCII letters, digits and `-`, `_`, `:` separators. Group keys allow lowercase
+ASCII letters, digits and `-`, `_` separators. Both come from the current
+membership whenever a token or userinfo response is issued, so someone who
+leaves the organization loses their groups and every role they granted.
+
+Request `groups` only when the relying party consumes group keys. Some clients
+interpret values from this claim as policy names and reject unknown keys, so
+leave the scope out when their policy engine should use role keys alone.
 
 The Members table, the Roles page and a member's own overview show that same
 effective set, marking which roles come through a group. Assigning roles to a

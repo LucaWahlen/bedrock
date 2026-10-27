@@ -79,7 +79,7 @@ async function insertClient(clientId: string, organizationId: string) {
 }
 
 type ClaimCallback = (info: {
-  user: { id: string }
+  user: { id: string; name: string }
   scopes: string[]
   metadata?: Record<string, unknown>
 }) => Promise<Record<string, unknown>>
@@ -93,7 +93,7 @@ function providerOptions() {
       customIdTokenClaims: ClaimCallback
       customAccessTokenClaims: ClaimCallback
       customUserInfoClaims: (info: {
-        user: { id: string }
+        user: { id: string; name: string }
         scopes: string[]
         jwt: Record<string, unknown>
       }) => Promise<Record<string, unknown>>
@@ -507,7 +507,7 @@ describe("what an application learns about a member's groups", () => {
   test("the groups claim appears only when the groups scope was granted", async () => {
     const options = providerOptions()
     const metadata = { clientId: portalClient }
-    const person = { id: fixture.carol.id }
+    const person = { id: fixture.carol.id, name: "Carol" }
 
     for (const callback of [
       options.customIdTokenClaims,
@@ -519,26 +519,29 @@ describe("what an application learns about a member's groups", () => {
         scopes: ["openid", "roles"],
         metadata,
       })
+      expect(without.preferred_username).toBeUndefined()
       expect(without["urn:bedrock:groups"]).toBeUndefined()
       expect(without["urn:bedrock:roles"]).toEqual(["billing"])
 
       // oxlint-disable-next-line no-await-in-loop
       const granted = await callback({
         user: person,
-        scopes: ["openid", "groups"],
+        scopes: ["openid", "profile", "groups"],
         metadata,
       })
+      expect(granted.preferred_username).toBe("Carol")
       expect(granted["urn:bedrock:groups"]).toEqual(["engineering"])
       expect(granted["urn:bedrock:roles"]).toBeUndefined()
     }
 
     const userinfo = await options.customUserInfoClaims({
       user: person,
-      scopes: ["openid", "roles", "groups"],
+      scopes: ["openid", "profile", "roles", "groups"],
       jwt: { client_id: portalClient },
     })
     expect(userinfo).toMatchObject({
       "urn:bedrock:organization": fixture.orgA.slug,
+      preferred_username: "Carol",
       "urn:bedrock:roles": ["billing"],
       "urn:bedrock:groups": ["engineering"],
     })
@@ -549,6 +552,7 @@ describe("what an application learns about a member's groups", () => {
       jwt: { client_id: portalClient },
     })
     expect(plain["urn:bedrock:groups"]).toBeUndefined()
+    expect(plain.preferred_username).toBeUndefined()
   })
 
   test("a departed member's groups, and the roles they granted, vanish", async () => {
@@ -566,7 +570,7 @@ describe("what an application learns about a member's groups", () => {
     ).rejects.toThrow(/not a member/i)
     await expect(
       providerOptions().customUserInfoClaims({
-        user: { id: fixture.carol.id },
+        user: { id: fixture.carol.id, name: "Carol" },
         scopes: ["openid", "groups"],
         jwt: { client_id: portalClient },
       })

@@ -1,4 +1,7 @@
-import type { ApplicationTokenAuthMethod } from "@/features/applications/schemas/application"
+import type {
+  ApplicationTokenAuthMethod,
+  ClientAuthMethod,
+} from "@/features/applications/schemas/application"
 
 export type ApplicationRoleSummary = {
   id: string
@@ -201,7 +204,12 @@ export type UpdateApplicationInput = {
 // The secret is returned once, at creation and at rotation, and is only ever
 // stored hashed.
 export type ApplicationSecretResult =
-  | { success: true; clientId: string; clientSecret: string | null }
+  | {
+      success: true
+      clientId: string
+      clientSecret: string | null
+      tokenEndpointAuthMethod: ClientAuthMethod
+    }
   | { success: false; error: string }
 
 export type ApplicationRoleInput = {

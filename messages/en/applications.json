@@ -100,12 +100,6 @@
     "launchUrl": "Launch URL (optional)",
     "launchUrlHint": "Where members open the application from their overview.",
     "isPublic": "Cannot keep a secret (browser or mobile app)",
-    "tokenEndpointAuthMethod": "Client authentication",
-    "tokenEndpointAuthMethodHint": "Clients that send the secret in the request body need client_secret_post.",
-    "authMethods": {
-      "client_secret_basic": "HTTP Basic (client_secret_basic)",
-      "client_secret_post": "Request body (client_secret_post)"
-    },
     "skipConsent": "Trusted: do not ask members for consent",
     "saveChanges": "Save changes",
     "create": "Create application",
@@ -269,7 +263,7 @@
     "launchUrlHttp": "Use an absolute http or https URL",
     "iconInvalid": "Use a PNG, JPEG, WebP or SVG under 2 MB",
     "roleKeyRequired": "Give the role a key",
-    "roleKeyFormat": "Use letters, numbers, and - _ : separators",
+    "roleKeyFormat": "Use ASCII letters, numbers, and - _ : separators; keys are case-sensitive",
     "roleNameRequired": "Give the role a name",
     "applicationsTooMany": "Choose at most {max, number} applications",
     "membersTooMany": "Choose at most {max, number} members"

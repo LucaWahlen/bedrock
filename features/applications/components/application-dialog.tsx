@@ -19,7 +19,7 @@ import { createApplication } from "@/features/applications/actions/create-applic
 import { updateApplication } from "@/features/applications/actions/update-application"
 import {
   APPLICATION_TOKEN_AUTH_METHODS,
-  type ApplicationTokenAuthMethod,
+  type ClientAuthMethod,
   createLaunchUrlSchema,
   createRedirectUriSchema,
 } from "@/features/applications/schemas/application"
@@ -129,7 +129,7 @@ type ApplicationDialogProps = {
     clientId: string
     clientSecret: string | null
     name: string
-    tokenEndpointAuthMethod: ApplicationTokenAuthMethod | null
+    tokenEndpointAuthMethod: ClientAuthMethod
   }) => void
 }
 
@@ -157,7 +157,7 @@ export function ApplicationDialog({
       uri: application?.uri ?? "",
       isPublic: application ? !application.isConfidential : false,
       tokenEndpointAuthMethod:
-        application?.tokenEndpointAuthMethod ?? "client_secret_basic",
+        application?.tokenEndpointAuthMethod ?? "client_secret_post",
       skipConsent: application?.skipConsent ?? false,
       icon: undefined,
       iconCleared: false,
@@ -226,6 +226,7 @@ export function ApplicationDialog({
       const result = await createApplication({
         ...shared,
         isPublic: values.isPublic,
+        tokenEndpointAuthMethod: values.tokenEndpointAuthMethod,
       })
 
       if (!result.success) {
@@ -239,10 +240,8 @@ export function ApplicationDialog({
       onCreated({
         clientId: result.clientId,
         clientSecret: result.clientSecret,
+        tokenEndpointAuthMethod: result.tokenEndpointAuthMethod,
         name: values.name,
-        tokenEndpointAuthMethod: values.isPublic
-          ? null
-          : values.tokenEndpointAuthMethod,
       })
     } catch (error) {
       if (uploaded) await cleanupMedia([uploaded])
@@ -421,15 +420,11 @@ export function ApplicationDialog({
                   render={({ field }) => (
                     <Field>
                       <FieldLabel htmlFor="application-auth-method">
-                        {t("applicationDialog.tokenEndpointAuthMethod")}
+                        {t("endpoints.clientAuthentication")}
                       </FieldLabel>
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
-                        items={APPLICATION_TOKEN_AUTH_METHODS.map((method) => ({
-                          value: method,
-                          label: t(`applicationDialog.authMethods.${method}`),
-                        }))}
                       >
                         <SelectTrigger id="application-auth-method">
                           <SelectValue />
@@ -437,14 +432,11 @@ export function ApplicationDialog({
                         <SelectContent>
                           {APPLICATION_TOKEN_AUTH_METHODS.map((method) => (
                             <SelectItem key={method} value={method}>
-                              {t(`applicationDialog.authMethods.${method}`)}
+                              {method}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <p className="text-xs text-muted-foreground">
-                        {t("applicationDialog.tokenEndpointAuthMethodHint")}
-                      </p>
                     </Field>
                   )}
                 />

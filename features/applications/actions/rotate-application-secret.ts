@@ -62,6 +62,10 @@ export async function rotateApplicationSecret(
       success: true,
       clientId,
       clientSecret: rotated.client_secret ?? null,
+      tokenEndpointAuthMethod:
+        application.tokenEndpointAuthMethod === "client_secret_post"
+          ? "client_secret_post"
+          : "client_secret_basic",
     }
   } catch (error) {
     await recordAuditEvent({
