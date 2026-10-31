@@ -15,7 +15,7 @@
 # process. It runs as a numeric non-root user, so Kubernetes can verify
 # `runAsNonRoot` without a `runAsUser` of its own.
 
-FROM oven/bun:1.3-alpine AS bun
+FROM oven/bun:1.4-alpine AS bun
 
 # Next.js builds and serves under Node.js; Bun only installs packages here.
 FROM node:24-alpine AS base
