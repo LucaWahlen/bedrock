@@ -118,6 +118,17 @@ export async function updateApplication(
       .update(oauthClient)
       .set({
         ...(icon !== undefined && { icon: icon?.publicUrl ?? null }),
+        // The plugin's admin update endpoint does not accept
+        // `token_endpoint_auth_method`, so it is stripped before the handler
+        // ever sees it and the change is silently lost. Persist it here, the
+        // same way as `uri` and the post-logout settings below. Only the
+        // confidential methods reach this point: the field is only offered for
+        // a confidential client, and `none`/`private_key_jwt` are excluded.
+        ...(parsed.data.tokenEndpointAuthMethod &&
+          application.tokenEndpointAuthMethod !== null &&
+          application.tokenEndpointAuthMethod !== "none" && {
+            tokenEndpointAuthMethod: parsed.data.tokenEndpointAuthMethod,
+          }),
         // The plugin reads an absent `client_uri` as "unchanged", so clearing
         // the launch URL has to be written here.
         uri: parsed.data.uri ?? null,
