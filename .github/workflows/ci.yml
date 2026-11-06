@@ -98,7 +98,7 @@ jobs:
       - run: bun run audit
         continue-on-error: true
 
-  # Pull requests build the image without pushing. main publishes `edge` and
+  # Pull requests build the image without pushing. main publishes `nightly` and
   # `sha-<short>`; a version tag publishes the version tags and a release.
   images:
     needs: check

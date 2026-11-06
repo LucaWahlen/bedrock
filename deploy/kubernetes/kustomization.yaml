@@ -16,7 +16,7 @@ resources:
   - service.yaml
   - ingress.yaml
 
-# Pin a released version, e.g. 0.1.0. Do not run `edge` in production.
+# Pin a released version, e.g. 0.1.0. Do not run `nightly` in production.
 images:
   - name: ghcr.io/lucawahlen/bedrock
     newTag: X.Y.Z

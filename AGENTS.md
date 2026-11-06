@@ -404,7 +404,7 @@ server code, for example, only shows up there.
   between minors, but never the OIDC contract above or a shipped migration.
 - The release is one image, `ghcr.io/lucawahlen/bedrock`: the server plus the
   `bedrock admin | migrate | housekeep` CLI bundled for Node.js. A push to
-  `main` publishes `edge` and `sha-<short>`. Tagging `vX.Y.Z` publishes
+  `main` publishes `nightly` and `sha-<short>`. Tagging `vX.Y.Z` publishes
   `X.Y.Z`, `X.Y` and `latest` (amd64 and arm64) and creates a GitHub Release; a
   prerelease tag such as `v0.2.0-beta.1` publishes only itself.
 - Bump `version` in `package.json` in the same commit that is tagged.

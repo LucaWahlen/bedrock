@@ -861,11 +861,11 @@ Every release is published to GHCR for `linux/amd64` and `linux/arm64`, with
 SBOM and provenance attestations, as `ghcr.io/lucawahlen/bedrock`: the Next.js
 standalone server under Node.js on port 3000, running as a non-root user.
 
-| Tag                   | Published by                                                 |
-| --------------------- | ------------------------------------------------------------ |
-| `X.Y.Z`               | A `vX.Y.Z` tag, which also creates the GitHub release        |
-| `X.Y`, `latest`       | The same, except for prereleases such as `v0.1.0-beta.1`     |
-| `edge`, `sha-<short>` | Every push to `main`; for trying changes, not for production |
+| Tag                      | Published by                                                 |
+| ------------------------ | ------------------------------------------------------------ |
+| `X.Y.Z`                  | A `vX.Y.Z` tag, which also creates the GitHub release        |
+| `X.Y`, `latest`          | The same, except for prereleases such as `v0.1.0-beta.1`     |
+| `nightly`, `sha-<short>` | Every push to `main`; for trying changes, not for production |
 
 The configuration is the environment, described in
 [`.env.example`](.env.example). To build the image locally, use the

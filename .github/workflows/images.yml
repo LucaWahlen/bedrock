@@ -116,8 +116,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # main: edge and sha-<short>. vX.Y.Z: X.Y.Z, X.Y and latest. A prerelease
-      # such as v0.1.0-beta.1 gets only its exact version.
+      # main: nightly and sha-<short>. vX.Y.Z: X.Y.Z, X.Y and latest. A
+      # prerelease such as v0.1.0-beta.1 gets only its exact version.
       - name: Tags
         id: meta
         uses: docker/metadata-action@v6
@@ -127,7 +127,7 @@ jobs:
           images: ${{ env.IMAGE }}
           flavor: latest=auto
           tags: |
-            type=edge,branch=main
+            type=raw,value=nightly,enable={{is_default_branch}}
             type=sha,prefix=sha-,format=short,enable={{is_default_branch}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
