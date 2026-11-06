@@ -18,6 +18,9 @@ import { getOrganizationMembers } from "@/features/organizations/actions/get-org
 import { updateOrganization } from "@/features/organizations/actions/update-organization"
 import { db } from "@/features/shared/lib/db/client"
 import {
+  applicationRole,
+  applicationRoleClient,
+  applicationRoleMember,
   auditEvent,
   member,
   oauthClient,
@@ -43,18 +46,22 @@ const fixture = await createFixture("required-2fa")
 const { orgA, orgB, alice, bob, carol } = fixture
 const clientA = `test-required-2fa-${fixture.suffix}-app-a`
 const clientB = `test-required-2fa-${fixture.suffix}-app-b`
+const roleA = `test-required-2fa-${fixture.suffix}-role-a`
+const roleB = `test-required-2fa-${fixture.suffix}-role-b`
 
 let dave: FixtureUser
 let erin: FixtureUser
 
 async function addMember(organizationId: string, userId: string, role: string) {
+  const id = crypto.randomUUID()
   await db.insert(member).values({
-    id: crypto.randomUUID(),
+    id,
     organizationId,
     userId,
     role,
     createdAt: new Date(),
   })
+  return id
 }
 
 async function registerPasskey(person: FixtureUser) {
@@ -121,6 +128,39 @@ beforeAll(async () => {
       createdAt: now,
     },
   ])
+  await db.insert(applicationRole).values([
+    {
+      id: roleA,
+      organizationId: orgA.id,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: roleB,
+      organizationId: orgB.id,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
+  ])
+  await db.insert(applicationRoleClient).values([
+    { roleId: roleA, clientId: clientA, createdAt: now },
+    { roleId: roleB, clientId: clientB, createdAt: now },
+  ])
+  const membershipsA = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(eq(member.organizationId, orgA.id))
+  await db.insert(applicationRoleMember).values(
+    membershipsA.map((row) => ({
+      roleId: roleA,
+      memberId: row.id,
+      createdAt: now,
+    }))
+  )
 })
 
 afterAll(async () => {
@@ -322,7 +362,12 @@ describe("a member without a second factor", () => {
   })
 
   test("is not refused by an organization that requires nothing", async () => {
-    await addMember(orgB.id, carol.id, "member")
+    const memberId = await addMember(orgB.id, carol.id, "member")
+    await db.insert(applicationRoleMember).values({
+      roleId: roleB,
+      memberId,
+      createdAt: new Date(),
+    })
 
     expect(await authorizationRefusal(carol.id, clientB)).toBeNull()
     expect(

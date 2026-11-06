@@ -1,3 +1,3 @@
-import { oidcEndpoint } from "@/features/auth"
+import { oidcEndSessionEndpoint } from "@/features/auth"
 
-export { oidcEndpoint as GET, oidcEndpoint as POST }
+export { oidcEndSessionEndpoint as GET, oidcEndSessionEndpoint as POST }

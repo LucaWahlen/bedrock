@@ -1,11 +1,18 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test"
 
+import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
 
 import { grantConsent } from "@/features/applications/actions/grant-consent"
 import { auth } from "@/features/auth/lib/auth"
 import { db } from "@/features/shared/lib/db/client"
-import { oauthClient } from "@/features/shared/lib/db/schema"
+import {
+  applicationRole,
+  applicationRoleClient,
+  applicationRoleMember,
+  member,
+  oauthClient,
+} from "@/features/shared/lib/db/schema"
 import { createFixture, type Fixture } from "@/tests/support/fixtures"
 import { actAs } from "@/tests/support/request"
 
@@ -21,6 +28,7 @@ let clientId: string
 beforeAll(async () => {
   fixture = await createFixture("consent")
   clientId = `consent-${fixture.suffix}`
+  const roleId = `consent-role-${fixture.suffix}`
   const now = new Date()
 
   await db.insert(oauthClient).values({
@@ -39,6 +47,30 @@ beforeAll(async () => {
     createdAt: now,
     updatedAt: now,
   })
+
+  await db.insert(applicationRole).values({
+    id: roleId,
+    organizationId: fixture.orgA.id,
+    key: "viewer",
+    name: "Viewer",
+    createdAt: now,
+    updatedAt: now,
+  })
+  await db
+    .insert(applicationRoleClient)
+    .values({ roleId, clientId, createdAt: now })
+
+  const memberships = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(eq(member.organizationId, fixture.orgA.id))
+  await db.insert(applicationRoleMember).values(
+    memberships.map((row) => ({
+      roleId,
+      memberId: row.id,
+      createdAt: now,
+    }))
+  )
 })
 
 afterAll(async () => {

@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm"
 
+import { launchUrlOf } from "@/features/applications/utils/launch-url"
 import { db } from "@/features/shared/lib/db/client"
 import { oauthClient, organization } from "@/features/shared/lib/db/schema"
 
@@ -41,7 +42,7 @@ export async function getAuthorizationContext(
 
   return {
     name: found.name ?? clientId,
-    uri: found.uri,
+    uri: launchUrlOf(found.uri),
     icon: found.icon,
     organizationSlug: found.organizationSlug,
   }

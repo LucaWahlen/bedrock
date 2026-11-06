@@ -508,19 +508,22 @@ stops granting it.
 The authorization code flow is supported, with refresh tokens. There are no
 client credentials and no dynamic registration. Requests must include the
 `openid` scope. Only current members of the organization that owns the
-application can sign in to it. A signed-in non-member is sent to that
-organization's access page instead of getting a code. The same check runs again
-when the token is issued, so a membership removed in between is also refused.
+application who hold at least one role linked to it (directly or through a
+group) can sign in to it. A signed-in non-member or a member without a role on
+the application is sent to that organization's access page instead of getting a
+code. The same check runs again when the token is issued, so a membership or
+role removed in between is also refused.
 
 An application that asks for `offline_access` also gets a refresh token. Every
 refresh resolves the membership, roles and groups again, so a refresh is how an
 application learns that a role was taken away; once the person has left the
-organization, been disabled or the organization is suspended, the refresh is
-refused with `invalid_grant`. Access and ID tokens live for an hour and refresh
-tokens for seven days, rotating on every use, with a 30-second grace period for
-an application that refreshes the same token in parallel. A refresh token never
-outlives the Bedrock session it was issued from: signing out, resetting the
-password or revoking the session on the account page revokes it too.
+organization, lost their last role on the application, been disabled or the
+organization is suspended, the refresh is refused with `invalid_grant`. Access
+and ID tokens live for an hour and refresh tokens for seven days, rotating on
+every use, with a 30-second grace period for an application that refreshes the
+same token in parallel. A refresh token never outlives the Bedrock session it
+was issued from: signing out, resetting the password or revoking the session on
+the account page revokes it too.
 
 Applications that sign people in only once and keep their own session never
 hear about a revoked role until that session ends. Give them a refresh token

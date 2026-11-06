@@ -117,21 +117,41 @@ beforeAll(async () => {
       createdAt: now,
       updatedAt: now,
     },
+    {
+      id: `${clientIds.b}-viewer`,
+      organizationId: orgB.id,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
   ])
   await db.insert(applicationRoleClient).values([
     { roleId: `${clientIds.a}-editor`, clientId: clientIds.a, createdAt: now },
     { roleId: `${clientIds.a}-viewer`, clientId: clientIds.a, createdAt: now },
+    { roleId: `${clientIds.b}-viewer`, clientId: clientIds.b, createdAt: now },
   ])
 
   const [carolMembership] = await db
     .select({ id: member.id })
     .from(member)
     .where(eq(member.userId, carol.id))
-  await db.insert(applicationRoleMember).values({
-    roleId: `${clientIds.a}-editor`,
-    memberId: carolMembership.id,
-    createdAt: now,
-  })
+  const [bobMembership] = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(eq(member.userId, bob.id))
+  await db.insert(applicationRoleMember).values([
+    {
+      roleId: `${clientIds.a}-editor`,
+      memberId: carolMembership.id,
+      createdAt: now,
+    },
+    {
+      roleId: `${clientIds.b}-viewer`,
+      memberId: bobMembership.id,
+      createdAt: now,
+    },
+  ])
 
   await db.insert(invitation).values([
     {
@@ -182,7 +202,7 @@ describe("your applications", () => {
     ])
   })
 
-  test("shows only the roles the member holds, and the launch URL", async () => {
+  test("shows only applications and roles the member holds, and the launch URL", async () => {
     await actAs(carol)
     const [application] = await getMemberApplications(orgA.id)
 
@@ -190,8 +210,7 @@ describe("your applications", () => {
     expect(application.launchUrl).toBe("https://a.example.test")
 
     await actAs(alice)
-    const [asOwner] = await getMemberApplications(orgA.id)
-    expect(asOwner.roles).toEqual([])
+    expect(await getMemberApplications(orgA.id)).toEqual([])
   })
 
   test("never links to a stored address that is not a web URL", async () => {

@@ -104,29 +104,31 @@ export function ActivityChart({ points }: { points: ActivityPoint[] }) {
           {t("empty")}
         </p>
       )}
-      <table className="sr-only">
-        <caption>{t("caption")}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t("day")}</th>
-            <th scope="col">{t("signIns")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {points.map((point) => (
-            <tr key={point.day}>
-              <th scope="row">
-                {format.dateTime(dayDate(point.day), FULL_DAY)}
-              </th>
-              <td>
-                {point.signIns === null
-                  ? t("notRecorded")
-                  : format.number(point.signIns)}
-              </td>
+      <div className="sr-only">
+        <table>
+          <caption>{t("caption")}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t("day")}</th>
+              <th scope="col">{t("signIns")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {points.map((point) => (
+              <tr key={point.day}>
+                <th scope="row">
+                  {format.dateTime(dayDate(point.day), FULL_DAY)}
+                </th>
+                <td>
+                  {point.signIns === null
+                    ? t("notRecorded")
+                    : format.number(point.signIns)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </figure>
   )
 }

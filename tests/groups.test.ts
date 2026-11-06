@@ -467,12 +467,12 @@ describe("what an application learns about a member's groups", () => {
       fixture.carol.id,
       portalClient
     )
-    const wiki = await resolveApplicationAccess(fixture.carol.id, wikiClient)
 
     expect(portal.roles).toEqual(["billing"])
-    expect(wiki.roles).toEqual([])
     expect(portal.groups).toEqual(["engineering"])
-    expect(wiki.groups).toEqual(["engineering"])
+    await expect(
+      resolveApplicationAccess(fixture.carol.id, wikiClient)
+    ).rejects.toThrow(/no role/i)
   })
 
   test("direct and group roles are one sorted set without duplicates", async () => {
@@ -584,12 +584,9 @@ describe("what an application learns about a member's groups", () => {
       role: "member",
       createdAt: new Date(),
     })
-    const rejoined = await resolveApplicationAccess(
-      fixture.carol.id,
-      portalClient
-    )
-    expect(rejoined.roles).toEqual([])
-    expect(rejoined.groups).toEqual([])
+    await expect(
+      resolveApplicationAccess(fixture.carol.id, portalClient)
+    ).rejects.toThrow(/no role/i)
   })
 })
 

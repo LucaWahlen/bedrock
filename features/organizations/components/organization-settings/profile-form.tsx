@@ -276,8 +276,12 @@ export function ProfileForm({
                       field.onChange(normalizeThemeColor(event.target.value))
                     }
                   />
-                  <PopoverContent className="w-52" align="start" side="top">
-                    {suggestedColor && suggestedColor !== field.value && (
+                  <PopoverContent
+                    className="w-auto min-w-56"
+                    align="start"
+                    side="top"
+                  >
+                    {suggestedColor && (
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <span
@@ -299,7 +303,6 @@ export function ProfileForm({
                             size="sm"
                             variant="outline"
                             onClick={() => {
-                              setSuggestedColor(undefined)
                               setColorPopoverOpen(false)
                             }}
                           >
@@ -310,7 +313,6 @@ export function ProfileForm({
                             size="sm"
                             onClick={() => {
                               field.onChange(suggestedColor)
-                              setSuggestedColor(undefined)
                               setColorPopoverOpen(false)
                             }}
                           >

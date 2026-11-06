@@ -27,6 +27,7 @@ const memberUserId = id("member")
 const strangerUserId = id("stranger")
 const portalClientId = id("portal")
 const wikiClientId = id("wiki")
+const ungrantedClientId = id("ungranted")
 const membershipId = id("membership")
 const sharedRoleId = id("role-shared")
 const portalRoleId = id("role-portal")
@@ -69,6 +70,7 @@ beforeAll(async () => {
   await makeOrganization(otherOrgId)
   await makeApplication(portalClientId, orgId)
   await makeApplication(wikiClientId, orgId)
+  await makeApplication(ungrantedClientId, orgId)
 
   await db.insert(member).values({
     id: membershipId,
@@ -142,6 +144,12 @@ describe("what an application learns about a member", () => {
 })
 
 describe("who is refused a token", () => {
+  test("a member who holds no role on the application", async () => {
+    await expect(
+      resolveApplicationAccess(memberUserId, ungrantedClientId)
+    ).rejects.toThrow(/no role/i)
+  })
+
   test("someone who is not a member of the owning organization", async () => {
     await expect(
       resolveApplicationAccess(strangerUserId, portalClientId)

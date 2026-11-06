@@ -78,6 +78,7 @@ export const oidcAuthorizationGate = createAuthMiddleware(async (ctx) => {
 
   if (
     refusal.reason !== "not_member" &&
+    refusal.reason !== "no_application_role" &&
     refusal.reason !== "second_factor_required"
   ) {
     throw new APIError("BAD_REQUEST", {

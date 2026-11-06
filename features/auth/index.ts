@@ -34,6 +34,7 @@ export {
   authorizeUserAdministration,
   type AdministeredUser,
 } from "@/features/auth/lib/user-administration"
+export { oidcEndSessionEndpoint } from "@/features/auth/lib/oidc-end-session"
 export { oidcEndpoint } from "@/features/auth/lib/oidc-endpoint"
 export {
   recordRefusedTokenRequest,
@@ -52,6 +53,7 @@ export { SignUpForm } from "@/features/auth/components/auth-page/sign-up-form"
 export { VerifyEmailPanel } from "@/features/auth/components/auth-page/verify-email-panel"
 export { LoginPage } from "@/features/auth/components/login-page"
 export { OidcLoginForm } from "@/features/auth/components/oidc-login-form"
+export { OidcLogoutPanel } from "@/features/auth/components/oidc-logout-panel"
 export { TwoFactorForm } from "@/features/auth/components/two-factor-form"
 export {
   awaitsSecondFactor,
@@ -70,6 +72,7 @@ export type {
   LoginOrganization,
   LoginResult,
   NewPassword,
+  OidcLogoutState,
   PasskeySignInResult,
   SignInStep,
   TwoFactorInput,

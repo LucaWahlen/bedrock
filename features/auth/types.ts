@@ -120,3 +120,5 @@ export type LoginOrganization = {
   logo?: string | null
   backgroundImage?: string | null
 }
+
+export type OidcLogoutState = "confirm" | "logged-out" | "error"

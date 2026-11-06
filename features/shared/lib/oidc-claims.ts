@@ -33,6 +33,8 @@ export type AuthorizationRefusal =
   | { reason: "not_member"; organizationSlug: string }
   // A member of an organization that requires a second factor, without one.
   | { reason: "second_factor_required"; organizationSlug: string }
+  // A member who holds no role linked to this application, directly or via a group.
+  | { reason: "no_application_role"; organizationSlug: string }
 
 async function findApplicationOwner(userId: string, clientId: string) {
   const [owner] = await db
@@ -89,6 +91,36 @@ function refusalFor(owner: ApplicationOwner): AuthorizationRefusal | null {
   return null
 }
 
+// A role reaches the token held directly or through one of the member's
+// groups, the same effective set the members table shows, and either way only
+// when it is linked to this client. Every join stays inside the owning
+// organization, and both paths hang off the membership, so leaving the
+// organization takes all of it away.
+async function memberApplicationRoles(
+  organizationId: string,
+  memberId: string,
+  clientId: string
+) {
+  const grants = roleGrantsIn(organizationId)
+  const roles = await db
+    .selectDistinct({ key: applicationRole.key })
+    .from(grants)
+    .innerJoin(applicationRole, eq(applicationRole.id, grants.roleId))
+    .innerJoin(
+      applicationRoleClient,
+      eq(applicationRoleClient.roleId, applicationRole.id)
+    )
+    .where(
+      and(
+        eq(grants.memberId, memberId),
+        eq(applicationRoleClient.clientId, clientId),
+        eq(applicationRole.organizationId, organizationId)
+      )
+    )
+
+  return [...new Set(roles.map((role) => role.key))].toSorted()
+}
+
 // The same rule as `resolveApplicationAccess`, asked before a code is issued so
 // the refusal can be shown to the person rather than thrown at the application.
 export async function authorizationRefusal(
@@ -99,7 +131,25 @@ export async function authorizationRefusal(
 
   if (!owner) return { reason: "unknown_application" }
 
-  return refusalFor(owner)
+  const refusal = refusalFor(owner)
+  if (refusal) return refusal
+  if (!owner.memberId) {
+    return { reason: "not_member", organizationSlug: owner.organizationSlug }
+  }
+
+  const roles = await memberApplicationRoles(
+    owner.organizationId,
+    owner.memberId,
+    clientId
+  )
+  if (roles.length === 0) {
+    return {
+      reason: "no_application_role",
+      organizationSlug: owner.organizationSlug,
+    }
+  }
+
+  return null
 }
 
 const REFUSAL_ERRORS: Record<AuthorizationRefusal["reason"], string> = {
@@ -109,6 +159,7 @@ const REFUSAL_ERRORS: Record<AuthorizationRefusal["reason"], string> = {
   not_member: "Not a member of the organization owning this application",
   second_factor_required:
     "The organization owning this application requires a second factor",
+  no_application_role: "No role granted for this application",
 }
 
 const ACCESS_REFUSED = "ApplicationAccessRefused"
@@ -149,28 +200,8 @@ export async function resolveApplicationAccess(
   // Narrowed for the compiler; `refusalFor` has already refused without one.
   if (!owner.memberId) throw new ApplicationAccessRefused("not_member")
 
-  // A role reaches the token held directly or through one of the member's
-  // groups, the same effective set the members table shows, and either way only
-  // when it is linked to this client. Every join stays inside the owning
-  // organization, and both paths hang off the membership, so leaving the
-  // organization takes all of it away.
-  const grants = roleGrantsIn(owner.organizationId)
   const [roles, groups] = await Promise.all([
-    db
-      .selectDistinct({ key: applicationRole.key })
-      .from(grants)
-      .innerJoin(applicationRole, eq(applicationRole.id, grants.roleId))
-      .innerJoin(
-        applicationRoleClient,
-        eq(applicationRoleClient.roleId, applicationRole.id)
-      )
-      .where(
-        and(
-          eq(grants.memberId, owner.memberId),
-          eq(applicationRoleClient.clientId, clientId),
-          eq(applicationRole.organizationId, owner.organizationId)
-        )
-      ),
+    memberApplicationRoles(owner.organizationId, owner.memberId, clientId),
     db
       .select({ key: group.key })
       .from(groupMember)
@@ -183,11 +214,15 @@ export async function resolveApplicationAccess(
       ),
   ])
 
+  if (roles.length === 0) {
+    throw new ApplicationAccessRefused("no_application_role")
+  }
+
   return {
     organizationId: owner.organizationId,
     organizationSlug: owner.organizationSlug,
     organizationName: owner.organizationName,
-    roles: [...new Set(roles.map((role) => role.key))].toSorted(),
+    roles,
     groups: [...new Set(groups.map((held) => held.key))].toSorted(),
   }
 }

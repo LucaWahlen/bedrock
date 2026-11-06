@@ -8,6 +8,7 @@ import { revokeSession } from "@/features/account/actions/revoke-session"
 import { createApplication } from "@/features/applications/actions/create-application"
 import { updateApplication } from "@/features/applications/actions/update-application"
 import { auth } from "@/features/auth/lib/auth"
+import { oidcEndSessionEndpoint } from "@/features/auth/lib/oidc-end-session"
 import { db } from "@/features/shared/lib/db/client"
 import {
   applicationRole,
@@ -42,6 +43,8 @@ let challenge: string
 let clientA: string
 let clientB: string
 let roleId: string
+let editorRoleId: string
+let roleBId: string
 
 async function makeClient(clientId: string, organizationId: string) {
   const now = new Date()
@@ -72,6 +75,13 @@ async function addMember(organizationId: string, userId: string) {
     role: "member",
     createdAt: new Date(),
   })
+  if (organizationId === fixture.orgA.id) {
+    await db.insert(applicationRoleMember).values({
+      roleId,
+      memberId: id,
+      createdAt: new Date(),
+    })
+  }
   return id
 }
 
@@ -91,17 +101,67 @@ beforeAll(async () => {
   challenge = Buffer.from(digest).toString("base64url")
 
   roleId = crypto.randomUUID()
-  await db.insert(applicationRole).values({
-    id: roleId,
-    organizationId: fixture.orgA.id,
-    key: "viewer",
-    name: "Viewer",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  })
-  await db
-    .insert(applicationRoleClient)
-    .values({ roleId, clientId: clientA, createdAt: new Date() })
+  editorRoleId = crypto.randomUUID()
+  roleBId = crypto.randomUUID()
+  const now = new Date()
+  await db.insert(applicationRole).values([
+    {
+      id: roleId,
+      organizationId: fixture.orgA.id,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: editorRoleId,
+      organizationId: fixture.orgA.id,
+      key: "editor",
+      name: "Editor",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: roleBId,
+      organizationId: fixture.orgB.id,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
+  ])
+  await db.insert(applicationRoleClient).values([
+    { roleId, clientId: clientA, createdAt: now },
+    { roleId: editorRoleId, clientId: clientA, createdAt: now },
+    { roleId: roleBId, clientId: clientB, createdAt: now },
+  ])
+
+  const memberships = await db
+    .select({
+      id: member.id,
+      organizationId: member.organizationId,
+    })
+    .from(member)
+    .where(eq(member.organizationId, fixture.orgA.id))
+  const [bobsMembership] = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(
+      and(
+        eq(member.organizationId, fixture.orgB.id),
+        eq(member.userId, fixture.bob.id)
+      )
+    )
+  await db.insert(applicationRoleMember).values([
+    ...memberships.map((row) => ({
+      roleId,
+      memberId: row.id,
+      createdAt: now,
+    })),
+    ...(bobsMembership
+      ? [{ roleId: roleBId, memberId: bobsMembership.id, createdAt: now }]
+      : []),
+  ])
 })
 
 afterAll(async () => {
@@ -228,7 +288,7 @@ describe("what a refresh says", () => {
       )
     if (!davesMembership) throw new Error("Dave is not a member of A")
     await db.insert(applicationRoleMember).values({
-      roleId,
+      roleId: editorRoleId,
       memberId: davesMembership.id,
       createdAt: new Date(),
     })
@@ -237,6 +297,25 @@ describe("what a refresh says", () => {
     const granted = await refresh(clientA, refreshToken)
     expect(granted.status).toBe(200)
     expect(claimsOf(granted.body.id_token)["urn:bedrock:roles"]).toEqual([
+      "editor",
+      "viewer",
+    ])
+
+    await db
+      .delete(applicationRoleMember)
+      .where(
+        and(
+          eq(applicationRoleMember.memberId, davesMembership.id),
+          eq(applicationRoleMember.roleId, editorRoleId)
+        )
+      )
+
+    const narrowed = await refresh(
+      clientA,
+      granted.body.refresh_token as string
+    )
+    expect(narrowed.status).toBe(200)
+    expect(claimsOf(narrowed.body.id_token)["urn:bedrock:roles"]).toEqual([
       "viewer",
     ])
 
@@ -244,9 +323,18 @@ describe("what a refresh says", () => {
       .delete(applicationRoleMember)
       .where(eq(applicationRoleMember.memberId, davesMembership.id))
 
-    const revoked = await refresh(clientA, granted.body.refresh_token as string)
-    expect(revoked.status).toBe(200)
-    expect(claimsOf(revoked.body.id_token)["urn:bedrock:roles"]).toEqual([])
+    const refused = await refresh(
+      clientA,
+      narrowed.body.refresh_token as string
+    )
+    expect(refused.status).toBe(400)
+    expect(refused.body.error).toBe("invalid_grant")
+
+    await db.insert(applicationRoleMember).values({
+      roleId,
+      memberId: davesMembership.id,
+      createdAt: new Date(),
+    })
   })
 
   test("a refusal, as invalid_grant, once the member has left", async () => {
@@ -436,6 +524,100 @@ describe("signing out from an application", () => {
     expect(response.status).toBe(302)
     expect(response.headers.get("location")).toBe(
       "https://app.example.test/signed-out?state=bye"
+    )
+    expect(
+      await db
+        .select()
+        .from(session)
+        .where(eq(session.userId, fixture.alice.id))
+    ).toEqual([])
+    forgetSessions([fixture.alice.id])
+  })
+
+  test("without a post-logout URI, ends the session and lands on Bedrock's signed-out page", async () => {
+    await actAs(fixture.alice)
+    const signedIn = await exchange(clientA, await authorize(clientA, "openid"))
+    expect(signedIn.status).toBe(200)
+
+    const url = new URL(`${BASE}/oauth2/end-session`)
+    url.searchParams.set("id_token_hint", signedIn.body.id_token as string)
+
+    const requestHeaders = new Headers(await headers())
+    requestHeaders.set("accept", "text/html")
+
+    const realFetch = globalThis.fetch
+    const fetchKeys = spyOn(globalThis, "fetch").mockImplementation((async (
+      input: RequestInfo | URL,
+      init?: RequestInit
+    ) => {
+      const target = new Request(input, init)
+      return target.url === `${BASE}/jwks`
+        ? auth.handler(target)
+        : realFetch(input, init)
+    }) as typeof fetch)
+    const response = await oidcEndSessionEndpoint(
+      new Request(url, { headers: requestHeaders })
+    ).finally(() => fetchKeys.mockRestore())
+
+    expect(response.status).toBe(303)
+    expect(response.headers.get("location")).toBe(
+      `/oauth2/end-session?state=logged-out&client_id=${clientA}`
+    )
+    expect(
+      await db
+        .select()
+        .from(session)
+        .where(eq(session.userId, fixture.alice.id))
+    ).toEqual([])
+    forgetSessions([fixture.alice.id])
+  })
+
+  test("without a hint, asks for confirmation and completes logout on POST", async () => {
+    await actAs(fixture.alice)
+    const requestHeaders = new Headers(await headers())
+    requestHeaders.set("accept", "text/html")
+
+    const promptResponse = await oidcEndSessionEndpoint(
+      new Request(`${BASE}/oauth2/end-session?client_id=${clientA}`, {
+        headers: requestHeaders,
+      })
+    )
+
+    expect(promptResponse.status).toBe(303)
+    expect(promptResponse.headers.get("location")).toBe(
+      `/oauth2/end-session?state=confirm&client_id=${clientA}`
+    )
+    expect(
+      await db
+        .select()
+        .from(session)
+        .where(eq(session.userId, fixture.alice.id))
+    ).toHaveLength(1)
+
+    const cookies = [
+      requestHeaders.get("cookie"),
+      ...promptResponse.headers
+        .getSetCookie()
+        .map((cookie) => cookie.split(";")[0]),
+    ]
+      .filter(Boolean)
+      .join("; ")
+
+    const confirmResponse = await oidcEndSessionEndpoint(
+      new Request(`${BASE}/oauth2/end-session/confirm?client_id=${clientA}`, {
+        method: "POST",
+        headers: {
+          accept: "text/html",
+          "content-type": "application/x-www-form-urlencoded",
+          cookie: cookies,
+        },
+        body: new URLSearchParams({ action: "confirm" }),
+      })
+    )
+
+    expect(confirmResponse.status).toBe(303)
+    expect(confirmResponse.headers.get("location")).toBe(
+      `/oauth2/end-session?state=logged-out&client_id=${clientA}`
     )
     expect(
       await db

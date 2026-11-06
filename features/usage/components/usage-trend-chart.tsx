@@ -153,25 +153,27 @@ export function UsageTrendChart({
           </AreaChart>
         </ChartContainer>
       )}
-      <table className="sr-only">
-        <caption>{caption}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t("day")}</th>
-            <th scope="col">{t("signIns")}</th>
-            <th scope="col">{t("activeUsers")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {points.map((point) => (
-            <tr key={point.day}>
-              <th scope="row">{formatDay(point.day, FULL_DAY)}</th>
-              <td>{formatCount(point.signIns)}</td>
-              <td>{formatCount(point.activeUsers)}</td>
+      <div className="sr-only">
+        <table>
+          <caption>{caption}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t("day")}</th>
+              <th scope="col">{t("signIns")}</th>
+              <th scope="col">{t("activeUsers")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {points.map((point) => (
+              <tr key={point.day}>
+                <th scope="row">{formatDay(point.day, FULL_DAY)}</th>
+                <td>{formatCount(point.signIns)}</td>
+                <td>{formatCount(point.activeUsers)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </figure>
   )
 }

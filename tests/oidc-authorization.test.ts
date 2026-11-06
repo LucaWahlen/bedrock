@@ -9,6 +9,9 @@ import {
 import { scopeIncludesOpenId } from "@/features/auth/lib/oidc-authorization-gate"
 import { db } from "@/features/shared/lib/db/client"
 import {
+  applicationRole,
+  applicationRoleClient,
+  applicationRoleMember,
   member,
   oauthClient,
   organization,
@@ -31,14 +34,17 @@ const ownOrgId = id("own")
 const otherOrgId = id("other")
 const aliceId = id("alice")
 const bobId = id("bob")
+const carolId = id("carol")
 const ownClientId = id("own-app")
 const otherClientId = id("other-app")
+const ownRoleId = id("own-role")
+const otherRoleId = id("other-role")
 
 beforeAll(async () => {
   const now = new Date()
 
   await db.insert(user).values(
-    [aliceId, bobId].map((userId) => ({
+    [aliceId, bobId, carolId].map((userId) => ({
       id: userId,
       name: userId,
       email: `${userId}@example.test`,
@@ -80,6 +86,13 @@ beforeAll(async () => {
       createdAt: now,
     },
     {
+      id: id("carol-own"),
+      organizationId: ownOrgId,
+      userId: carolId,
+      role: "owner",
+      createdAt: now,
+    },
+    {
       id: id("bob-other"),
       organizationId: otherOrgId,
       userId: bobId,
@@ -87,19 +100,52 @@ beforeAll(async () => {
       createdAt: now,
     },
   ])
+  await db.insert(applicationRole).values([
+    {
+      id: ownRoleId,
+      organizationId: ownOrgId,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: otherRoleId,
+      organizationId: otherOrgId,
+      key: "viewer",
+      name: "Viewer",
+      createdAt: now,
+      updatedAt: now,
+    },
+  ])
+  await db.insert(applicationRoleClient).values([
+    { roleId: ownRoleId, clientId: ownClientId, createdAt: now },
+    { roleId: otherRoleId, clientId: otherClientId, createdAt: now },
+  ])
+  await db.insert(applicationRoleMember).values([
+    { roleId: ownRoleId, memberId: id("alice-own"), createdAt: now },
+    { roleId: otherRoleId, memberId: id("bob-other"), createdAt: now },
+  ])
 })
 
 afterAll(async () => {
   await db
     .delete(organization)
     .where(inArray(organization.id, [ownOrgId, otherOrgId]))
-  await db.delete(user).where(inArray(user.id, [aliceId, bobId]))
+  await db.delete(user).where(inArray(user.id, [aliceId, bobId, carolId]))
 })
 
 describe("who may be issued a code", () => {
-  test("a member of the organization owning the application", async () => {
+  test("a member of the organization holding a role on the application", async () => {
     expect(await authorizationRefusal(aliceId, ownClientId)).toBeNull()
     expect(await authorizationRefusal(bobId, otherClientId)).toBeNull()
+  })
+
+  test("not a member who holds no role on the application", async () => {
+    expect(await authorizationRefusal(carolId, ownClientId)).toEqual({
+      reason: "no_application_role",
+      organizationSlug: ownOrgId,
+    })
   })
 
   // Signed in is not enough: each is a stranger to the other's application.
