@@ -21,6 +21,7 @@ export async function getPendingTwoFactor(): Promise<{
   id: string
   name: string
   email: string
+  image?: string | null
 } | null> {
   const context = await auth.$context
   const cookieName = context.createAuthCookie(TWO_FACTOR_COOKIE).name
@@ -43,5 +44,10 @@ export async function getPendingTwoFactor(): Promise<{
   const found = await context.internalAdapter.findUserById(pending.value)
   if (!found) return null
 
-  return { id: found.id, name: found.name, email: found.email }
+  return {
+    id: found.id,
+    name: found.name,
+    email: found.email,
+    image: found.image,
+  }
 }

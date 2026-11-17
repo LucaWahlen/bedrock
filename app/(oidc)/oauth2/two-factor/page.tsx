@@ -62,6 +62,7 @@ export default async function OidcTwoFactorPage({
         authorizeUrl={authorizeUrl(query)}
         oidc={{
           brandColor: organization.color,
+          user: pending ?? access.user,
           application: {
             clientId,
             name: application.name,
