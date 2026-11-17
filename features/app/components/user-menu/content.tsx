@@ -135,7 +135,7 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
               not grow with every language or theme. */}
           <DropdownMenuGroup>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger className="[&>svg:last-child]:ml-0">
                 <currentTheme.icon />
                 {t("theme")}
                 <span className="ml-auto pl-4 text-muted-foreground">
@@ -160,7 +160,7 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger className="[&>svg:last-child]:ml-0">
                 <Languages />
                 {tLanguage("label")}
                 <span className="ml-auto flex items-center gap-1.5 pl-4 text-muted-foreground">
