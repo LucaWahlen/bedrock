@@ -17,6 +17,7 @@ import { authRateLimitStorage } from "@/features/auth/lib/auth-rate-limit-storag
 import { oidcAuthorizationGate } from "@/features/auth/lib/oidc-authorization-gate"
 import { organizationAdditionalFields } from "@/features/auth/lib/organization-schema"
 import { isRootAdministrator } from "@/features/auth/utils/access"
+import { CLIENT_ADDRESS_HEADERS } from "@/features/shared/lib/client-address"
 import { env } from "@/features/shared/lib/config/env"
 import { db } from "@/features/shared/lib/db/client"
 import { currentOAuthClientOwner } from "@/features/shared/lib/oauth-client-owner"
@@ -173,11 +174,16 @@ export const auth = betterAuth({
       locale: { type: "string", required: false, input: false },
     },
   },
-  // Only applies to Better Auth's HTTP router, which is not mounted today: all
-  // auth goes through server actions calling `auth.api`, and those enforce
-  // their own limits. This takes effect if an `/api/auth/*` handler is added.
+  // Applies to the OpenID endpoints forwarded through `oidcEndpoint`. Server
+  // actions call `auth.api` directly and enforce their own per-account and
+  // per-source limits.
   rateLimit: {
     customStorage: authRateLimitStorage,
+  },
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: [...CLIENT_ADDRESS_HEADERS],
+    },
   },
   hooks: {
     before: oidcAuthorizationGate,
@@ -252,6 +258,16 @@ export const auth = betterAuth({
       loginPage: "/oauth2/login",
       consentPage: "/oauth2/consent",
       scopes: [...OIDC_SCOPES],
+      // Relying-party backends in a self-hosted deployment often share one
+      // egress address, and each unauthenticated sign-in visits
+      // `/oauth2/authorize` twice, so the plugin's 20–30/min defaults trip
+      // under normal multi-app traffic. Credential brute-force limits live on
+      // the sign-in actions themselves.
+      rateLimit: {
+        authorize: { window: 60, max: 120 },
+        token: { window: 60, max: 120 },
+        userinfo: { window: 60, max: 120 },
+      },
       // `client_credentials` would make an application an actor in its own
       // right. A refresh token is issued only for `offline_access`, and every
       // refresh resolves the membership and roles again, so it is how an

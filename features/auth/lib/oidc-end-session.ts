@@ -1,4 +1,4 @@
-import { auth } from "@/features/auth/lib/auth"
+import { oidcEndpoint } from "@/features/auth/lib/oidc-endpoint"
 
 function clientIdFromHint(hint: string | null): string | null {
   if (!hint) return null
@@ -68,7 +68,7 @@ export async function oidcEndSessionEndpoint(request: Request) {
       ? new Request(new URL(url.pathname, url.origin), request)
       : request
 
-  const response = await auth.handler(handlerRequest)
+  const response = await oidcEndpoint(handlerRequest)
   if (!response.headers.get("content-type")?.includes("text/html")) {
     return response
   }
