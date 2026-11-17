@@ -29,8 +29,7 @@
     }
   },
   "build": {
-    "version": "Version {version}",
-    "next": "Next.js {version}",
+    "tag": "Tag {tag}",
     "commit": "Commit {commit}"
   },
   "checks": {

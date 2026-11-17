@@ -48,8 +48,7 @@ export type ConfigurationNotice = {
 export type SystemConfiguration = {
   notices: ConfigurationNotice[]
   build: {
-    version: string
-    nextVersion: string
+    tag: string | null
     commit: string | null
   }
 }

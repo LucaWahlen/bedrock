@@ -1,7 +1,6 @@
 "use server"
 
 import { getTranslations } from "next-intl/server"
-import nextPackage from "next/package.json"
 
 import { requireRootAdministration } from "@/features/auth"
 import type {
@@ -10,7 +9,6 @@ import type {
 } from "@/features/health/types"
 import { isLoopbackHost } from "@/features/health/utils/loopback"
 import { env } from "@/features/shared/lib/config/env"
-import appPackage from "@/package.json"
 
 /**
  * What about this instance's configuration an operator should know, and which
@@ -67,8 +65,7 @@ export async function getSystemConfiguration(): Promise<SystemConfiguration> {
       (a, b) => Number(a.severity === "info") - Number(b.severity === "info")
     ),
     build: {
-      version: appPackage.version,
-      nextVersion: nextPackage.version,
+      tag: env.build.tag ?? null,
       commit: env.build.commit ?? null,
     },
   }

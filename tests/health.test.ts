@@ -9,7 +9,7 @@ import {
   ForbiddenError,
   UnauthorizedError,
 } from "@/features/shared/lib/authorization-error"
-import { env } from "@/features/shared/lib/config/env"
+import { buildEnvironment, env } from "@/features/shared/lib/config/env"
 import { db } from "@/features/shared/lib/db/client"
 import { systemTaskRun } from "@/features/shared/lib/db/schema"
 import { recordTaskRun } from "@/scripts/housekeeping/task-runs"
@@ -73,7 +73,8 @@ describe("health reads", () => {
 
   test("configuration names settings, never their values", async () => {
     await actAs(rootOwner)
-    const configuration = JSON.stringify(await getSystemConfiguration())
+    const result = await getSystemConfiguration()
+    const configuration = JSON.stringify(result)
 
     expect(configuration).not.toContain(env.auth.secret)
     expect(configuration).not.toContain(env.storage.secretAccessKey)
@@ -81,6 +82,50 @@ describe("health reads", () => {
     if (env.email.smtp.password) {
       expect(configuration).not.toContain(env.email.smtp.password)
     }
+    expect(result.build).toEqual({
+      tag: env.build.tag ?? null,
+      commit: env.build.commit ?? null,
+    })
+    expect("nextVersion" in result.build).toBe(false)
+    expect("version" in result.build).toBe(false)
+  })
+
+  test("build metadata keeps valid tags and hex revisions and drops malformed ones", () => {
+    expect(buildEnvironment({})).toEqual({
+      tag: undefined,
+      commit: undefined,
+    })
+    expect(
+      buildEnvironment({
+        GIT_TAG: "v0.1.0",
+        GIT_COMMIT: "8A8506ECD100F5E4B5CBBA0146975C8CFB97328B",
+      })
+    ).toEqual({
+      tag: "v0.1.0",
+      commit: "8a8506ecd100",
+    })
+    expect(
+      buildEnvironment({
+        GIT_TAG: "refs/tags/v0.2.0-beta.1",
+        SOURCE_COMMIT: "abcdef1234567",
+      })
+    ).toEqual({
+      tag: "v0.2.0-beta.1",
+      commit: "abcdef123456",
+    })
+    expect(buildEnvironment({ GIT_TAG: "nightly" })).toEqual({
+      tag: "nightly",
+      commit: undefined,
+    })
+    expect(
+      buildEnvironment({
+        GIT_TAG: "refs/heads/main",
+        GIT_COMMIT: "not-a-commit",
+      })
+    ).toEqual({
+      tag: undefined,
+      commit: undefined,
+    })
   })
 })
 

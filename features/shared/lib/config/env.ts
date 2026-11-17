@@ -99,7 +99,9 @@ const environmentSchema = z.object({
     serviceName: z.string().min(1),
   }),
   build: z.object({
-    // The source revision the image was built from, when the build passes one.
+    // The release tag (or `nightly`) and source revision the image was built
+    // from, when the build passes them.
+    tag: z.string().optional(),
     commit: z.string().optional(),
   }),
 })
@@ -142,11 +144,15 @@ function smtpEnvironment(defaults?: { host: string; port: number }) {
   }
 }
 
-// Shown to root administrators on the Health page. Anything but a plain hex
-// revision is ignored rather than refusing to start over a label.
-function buildEnvironment() {
-  const commit = process.env.GIT_COMMIT || process.env.SOURCE_COMMIT
+// Shown to root administrators on the Health page. Anything malformed is
+// ignored rather than refusing to start over a label.
+export function buildEnvironment(
+  source: Record<string, string | undefined> = process.env
+) {
+  const tag = source.GIT_TAG?.trim().replace(/^refs\/tags\//, "")
+  const commit = (source.GIT_COMMIT || source.SOURCE_COMMIT)?.trim()
   return {
+    tag: tag && /^[a-z0-9][a-z0-9._+-]{0,63}$/i.test(tag) ? tag : undefined,
     commit:
       commit && /^[0-9a-f]{7,40}$/i.test(commit)
         ? commit.slice(0, 12).toLowerCase()

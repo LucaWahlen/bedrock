@@ -717,9 +717,9 @@ once, each with a five-second timeout, and streams each row in as it answers:
 
 Beside them it lists configuration worth a second look (a `BETTER_AUTH_URL`
 that is not https, no `AUDIT_RETENTION_DAYS`, a local mail sink, OpenTelemetry
-off), and below them the build: the app and Next.js versions and, when the
-image was built with one, the commit from `GIT_COMMIT` or `SOURCE_COMMIT`
-(a 7–40 character hex revision; anything else is ignored).
+off), and below them the build when the image carries one: the tag from
+`GIT_TAG` (such as `v0.1.0` or `nightly`) and the commit from `GIT_COMMIT` or
+`SOURCE_COMMIT` (a 7–40 character hex revision; anything malformed is ignored).
 
 Nothing on the page is a secret: checks report hosts, buckets and migration
 names, never credentials or key material, and stored errors are redacted. It is

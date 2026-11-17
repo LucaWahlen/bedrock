@@ -51,6 +51,10 @@ export async function HealthDashboard() {
   }))
   const housekeeping = getHousekeepingStatus()
   const { build } = configuration
+  const buildDetails = [
+    build.tag && t("build.tag", { tag: build.tag }),
+    build.commit && t("build.commit", { commit: build.commit }),
+  ].filter(Boolean)
 
   return (
     <ScrollArea className="min-h-0 flex-1">
@@ -97,13 +101,11 @@ export async function HealthDashboard() {
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          {t("build.version", { version: build.version })} ·{" "}
-          {t("build.next", { version: build.nextVersion })}
-          {build.commit && (
-            <> · {t("build.commit", { commit: build.commit })}</>
-          )}
-        </p>
+        {buildDetails.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {buildDetails.join(" · ")}
+          </p>
+        )}
       </div>
     </ScrollArea>
   )

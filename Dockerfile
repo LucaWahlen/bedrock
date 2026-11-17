@@ -83,9 +83,11 @@ esac
 shift
 exec node "dist/cli/$script.mjs" "$@"
 EOF
-# Shown on the Health page; CI passes the full commit SHA.
+# Shown on the Health page; CI passes the release tag (or `nightly`) and commit SHA.
+ARG GIT_TAG=""
 ARG GIT_COMMIT=""
-ENV GIT_COMMIT=${GIT_COMMIT}
+ENV GIT_TAG=${GIT_TAG} \
+    GIT_COMMIT=${GIT_COMMIT}
 USER 1001:1001
 EXPOSE 3000
 # Liveness only. Orchestrators that route traffic should also probe /api/ready.
