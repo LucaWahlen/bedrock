@@ -10,7 +10,15 @@ import { Controller, useForm } from "react-hook-form"
 import { getAccessContext } from "@/features/auth/actions/get-access-context"
 import { verifyTwoFactor } from "@/features/auth/actions/verify-two-factor"
 import { createTwoFactorSchema } from "@/features/auth/schemas/two-factor"
-import type { LoginDestination, TwoFactorMethod } from "@/features/auth/types"
+import type {
+  AccessUser,
+  LoginDestination,
+  TwoFactorMethod,
+} from "@/features/auth/types"
+import {
+  CONSENT_SEQUENCE_MS,
+  ConsentConnection,
+} from "@/features/shared/components/consent-connection"
 import { Button } from "@/features/shared/components/ui/button"
 import { Checkbox } from "@/features/shared/components/ui/checkbox"
 import {
@@ -22,8 +30,19 @@ import {
   FieldLabel,
 } from "@/features/shared/components/ui/field"
 import { Input } from "@/features/shared/components/ui/input"
+import { cn } from "@/features/shared/lib/ui/utils"
 
 type TwoFactorValues = { code: string; trustDevice: boolean }
+
+type OidcTwoFactorContext = {
+  brandColor: string | null
+  application: {
+    clientId: string
+    name: string
+    icon: string | null
+    skipConsent: boolean
+  }
+}
 
 // How long Better Auth trusts a device once asked to, which is its default.
 const TRUSTED_DEVICE_DAYS = 30
@@ -34,10 +53,22 @@ const COPY = {
   backup_code: "backupCode",
 } as const satisfies Record<TwoFactorMethod, string>
 
+const STACKED =
+  "col-start-1 row-start-1 transition-opacity duration-300 motion-reduce:transition-none"
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+}
+
 export function TwoFactorForm({
   organizationSlug,
   restartHref,
   authorizeUrl,
+  oidc,
 }: {
   organizationSlug: string
   // Where to start over once the pending sign-in has expired.
@@ -45,6 +76,7 @@ export function TwoFactorForm({
   // Set when the sign-in belongs to an OIDC authorization, which is resumed
   // here instead of entering the organization.
   authorizeUrl?: string
+  oidc?: OidcTwoFactorContext
 }) {
   const router = useRouter()
   const t = useTranslations("auth")
@@ -52,6 +84,9 @@ export function TwoFactorForm({
   const [method, setMethod] = useState<TwoFactorMethod>("totp")
   const [expired, setExpired] = useState(false)
   const [redirecting, setRedirecting] = useState(false)
+  const [allowing, setAllowing] = useState(false)
+  const [connected, setConnected] = useState(false)
+  const [signedInUser, setSignedInUser] = useState<AccessUser | null>(null)
   const form = useForm<TwoFactorValues>({
     defaultValues: { code: "", trustDevice: false },
   })
@@ -60,7 +95,11 @@ export function TwoFactorForm({
 
   useEffect(() => {
     function reset(event: PageTransitionEvent) {
-      if (event.persisted) setRedirecting(false)
+      if (!event.persisted) return
+      setRedirecting(false)
+      setAllowing(false)
+      setConnected(false)
+      setSignedInUser(null)
     }
     window.addEventListener("pageshow", reset)
     return () => window.removeEventListener("pageshow", reset)
@@ -77,7 +116,13 @@ export function TwoFactorForm({
     if (authorizeUrl) {
       // Let the post-verification revalidation in the action queue settle
       // before the hard navigation would otherwise abort its stream.
-      await getAccessContext()
+      const { user } = await getAccessContext()
+      if (oidc?.application.skipConsent && user) {
+        setSignedInUser(user)
+        setAllowing(true)
+        if (!prefersReducedMotion()) await wait(CONSENT_SEQUENCE_MS)
+        setConnected(true)
+      }
       // The provider's own endpoint finishes the flow and redirects onwards.
       window.location.assign(authorizeUrl)
       return
@@ -121,10 +166,52 @@ export function TwoFactorForm({
       onSubmit={form.handleSubmit(onSubmit)}
     >
       <FieldGroup>
+        {oidc && (
+          <ConsentConnection
+            phase={allowing ? "allowing" : "idle"}
+            parties={{
+              brandColor: oidc.brandColor,
+              user: signedInUser,
+              application: oidc.application,
+            }}
+          />
+        )}
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">{t("twoFactor.title")}</h1>
-          <p className="text-sm text-balance text-muted-foreground">
-            {t(`twoFactor.${copy}.description`)}
+          <h1 className="grid text-2xl font-bold">
+            <span
+              aria-hidden={allowing}
+              className={cn(STACKED, allowing && "opacity-0")}
+            >
+              {t("twoFactor.title")}
+            </span>
+            {oidc && (
+              <span
+                aria-hidden={!allowing}
+                className={cn(STACKED, !allowing && "opacity-0")}
+              >
+                {t("oidcLogin.signingIn")}
+              </span>
+            )}
+          </h1>
+          <p className="grid text-sm text-balance text-muted-foreground">
+            <span
+              aria-hidden={allowing}
+              className={cn(STACKED, allowing && "opacity-0")}
+            >
+              {t(`twoFactor.${copy}.description`)}
+            </span>
+            {oidc && (
+              <span
+                aria-hidden={!allowing}
+                className={cn(STACKED, "self-center", !allowing && "opacity-0")}
+              >
+                {signedInUser &&
+                  t("oidcLogin.signingInDescription", {
+                    application: oidc.application.name,
+                    email: signedInUser.email,
+                  })}
+              </span>
+            )}
           </p>
         </div>
         <Controller
@@ -142,7 +229,7 @@ export function TwoFactorForm({
                 inputMode={method === "totp" ? "numeric" : "text"}
                 autoCapitalize="off"
                 spellCheck={false}
-                disabled={expired}
+                disabled={expired || busy}
                 aria-invalid={fieldState.invalid}
                 aria-describedby={
                   fieldState.invalid ? "two-factor-code-error" : undefined
@@ -166,7 +253,7 @@ export function TwoFactorForm({
               <Checkbox
                 id="two-factor-trust-device"
                 checked={field.value}
-                disabled={expired}
+                disabled={expired || busy}
                 onCheckedChange={(checked) => field.onChange(checked)}
               />
               <FieldContent>
@@ -183,34 +270,70 @@ export function TwoFactorForm({
         {form.formState.errors.root && (
           <FieldError errors={[form.formState.errors.root]} />
         )}
-        <Field>
-          {expired ? (
-            <Button render={<Link href={restartHref} />} nativeButton={false}>
-              {t("twoFactor.restart")}
-            </Button>
-          ) : (
-            <Button type="submit" disabled={busy}>
-              {busy ? (
-                <>
-                  <LoaderCircle className="animate-spin" />
-                  {t("twoFactor.submitting")}
-                </>
-              ) : (
-                t("twoFactor.submit")
+        <div className="grid">
+          <Field
+            inert={allowing}
+            className={cn(STACKED, allowing && "opacity-0")}
+          >
+            {expired ? (
+              <Button render={<Link href={restartHref} />} nativeButton={false}>
+                {t("twoFactor.restart")}
+              </Button>
+            ) : (
+              <Button type="submit" disabled={busy}>
+                {busy ? (
+                  <>
+                    <LoaderCircle className="animate-spin" />
+                    {t("twoFactor.submitting")}
+                  </>
+                ) : (
+                  t("twoFactor.submit")
+                )}
+              </Button>
+            )}
+            {!expired && (
+              <Button
+                type="button"
+                variant="link"
+                disabled={busy}
+                onClick={switchMethod}
+              >
+                {t(`twoFactor.${copy}.switchTo`)}
+              </Button>
+            )}
+          </Field>
+          {oidc && (
+            <output
+              className={cn(
+                STACKED,
+                "pointer-events-none flex items-center justify-center gap-2 text-sm text-muted-foreground",
+                !allowing && "opacity-0"
               )}
-            </Button>
-          )}
-          {!expired && (
-            <Button
-              type="button"
-              variant="link"
-              disabled={busy}
-              onClick={switchMethod}
             >
-              {t(`twoFactor.${copy}.switchTo`)}
-            </Button>
+              <LoaderCircle className="size-4 shrink-0 motion-safe:animate-spin" />
+              <span className="grid text-left">
+                <span
+                  aria-hidden={connected}
+                  className={cn(STACKED, connected && "opacity-0")}
+                >
+                  {allowing &&
+                    t("oidcLogin.status.connecting", {
+                      application: oidc.application.name,
+                    })}
+                </span>
+                <span
+                  aria-hidden={!connected}
+                  className={cn(STACKED, !connected && "opacity-0")}
+                >
+                  {connected &&
+                    t("oidcLogin.status.connected", {
+                      application: oidc.application.name,
+                    })}
+                </span>
+              </span>
+            </output>
           )}
-        </Field>
+        </div>
       </FieldGroup>
     </form>
   )

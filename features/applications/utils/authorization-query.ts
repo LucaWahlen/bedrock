@@ -37,3 +37,11 @@ export function authorizeUrl(query: QueryEntries) {
 
   return `/api/auth/oauth2/authorize?${replayed.toString()}`
 }
+
+// `prompt=consent` forces the consent screen even for a trusted application.
+export function promptsConsent(query: QueryEntries) {
+  return (
+    typeof query.prompt === "string" &&
+    query.prompt.split(" ").includes("consent")
+  )
+}

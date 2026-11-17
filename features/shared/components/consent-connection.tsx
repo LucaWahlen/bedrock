@@ -1,3 +1,4 @@
+import { UserRound } from "lucide-react"
 import type { CSSProperties } from "react"
 
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
@@ -7,13 +8,13 @@ import {
 } from "@/features/shared/lib/ui/color"
 import { cn } from "@/features/shared/lib/ui/utils"
 
-import styles from "@/features/applications/components/consent-connection.module.css"
+import styles from "@/features/shared/components/consent-connection.module.css"
 
 export type ConsentPhase = "idle" | "allowing" | "cancelled"
 
 export type ConsentParties = {
   brandColor: string | null
-  user: { id: string; name: string; image?: string | null }
+  user: { id: string; name: string; image?: string | null } | null
   application: { clientId: string; name: string; icon: string | null }
 }
 
@@ -75,13 +76,22 @@ export function ConsentConnection({
       </svg>
 
       <div className={cn(styles.tile, styles.person)}>
-        <IdentityAvatar
-          logo={user.image}
-          name={user.name}
-          seed={user.id}
-          variant="lg"
-          eager
-        />
+        {user ? (
+          <IdentityAvatar
+            logo={user.image}
+            name={user.name}
+            seed={user.id}
+            variant="lg"
+            eager
+          />
+        ) : (
+          <div
+            data-slot="avatar"
+            className="flex items-center justify-center bg-muted text-muted-foreground"
+          >
+            <UserRound className="size-6" />
+          </div>
+        )}
       </div>
 
       <div className={cn(styles.tile, styles.application)}>

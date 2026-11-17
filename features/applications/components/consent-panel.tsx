@@ -10,7 +10,7 @@ import {
   ConsentConnection,
   type ConsentParties,
   type ConsentPhase,
-} from "@/features/applications/components/consent-connection"
+} from "@/features/shared/components/consent-connection"
 import { Button } from "@/features/shared/components/ui/button"
 import { FieldError } from "@/features/shared/components/ui/field"
 import { cn } from "@/features/shared/lib/ui/utils"

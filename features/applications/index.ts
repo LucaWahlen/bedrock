@@ -39,6 +39,7 @@ export {
 
 export {
   authorizeUrl,
+  promptsConsent,
   signedOauthQuery,
 } from "@/features/applications/utils/authorization-query"
 export { describeScopes } from "@/features/applications/utils/scope-display"

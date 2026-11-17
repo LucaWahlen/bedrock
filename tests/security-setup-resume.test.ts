@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test"
 
-import { authorizeUrl } from "@/features/applications/utils/authorization-query"
+import {
+  authorizeUrl,
+  promptsConsent,
+} from "@/features/applications/utils/authorization-query"
 import {
   authorizationParameters,
   securitySetupContinueHref,
@@ -136,5 +139,12 @@ describe("continuing", () => {
         })
       ).toEqual({ href: "/org/acme", resumesAuthorization: false })
     }
+  })
+
+  test("detects when the request forces a consent prompt", () => {
+    expect(promptsConsent({})).toBe(false)
+    expect(promptsConsent({ prompt: "login" })).toBe(false)
+    expect(promptsConsent({ prompt: "consent" })).toBe(true)
+    expect(promptsConsent({ prompt: "login consent" })).toBe(true)
   })
 })

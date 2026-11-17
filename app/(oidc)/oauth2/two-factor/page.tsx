@@ -2,7 +2,11 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound, redirect } from "next/navigation"
 
-import { authorizeUrl, getAuthorizationContext } from "@/features/applications"
+import {
+  authorizeUrl,
+  getAuthorizationContext,
+  promptsConsent,
+} from "@/features/applications"
 import {
   AuthShell,
   getAccessContext,
@@ -56,6 +60,15 @@ export default async function OidcTwoFactorPage({
         organizationSlug={organization.slug}
         restartHref={loginHref}
         authorizeUrl={authorizeUrl(query)}
+        oidc={{
+          brandColor: organization.color,
+          application: {
+            clientId,
+            name: application.name,
+            icon: application.icon,
+            skipConsent: application.skipConsent && !promptsConsent(query),
+          },
+        }}
       />
     </AuthShell>
   )

@@ -10,6 +10,7 @@ export type AuthorizationContext = {
   name: string
   uri: string | null
   icon: string | null
+  skipConsent: boolean
   organizationSlug: string
 }
 
@@ -27,6 +28,7 @@ export async function getAuthorizationContext(
       name: oauthClient.name,
       uri: oauthClient.uri,
       icon: oauthClient.icon,
+      skipConsent: oauthClient.skipConsent,
       disabled: oauthClient.disabled,
       organizationSlug: organization.slug,
       organizationStatus: organization.status,
@@ -44,6 +46,7 @@ export async function getAuthorizationContext(
     name: found.name ?? clientId,
     uri: launchUrlOf(found.uri),
     icon: found.icon,
+    skipConsent: Boolean(found.skipConsent),
     organizationSlug: found.organizationSlug,
   }
 }

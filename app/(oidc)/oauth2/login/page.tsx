@@ -2,7 +2,11 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
-import { authorizeUrl, getAuthorizationContext } from "@/features/applications"
+import {
+  authorizeUrl,
+  getAuthorizationContext,
+  promptsConsent,
+} from "@/features/applications"
 import { AuthShell, OidcLoginForm } from "@/features/auth"
 import { getOrganizationBySlug } from "@/features/organizations"
 
@@ -33,8 +37,16 @@ export default async function OidcLoginPage({
   return (
     <AuthShell organization={organization}>
       <OidcLoginForm
-        applicationName={application.name}
-        organizationSlug={organization.slug}
+        application={{
+          clientId,
+          name: application.name,
+          icon: application.icon,
+          skipConsent: application.skipConsent && !promptsConsent(query),
+        }}
+        organization={{
+          slug: organization.slug,
+          color: organization.color,
+        }}
         authorizeUrl={authorizeUrl(query)}
       />
     </AuthShell>
