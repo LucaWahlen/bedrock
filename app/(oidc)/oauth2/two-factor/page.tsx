@@ -3,7 +3,12 @@ import { getTranslations } from "next-intl/server"
 import { notFound, redirect } from "next/navigation"
 
 import { authorizeUrl, getAuthorizationContext } from "@/features/applications"
-import { AuthShell, getPendingTwoFactor, TwoFactorForm } from "@/features/auth"
+import {
+  AuthShell,
+  getAccessContext,
+  getPendingTwoFactor,
+  TwoFactorForm,
+} from "@/features/auth"
 import { getOrganizationBySlug } from "@/features/organizations"
 
 type OidcTwoFactorPageProps = {
@@ -37,7 +42,13 @@ export default async function OidcTwoFactorPage({
     )
   ).toString()}`
 
-  if (!(await getPendingTwoFactor())) redirect(loginHref)
+  // Completing verification swaps the pending challenge cookie for a session
+  // before Next.js re-renders this page in the action response.
+  const [pending, access] = await Promise.all([
+    getPendingTwoFactor(),
+    getAccessContext(),
+  ])
+  if (!pending && !access.user) redirect(loginHref)
 
   return (
     <AuthShell organization={organization}>

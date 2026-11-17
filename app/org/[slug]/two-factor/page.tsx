@@ -2,7 +2,12 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound, redirect } from "next/navigation"
 
-import { AuthShell, getPendingTwoFactor, TwoFactorForm } from "@/features/auth"
+import {
+  AuthShell,
+  getAccessContext,
+  getPendingTwoFactor,
+  TwoFactorForm,
+} from "@/features/auth"
 import { getOrganizationBySlug } from "@/features/organizations"
 
 type TwoFactorPageProps = {
@@ -20,8 +25,13 @@ export default async function TwoFactorPage({ params }: TwoFactorPageProps) {
   const organization = await getOrganizationBySlug(slug)
   if (!organization) notFound()
 
-  // Nothing to finish without a password that was just accepted.
-  if (!(await getPendingTwoFactor())) redirect(`/org/${slug}/login`)
+  // Nothing to finish without a password that was just accepted, unless the
+  // second factor just completed and Next.js is re-rendering the action result.
+  const [pending, access] = await Promise.all([
+    getPendingTwoFactor(),
+    getAccessContext(),
+  ])
+  if (!pending && !access.user) redirect(`/org/${slug}/login`)
 
   return (
     <AuthShell organization={organization}>

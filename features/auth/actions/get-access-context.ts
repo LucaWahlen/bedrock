@@ -1,7 +1,7 @@
 "use server"
 
 import { and, asc, eq, gt, lt, or, isNull, sql } from "drizzle-orm"
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
 import { after } from "next/server"
 import { cache } from "react"
 
@@ -36,10 +36,42 @@ function recordActivity(userId: string) {
   })
 }
 
+// When a Server Action sets a cookie, Next.js updates `cookies()` for the
+// render phase that follows while leaving `headers()` as the request arrived.
+async function sessionHeaders() {
+  const [requestHeaders, cookieStore] = await Promise.all([
+    headers(),
+    cookies(),
+  ])
+  const stored = cookieStore.getAll()
+  if (stored.length === 0) return requestHeaders
+
+  const names = new Set(stored.map(({ name }) => name))
+  const kept = (requestHeaders.get("cookie") ?? "")
+    .split(";")
+    .map((part) => part.trim())
+    .filter((part) => {
+      const separator = part.indexOf("=")
+      return separator > 0 && !names.has(part.slice(0, separator))
+    })
+  const merged = new Headers(requestHeaders)
+  merged.set(
+    "cookie",
+    [
+      ...kept,
+      ...stored.map(
+        ({ name, value }) => `${name}=${encodeURIComponent(value)}`
+      ),
+    ].join("; ")
+  )
+
+  return merged
+}
+
 // One session read and one membership query answer every authorization question
 // in a request; `features/auth/utils/access` derives the rest without a query.
 const readAccessContext = cache(async (): Promise<AccessContext> => {
-  const session = await auth.api.getSession({ headers: await headers() })
+  const session = await auth.api.getSession({ headers: await sessionHeaders() })
   if (!session) return NO_ACCESS
 
   const [[standing], memberships] = await Promise.all([

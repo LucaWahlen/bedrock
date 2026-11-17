@@ -4,9 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
-import { useMemo } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { getAccessContext } from "@/features/auth/actions/get-access-context"
 import { login } from "@/features/auth/actions/login"
 import { PasskeySignIn } from "@/features/auth/components/passkey-sign-in"
 import { createLoginSchema } from "@/features/auth/schemas/login"
@@ -34,26 +36,44 @@ export function OidcLoginForm({
   organizationSlug,
   authorizeUrl,
 }: OidcLoginFormProps) {
+  const router = useRouter()
   const t = useTranslations("auth")
   const schema = useMemo(() => createLoginSchema(t), [t])
+  const [redirecting, setRedirecting] = useState(false)
   const form = useForm<LoginCredentials>({
     resolver: zodResolver(schema),
     defaultValues: { email: "", password: "" },
   })
+  const busy = form.formState.isSubmitting || redirecting
 
-  function proceed(next: SignInStep) {
+  useEffect(() => {
+    function reset(event: PageTransitionEvent) {
+      if (event.persisted) setRedirecting(false)
+    }
+    window.addEventListener("pageshow", reset)
+    return () => window.removeEventListener("pageshow", reset)
+  }, [])
+
+  async function proceed(next: SignInStep) {
+    setRedirecting(true)
+
     // Not a member yet, so the application would refuse them; accept first.
     if (next === "invitation") {
-      window.location.assign(`/org/${organizationSlug}/invitation`)
+      router.push(`/org/${organizationSlug}/invitation`)
       return
     }
 
     // The second step keeps the signed authorization query, so finishing it
     // resumes this same request.
     if (next === "two-factor") {
-      window.location.assign(`/oauth2/two-factor${window.location.search}`)
+      router.push(`/oauth2/two-factor${window.location.search}`)
       return
     }
+
+    // Setting the session cookie makes Next.js revalidate this page in the
+    // action queue. Queuing a read behind it lets that render settle before a
+    // hard navigation would otherwise abort its stream into the error boundary.
+    await getAccessContext()
 
     // A full navigation, not a router push: the destination is the provider's
     // own endpoint, which finishes the flow and redirects to the application.
@@ -68,13 +88,13 @@ export function OidcLoginForm({
       return
     }
 
-    proceed(result.next)
+    await proceed(result.next)
   }
 
   return (
     <form
       className="flex flex-col gap-6"
-      aria-busy={form.formState.isSubmitting}
+      aria-busy={busy}
       method="post"
       onSubmit={form.handleSubmit(onSubmit)}
     >
@@ -135,8 +155,8 @@ export function OidcLoginForm({
           <FieldError errors={[form.formState.errors.root]} />
         )}
         <Field>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? (
+          <Button type="submit" disabled={busy}>
+            {busy ? (
               <>
                 <LoaderCircle className="animate-spin" />
                 {t("oidcLogin.submitting")}
@@ -149,8 +169,8 @@ export function OidcLoginForm({
         <PasskeySignIn
           separator={t("oidcLogin.alternatives")}
           organizationSlug={organizationSlug}
-          disabled={form.formState.isSubmitting}
-          onSignedIn={proceed}
+          disabled={busy}
+          onSignedIn={(next) => void proceed(next)}
           onError={(message) => form.setError("root", { message })}
         />
       </FieldGroup>

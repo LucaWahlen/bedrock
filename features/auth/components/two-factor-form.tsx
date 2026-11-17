@@ -4,9 +4,10 @@ import { LoaderCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { getAccessContext } from "@/features/auth/actions/get-access-context"
 import { verifyTwoFactor } from "@/features/auth/actions/verify-two-factor"
 import { createTwoFactorSchema } from "@/features/auth/schemas/two-factor"
 import type { LoginDestination, TwoFactorMethod } from "@/features/auth/types"
@@ -50,18 +51,33 @@ export function TwoFactorForm({
   const schema = useMemo(() => createTwoFactorSchema(t), [t])
   const [method, setMethod] = useState<TwoFactorMethod>("totp")
   const [expired, setExpired] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
   const form = useForm<TwoFactorValues>({
     defaultValues: { code: "", trustDevice: false },
   })
   const copy = COPY[method]
+  const busy = form.formState.isSubmitting || redirecting
 
-  function proceed(next: LoginDestination) {
+  useEffect(() => {
+    function reset(event: PageTransitionEvent) {
+      if (event.persisted) setRedirecting(false)
+    }
+    window.addEventListener("pageshow", reset)
+    return () => window.removeEventListener("pageshow", reset)
+  }, [])
+
+  async function proceed(next: LoginDestination) {
+    setRedirecting(true)
+
     if (next === "invitation") {
-      window.location.assign(`/org/${organizationSlug}/invitation`)
+      router.push(`/org/${organizationSlug}/invitation`)
       return
     }
 
     if (authorizeUrl) {
+      // Let the post-verification revalidation in the action queue settle
+      // before the hard navigation would otherwise abort its stream.
+      await getAccessContext()
       // The provider's own endpoint finishes the flow and redirects onwards.
       window.location.assign(authorizeUrl)
       return
@@ -87,7 +103,7 @@ export function TwoFactorForm({
       return
     }
 
-    proceed(result.next)
+    await proceed(result.next)
   }
 
   function switchMethod() {
@@ -99,7 +115,7 @@ export function TwoFactorForm({
   return (
     <form
       className="flex flex-col gap-6"
-      aria-busy={form.formState.isSubmitting}
+      aria-busy={busy}
       method="post"
       noValidate
       onSubmit={form.handleSubmit(onSubmit)}
@@ -173,8 +189,8 @@ export function TwoFactorForm({
               {t("twoFactor.restart")}
             </Button>
           ) : (
-            <Button type="submit" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting ? (
+            <Button type="submit" disabled={busy}>
+              {busy ? (
                 <>
                   <LoaderCircle className="animate-spin" />
                   {t("twoFactor.submitting")}
@@ -185,7 +201,12 @@ export function TwoFactorForm({
             </Button>
           )}
           {!expired && (
-            <Button type="button" variant="link" onClick={switchMethod}>
+            <Button
+              type="button"
+              variant="link"
+              disabled={busy}
+              onClick={switchMethod}
+            >
               {t(`twoFactor.${copy}.switchTo`)}
             </Button>
           )}
