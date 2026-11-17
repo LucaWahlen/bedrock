@@ -62,7 +62,6 @@ export function PasskeySignIn({
   onSignedIn,
   onError,
 }: {
-  // Rendered with the button, so a browser without passkeys shows neither.
   separator: string
   organizationSlug?: string
   disabled?: boolean
@@ -70,7 +69,6 @@ export function PasskeySignIn({
   onError: (message: string) => void
 }) {
   const t = useTranslations("auth")
-  const [supported, setSupported] = useState(false)
   const [pending, setPending] = useState(false)
   const failed = t("errors.passkeyFailed")
   const latest = useRef({ organizationSlug, onSignedIn, onError, failed })
@@ -83,9 +81,12 @@ export function PasskeySignIn({
     let cancelled = false
 
     async function offerAutofill() {
-      const canSignIn = browserSupportsWebAuthn()
-      if (!cancelled) setSupported(canSignIn)
-      if (!canSignIn || !(await browserSupportsWebAuthnAutofill())) return
+      if (
+        !browserSupportsWebAuthn() ||
+        !(await browserSupportsWebAuthnAutofill())
+      ) {
+        return
+      }
 
       const options = await getPasskeySignInOptions()
       if (cancelled || !options.success) return
@@ -122,6 +123,11 @@ export function PasskeySignIn({
   }, [])
 
   async function signIn() {
+    if (!browserSupportsWebAuthn()) {
+      onError(t("errors.passkeyUnavailable"))
+      return
+    }
+
     setPending(true)
     try {
       const options = await getPasskeySignInOptions()
@@ -141,8 +147,6 @@ export function PasskeySignIn({
       setPending(false)
     }
   }
-
-  if (!supported) return null
 
   return (
     <>
