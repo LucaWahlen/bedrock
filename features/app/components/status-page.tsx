@@ -69,18 +69,30 @@ export function StatusPage({
               <div className="flex flex-col gap-2">
                 <Button
                   nativeButton={false}
-                  render={<Link href={action.href} />}
-                >
-                  {action.label}
-                </Button>
+                  render={
+                    action.href.endsWith("/logout") ? (
+                      <a href={action.href}>{action.label}</a>
+                    ) : (
+                      <Link href={action.href}>{action.label}</Link>
+                    )
+                  }
+                />
                 {secondaryAction && (
                   <Button
                     variant="outline"
                     nativeButton={false}
-                    render={<Link href={secondaryAction.href} />}
-                  >
-                    {secondaryAction.label}
-                  </Button>
+                    render={
+                      secondaryAction.href.endsWith("/logout") ? (
+                        <a href={secondaryAction.href}>
+                          {secondaryAction.label}
+                        </a>
+                      ) : (
+                        <Link href={secondaryAction.href}>
+                          {secondaryAction.label}
+                        </Link>
+                      )
+                    }
+                  />
                 )}
               </div>
             </div>

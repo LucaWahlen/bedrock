@@ -15,13 +15,9 @@ import { Button, buttonVariants } from "@/features/shared/components/ui/button"
 function linkTo(href: string) {
   return function LinkTag(chunks: React.ReactNode) {
     return (
-      <Link
-        href={href}
-        prefetch={false}
-        className="underline underline-offset-4"
-      >
+      <a href={href} className="underline underline-offset-4">
         {chunks}
-      </Link>
+      </a>
     )
   }
 }

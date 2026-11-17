@@ -16,13 +16,14 @@ import { Button } from "@/features/shared/components/ui/button"
 import { FieldError, FieldGroup } from "@/features/shared/components/ui/field"
 
 // Tag renderers for `t.rich`, built outside the component so they are not new
-// component types on every render.
+// component types on every render. Signing out goes through a Route Handler, so
+// it is a plain anchor rather than a prefetched client `<Link>`.
 function linkTo(href: string) {
   return function LinkTag(chunks: React.ReactNode) {
     return (
-      <Link href={href} className="underline underline-offset-4">
+      <a href={href} className="underline underline-offset-4">
         {chunks}
-      </Link>
+      </a>
     )
   }
 }

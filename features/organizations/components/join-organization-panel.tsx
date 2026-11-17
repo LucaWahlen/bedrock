@@ -2,7 +2,6 @@
 
 import { LoaderCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 
@@ -20,9 +19,9 @@ function strong(chunks: React.ReactNode) {
 function signOutLink(href: string) {
   return function SignOutLink(chunks: React.ReactNode) {
     return (
-      <Link href={href} className="underline underline-offset-4">
+      <a href={href} className="underline underline-offset-4">
         {chunks}
-      </Link>
+      </a>
     )
   }
 }

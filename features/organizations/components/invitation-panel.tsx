@@ -76,17 +76,20 @@ export function InvitationPanel({
         <Button
           nativeButton={false}
           render={
-            <Link
+            // A full navigation: `/logout` is a Route Handler that clears the
+            // session and redirects back to this same URL, which a client-side
+            // `<Link>` would both prefetch and serve from the router cache.
+            <a
               href={
                 token
                   ? `/org/${invitation.organizationSlug}/logout?invitation=${encodeURIComponent(token)}`
                   : `/org/${invitation.organizationSlug}/logout`
               }
-            />
+            >
+              {t("otherAccount.signOut")}
+            </a>
           }
-        >
-          {t("otherAccount.signOut")}
-        </Button>
+        />
       </FieldGroup>
     )
   }
