@@ -5,6 +5,7 @@ import { headers } from "next/headers"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import "@/app/globals.css"
+import { ClientTimeZoneProvider } from "@/features/shared/components/client-time-zone-provider"
 import { ThemeProvider } from "@/features/shared/components/theme-provider"
 import { Toaster } from "@/features/shared/components/ui/sonner"
 import { UnhandledErrorToast } from "@/features/shared/components/unhandled-error-toast"
@@ -46,17 +47,19 @@ export default async function RootLayout({
         {/* Hands the request's locale, messages and formats to every Client
             Component below. */}
         <NextIntlClientProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            nonce={nonce}
-          >
-            <NuqsAdapter>{children}</NuqsAdapter>
-            <Toaster />
-            <UnhandledErrorToast />
-          </ThemeProvider>
+          <ClientTimeZoneProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+              nonce={nonce}
+            >
+              <NuqsAdapter>{children}</NuqsAdapter>
+              <Toaster />
+              <UnhandledErrorToast />
+            </ThemeProvider>
+          </ClientTimeZoneProvider>
         </NextIntlClientProvider>
       </body>
     </html>

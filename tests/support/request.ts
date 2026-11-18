@@ -160,10 +160,13 @@ mock.module("next-intl/server", () => ({
     return createFormatter({
       locale: config.locale,
       formats: config.formats ?? undefined,
+      timeZone: config.timeZone ?? undefined,
     })
   },
   getNow: async () => new Date(),
-  getTimeZone: async () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+  getTimeZone: async () =>
+    (await requestConfig()).timeZone ??
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
   setRequestLocale: () => {},
 }))
 

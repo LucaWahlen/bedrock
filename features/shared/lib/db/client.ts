@@ -11,7 +11,9 @@ const globalForDb = globalThis as typeof globalThis & {
 // A hot reload re-evaluates this module. Without caching the client, every
 // reload opens another pool and leaves the previous one connected, until
 // Postgres refuses new clients and the whole app fails to read a session.
-const client = globalForDb.bedrockDatabaseClient ?? postgres(env.database.url)
+const client =
+  globalForDb.bedrockDatabaseClient ??
+  postgres(env.database.url, { connection: { TimeZone: "UTC" } })
 
 if (process.env.NODE_ENV !== "production") {
   globalForDb.bedrockDatabaseClient = client

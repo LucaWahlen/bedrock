@@ -36,9 +36,11 @@ export async function requestLocale() {
   })
 }
 
-// Wired up by the next-intl plugin in `next.config.ts`.
+// Wired up by the next-intl plugin in `next.config.ts`. Server renders are
+// pinned to UTC so containers and local machines agree; `ClientTimeZoneProvider`
+// switches client components to the browser's zone after hydration.
 export default getRequestConfig(async ({ locale: override }) => {
   const locale = isLocale(override) ? override : await requestLocale()
 
-  return { locale, messages: messagesFor(locale), formats }
+  return { locale, messages: messagesFor(locale), formats, timeZone: "UTC" }
 })

@@ -162,6 +162,7 @@ describe("while it is open", () => {
     discardDeferred()
     const mailed = outbox.length
 
+    const startedAt = Date.now()
     expect(
       await startBreakGlass({ organizationId: fixture.orgA.id, reason: REASON })
     ).toEqual({ success: true, slug: fixture.orgA.slug })
@@ -169,6 +170,11 @@ describe("while it is open", () => {
     const held = membershipIn(await getAccessContext(), fixture.orgA.id)
     expect(held?.role).toBe("owner")
     expect(held?.breakGlass?.reason).toBe(REASON)
+    const remainingMinutes =
+      (new Date(held?.breakGlass?.expiresAt ?? 0).getTime() - startedAt) /
+      60_000
+    expect(remainingMinutes).toBeGreaterThan(59)
+    expect(remainingMinutes).toBeLessThanOrEqual(61)
     // Organization B was never opened.
     expect(membershipIn(await getAccessContext(), fixture.orgB.id)).toBeNull()
 
