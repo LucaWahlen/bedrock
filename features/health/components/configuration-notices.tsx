@@ -34,8 +34,8 @@ export function ConfigurationNotices({
               }
               aria-hidden="true"
             />
-            <div className="grid gap-0.5">
-              <p className="text-sm font-medium">
+            <div className="grid min-w-0 gap-0.5">
+              <p className="text-sm font-medium break-words">
                 <span className="sr-only">
                   {notice.severity === "warning"
                     ? t("warning")
@@ -43,7 +43,7 @@ export function ConfigurationNotices({
                 </span>
                 {notice.title}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm wrap-anywhere text-muted-foreground">
                 {notice.description}
               </p>
             </div>

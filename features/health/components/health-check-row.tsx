@@ -26,18 +26,20 @@ export function HealthRowFrame({
 }: RowFrameProps) {
   return (
     <li className="flex flex-col gap-3 px-4 py-3">
-      <div className="flex h-10 items-center gap-3">
-        <HealthStatusDot status={status} />
-        <Icon
-          className="size-4 shrink-0 text-muted-foreground"
-          aria-hidden="true"
-        />
-        <div className="grid min-w-0 flex-1">
-          <span className="text-sm font-medium">{label}</span>
-          <div className="truncate text-sm text-muted-foreground">{detail}</div>
+      <div className="grid min-h-10 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5">
+        <div className="flex items-center gap-3 self-start pt-0.5 sm:row-span-2 sm:self-center sm:pt-0">
+          <HealthStatusDot status={status} />
+          <Icon
+            className="size-4 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
         </div>
-        <div className="w-14 shrink-0 text-right text-xs text-muted-foreground tabular-nums">
+        <span className="min-w-0 text-sm font-medium break-words">{label}</span>
+        <div className="w-14 shrink-0 text-right text-xs text-muted-foreground tabular-nums sm:row-span-2 sm:self-center">
           {latency}
+        </div>
+        <div className="col-span-2 col-start-2 min-w-0 text-sm break-words text-muted-foreground sm:col-span-1">
+          {detail}
         </div>
       </div>
       {children}
@@ -64,7 +66,7 @@ export async function HealthCheckRow({
       label={label}
       icon={icon}
       status={status}
-      detail={<span title={detail}>{detail}</span>}
+      detail={detail}
       latency={
         <>
           {t("latency", { ms: latencyMs })}
@@ -87,7 +89,7 @@ export function HealthCheckRowPlaceholder({
       label={label}
       icon={icon}
       status="pending"
-      detail={<Skeleton className="mt-1 h-3.5 w-48" />}
+      detail={<Skeleton className="mt-1 h-3.5 w-48 max-w-full" />}
       latency={<Skeleton className="ml-auto h-3.5 w-10" />}
     />
   )

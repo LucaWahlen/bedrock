@@ -20,8 +20,10 @@ function SummaryFrame({
         {icon}
       </div>
       <div className="grid min-w-0">
-        <div className="h-6 truncate text-base font-semibold">{headline}</div>
-        <div className="h-5 truncate text-sm text-muted-foreground">
+        <div className="min-h-6 text-base leading-6 font-semibold break-words">
+          {headline}
+        </div>
+        <div className="min-h-5 text-sm leading-5 break-words text-muted-foreground">
           {detail}
         </div>
       </div>

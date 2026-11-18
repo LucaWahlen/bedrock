@@ -11,8 +11,8 @@ import {
   type HousekeepingTask,
 } from "@/features/shared/lib/housekeeping-tasks"
 
-// Each task is one line of fixed height, so the placeholder and the result
-// occupy exactly the same space.
+// Each task occupies one compact row when healthy, wrapping cleanly on narrow
+// screens rather than clipping against the card edge.
 function TaskLine({
   task,
   status,
@@ -27,16 +27,19 @@ function TaskLine({
   const t = useTranslations("health.housekeeping.tasks")
 
   return (
-    <li className="flex h-5 items-center gap-2 text-xs">
-      <HealthStatusDot status={status} size="sm" />
-      <span className="shrink-0">{t(task)}</span>
-      <span
-        className="min-w-0 flex-1 truncate text-muted-foreground"
-        title={note ?? undefined}
-      >
-        {note}
-      </span>
-      <div className="shrink-0 text-muted-foreground tabular-nums">{when}</div>
+    <li className="flex min-h-5 flex-col gap-0.5 text-xs">
+      <div className="flex min-w-0 items-baseline justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <HealthStatusDot status={status} size="sm" />
+          <span className="min-w-0 break-words">{t(task)}</span>
+        </div>
+        <div className="shrink-0 text-muted-foreground tabular-nums">
+          {when}
+        </div>
+      </div>
+      {note && (
+        <p className="pl-3.5 break-words text-muted-foreground">{note}</p>
+      )}
     </li>
   )
 }
@@ -55,7 +58,7 @@ export async function HousekeepingRow({
       label={t("housekeeping.label")}
       icon={CalendarClock}
       status={overall}
-      detail={<span title={detail}>{detail}</span>}
+      detail={detail}
       latency={
         <>
           {t("latency", { ms: latencyMs })}
@@ -63,7 +66,7 @@ export async function HousekeepingRow({
         </>
       }
     >
-      <ul className="ml-12.5 flex flex-col gap-1">
+      <ul className="ml-6 flex flex-col gap-1.5 sm:ml-12.5 sm:gap-1">
         {tasks.map((task) => (
           <TaskLine
             key={task.task}
@@ -100,10 +103,10 @@ export function HousekeepingRowPlaceholder() {
       label={t("label")}
       icon={CalendarClock}
       status="pending"
-      detail={<Skeleton className="mt-1 h-3.5 w-48" />}
+      detail={<Skeleton className="mt-1 h-3.5 w-48 max-w-full" />}
       latency={<Skeleton className="ml-auto h-3.5 w-10" />}
     >
-      <ul className="ml-12.5 flex flex-col gap-1">
+      <ul className="ml-6 flex flex-col gap-1.5 sm:ml-12.5 sm:gap-1">
         {HOUSEKEEPING_TASKS.map((task) => (
           <TaskLine
             key={task}
