@@ -1,6 +1,7 @@
 "use client"
 
 import { ChevronRight } from "lucide-react"
+import Link from "next/link"
 
 import type { Organization } from "@/features/organizations"
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
@@ -17,18 +18,26 @@ export function AppHeader({ title, organization }: AppHeaderProps) {
     <header className="flex min-h-14 items-center gap-3 border-b bg-background px-4">
       <SidebarTrigger className="md:hidden" />
       <Separator orientation="vertical" className="my-auto h-4 md:hidden" />
-      <div className="flex items-center gap-2 md:hidden">
-        <IdentityAvatar
-          logo={organization.logo}
-          name={organization.name}
-          seed={organization.id}
-          variant="sm"
-          eager
+      <div className="flex min-w-0 items-center gap-2 md:hidden">
+        <Link
+          href={`/org/${organization.slug}`}
+          className="flex min-w-0 items-center gap-2 rounded-sm transition-colors outline-none hover:text-foreground/80 focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          <IdentityAvatar
+            logo={organization.logo}
+            name={organization.name}
+            seed={organization.id}
+            variant="sm"
+            eager
+          />
+          <span className="max-w-28 truncate text-sm font-medium sm:max-w-40">
+            {organization.name}
+          </span>
+        </Link>
+        <ChevronRight
+          className="size-4 shrink-0 text-muted-foreground"
+          aria-hidden="true"
         />
-        <span className="max-w-28 truncate text-sm font-medium sm:max-w-40">
-          {organization.name}
-        </span>
-        <ChevronRight className="size-4 text-muted-foreground" />
       </div>
       <h1 className="truncate text-sm font-semibold">{title}</h1>
     </header>
