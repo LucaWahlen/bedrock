@@ -520,8 +520,8 @@ describe("what an application learns about a member's groups", () => {
         metadata,
       })
       expect(without.preferred_username).toBeUndefined()
-      expect(without["urn:bedrock:groups"]).toBeUndefined()
-      expect(without["urn:bedrock:roles"]).toEqual(["billing"])
+      expect(without.groups).toBeUndefined()
+      expect(without.roles).toEqual(["billing"])
 
       // oxlint-disable-next-line no-await-in-loop
       const granted = await callback({
@@ -530,8 +530,8 @@ describe("what an application learns about a member's groups", () => {
         metadata,
       })
       expect(granted.preferred_username).toBe("Carol")
-      expect(granted["urn:bedrock:groups"]).toEqual(["engineering"])
-      expect(granted["urn:bedrock:roles"]).toBeUndefined()
+      expect(granted.groups).toEqual(["engineering"])
+      expect(granted.roles).toBeUndefined()
     }
 
     const userinfo = await options.customUserInfoClaims({
@@ -540,10 +540,10 @@ describe("what an application learns about a member's groups", () => {
       jwt: { client_id: portalClient },
     })
     expect(userinfo).toMatchObject({
-      "urn:bedrock:organization": fixture.orgA.slug,
+      organization: fixture.orgA.slug,
       preferred_username: "Carol",
-      "urn:bedrock:roles": ["billing"],
-      "urn:bedrock:groups": ["engineering"],
+      roles: ["billing"],
+      groups: ["engineering"],
     })
 
     const plain = await options.customUserInfoClaims({
@@ -551,7 +551,7 @@ describe("what an application learns about a member's groups", () => {
       scopes: ["openid"],
       jwt: { client_id: portalClient },
     })
-    expect(plain["urn:bedrock:groups"]).toBeUndefined()
+    expect(plain.groups).toBeUndefined()
     expect(plain.preferred_username).toBeUndefined()
   })
 

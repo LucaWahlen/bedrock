@@ -264,10 +264,10 @@ features/<feature>/
   standards-compliant implementation. Do not hand-roll OAuth/OIDC protocol
   validation, discovery, token signing, PKCE, or refresh-token behavior.
 - There is one issuer per instance, `${BETTER_AUTH_URL}/api/auth`, and `sub` is
-  the global user id. The organization travels as `urn:bedrock:organization`,
-  roles as `urn:bedrock:roles` (direct and via groups, limited to the
-  requesting application) and groups as `urn:bedrock:groups`. These are
-  long-lived external contracts: never rename a claim, scope or role/group key.
+  the global user id. The organization travels as `organization`, roles as
+  `roles` (direct and via groups, limited to the requesting application) and
+  groups as `groups`. These are long-lived external contracts: never rename a
+  claim, scope or role/group key.
 - Only the authorization code grant with PKCE is offered; dynamic client
   registration is off.
 - OIDC applications belong to an organization. Store exact redirect URI

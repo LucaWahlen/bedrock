@@ -462,19 +462,18 @@ same scope-gated claims, so relying parties that read the ID token directly see
 the same identity as those that call `/oauth2/userinfo`:
 
 - `openid` is required and identifies the global account with `sub`, alongside
-  the owning organization in `urn:bedrock:organization` (slug),
-  `urn:bedrock:organization_id` and `urn:bedrock:organization_name`.
+  the owning organization's slug in `organization`.
 - `profile` sends `name`, `given_name`, `family_name`, `preferred_username`
-  (the account's display name), `picture`, `locale` (when chosen) and
-  `updated_at`. When the account has no uploaded photo, `picture` points to a
-  signed initials avatar at `/api/avatar/<token>.svg` matching Bedrock's own
-  palette without exposing the user id.
+  (the account's display name) and `picture`. When the account has no uploaded
+  photo, `picture` points to a signed initials avatar at
+  `/api/avatar/<token>.svg` matching Bedrock's own palette without exposing the
+  user id.
 - `email` sends `email` and `email_verified`.
-- `roles` sends both `roles` and `urn:bedrock:roles`: the sorted keys of the
-  application roles the member holds, directly or through one of their groups,
-  that are linked to the requesting application.
-- `groups` sends both `groups` and `urn:bedrock:groups`: the sorted keys of
-  every group the member belongs to in the organization owning the application.
+- `roles` sends `roles`: the sorted keys of the application roles the member
+  holds, directly or through one of their groups, that are linked to the
+  requesting application.
+- `groups` sends `groups`: the sorted keys of every group the member belongs to
+  in the organization owning the application.
 
 The discovery document advertises these claims, and `/oauth2/userinfo` also
 honours individual `claims.userinfo` requests for any advertised claim.

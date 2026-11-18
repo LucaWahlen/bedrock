@@ -26,8 +26,6 @@ import {
   OIDC_CLAIMS_SUPPORTED,
   OIDC_SCOPE_CLAIMS,
   ORGANIZATION_CLAIM,
-  ORGANIZATION_ID_CLAIM,
-  ORGANIZATION_NAME_CLAIM,
   ROLES_CLAIM,
 } from "@/features/shared/lib/oidc-claim-names"
 import type { OidcClaimUser } from "@/features/shared/lib/oidc-claims"
@@ -37,8 +35,6 @@ export {
   OIDC_CLAIMS_SUPPORTED,
   OIDC_SCOPE_CLAIMS,
   ORGANIZATION_CLAIM,
-  ORGANIZATION_ID_CLAIM,
-  ORGANIZATION_NAME_CLAIM,
   ROLES_CLAIM,
 }
 

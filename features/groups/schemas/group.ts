@@ -2,8 +2,8 @@ import { z } from "zod"
 
 import type { Translator } from "@/features/shared/lib/i18n/translator"
 
-// What lands in the `urn:bedrock:groups` claim, so it is restricted to what a
-// claim can carry safely and cannot be changed once applications rely on it.
+// What lands in the `groups` claim, so it is restricted to what a claim can
+// carry safely and cannot be changed once applications rely on it.
 export function createGroupKeySchema(t: Translator<"groups">) {
   return z
     .string()

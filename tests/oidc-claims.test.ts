@@ -431,7 +431,7 @@ describe("claims emitted in ID tokens, userinfo and fallback avatars", () => {
     return { idTokenClaims, userinfo }
   }
 
-  test("advertises every supported claim in discovery", async () => {
+  test("advertises every supported claim in discovery without legacy duplicates", async () => {
     const response = await discoveryRoute(
       new Request(`${BASE}/.well-known/openid-configuration`)
     )
@@ -440,21 +440,25 @@ describe("claims emitted in ID tokens, userinfo and fallback avatars", () => {
 
     expect(metadata.claims_supported).toEqual(
       expect.arrayContaining([
-        "picture",
+        "name",
+        "given_name",
+        "family_name",
         "preferred_username",
-        "locale",
-        "updated_at",
+        "picture",
         "email",
         "email_verified",
+        "organization",
         "roles",
         "groups",
-        "urn:bedrock:organization",
-        "urn:bedrock:organization_id",
-        "urn:bedrock:organization_name",
-        "urn:bedrock:roles",
-        "urn:bedrock:groups",
       ])
     )
+    expect(
+      metadata.claims_supported.some((claim) =>
+        claim.startsWith("urn:bedrock:")
+      )
+    ).toBe(false)
+    expect(metadata.claims_supported).not.toContain("locale")
+    expect(metadata.claims_supported).not.toContain("updated_at")
   })
 
   test("emits uploaded picture, profile, email, organization, roles and groups in both ID token and userinfo", async () => {
@@ -471,22 +475,17 @@ describe("claims emitted in ID tokens, userinfo and fallback avatars", () => {
       family_name: "Lovelace",
       preferred_username: "Ada Augusta Lovelace",
       picture: uploadedAvatarUrl,
-      locale: "de",
       email: `${adaId}@example.test`,
       email_verified: true,
+      organization: claimsOrgA,
       roles: ["consoleAdmin"],
-      "urn:bedrock:roles": ["consoleAdmin"],
       groups: ["platform"],
-      "urn:bedrock:groups": ["platform"],
-      "urn:bedrock:organization": claimsOrgA,
-      "urn:bedrock:organization_id": claimsOrgA,
-      "urn:bedrock:organization_name": "Analytical Engine",
     }
 
     expect(idTokenClaims).toMatchObject(expected)
-    expect(userinfo).toMatchObject(expected)
-    expect(typeof idTokenClaims.updated_at).toBe("number")
-    expect(idTokenClaims.updated_at).toBe(userinfo.updated_at)
+    expect(userinfo).toEqual(expected)
+    expect(idTokenClaims.locale).toBeUndefined()
+    expect(idTokenClaims.updated_at).toBeUndefined()
   })
 
   test("emits a signed fallback avatar URL when the account has no uploaded picture", async () => {
@@ -557,13 +556,15 @@ describe("claims emitted in ID tokens, userinfo and fallback avatars", () => {
 
     const selective = await issueTokens(adaId, clientA, "openid", {
       claims: JSON.stringify({
-        userinfo: { picture: null, "urn:bedrock:roles": null },
+        userinfo: { picture: null, roles: null },
       }),
     })
-    expect(selective.userinfo.picture).toBe(uploadedAvatarUrl)
-    expect(selective.userinfo["urn:bedrock:roles"]).toEqual(["consoleAdmin"])
-    expect(selective.userinfo.email).toBeUndefined()
-    expect(selective.userinfo.name).toBeUndefined()
+    expect(selective.userinfo).toEqual({
+      sub: adaId,
+      organization: claimsOrgA,
+      picture: uploadedAvatarUrl,
+      roles: ["consoleAdmin"],
+    })
   })
 
   test("denies cross-tenant token issuance between the two organizations", async () => {

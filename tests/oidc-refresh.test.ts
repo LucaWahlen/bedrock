@@ -299,10 +299,7 @@ describe("what a refresh says", () => {
     const refreshToken = await signInWithRefresh(dave)
     const granted = await refresh(clientA, refreshToken)
     expect(granted.status).toBe(200)
-    expect(claimsOf(granted.body.id_token)["urn:bedrock:roles"]).toEqual([
-      "editor",
-      "viewer",
-    ])
+    expect(claimsOf(granted.body.id_token).roles).toEqual(["editor", "viewer"])
 
     await db
       .delete(applicationRoleMember)
@@ -318,9 +315,7 @@ describe("what a refresh says", () => {
       granted.body.refresh_token as string
     )
     expect(narrowed.status).toBe(200)
-    expect(claimsOf(narrowed.body.id_token)["urn:bedrock:roles"]).toEqual([
-      "viewer",
-    ])
+    expect(claimsOf(narrowed.body.id_token).roles).toEqual(["viewer"])
 
     await db
       .delete(applicationRoleMember)

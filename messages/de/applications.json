@@ -243,7 +243,7 @@
   },
   "scopes": {
     "openid": "Bestätigen, wer du bist",
-    "profile": "Deinen Namen, dein Bild und deine Sprache sehen",
+    "profile": "Deinen Namen und dein Bild sehen",
     "email": "Deine E-Mail-Adresse sehen",
     "roles": "Deine Rollen in dieser Organisation sehen",
     "groups": "Deine Gruppen in dieser Organisation sehen",
