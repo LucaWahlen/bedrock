@@ -129,6 +129,7 @@
     "endSession": "Abmelde-URL",
     "signingAlgorithm": "Signaturalgorithmus",
     "scopes": "Scopes",
+    "claims": "Claims nach Scope",
     "clientAuthentication": "Client-Authentifizierung",
     "pkce": "PKCE"
   },
@@ -242,7 +243,7 @@
   },
   "scopes": {
     "openid": "Bestätigen, wer du bist",
-    "profile": "Deinen Namen und dein Bild sehen",
+    "profile": "Deinen Namen, dein Bild und deine Sprache sehen",
     "email": "Deine E-Mail-Adresse sehen",
     "roles": "Deine Rollen in dieser Organisation sehen",
     "groups": "Deine Gruppen in dieser Organisation sehen",

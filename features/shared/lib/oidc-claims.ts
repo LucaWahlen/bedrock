@@ -1,5 +1,6 @@
 import { and, eq, sql } from "drizzle-orm"
 
+import { userPictureUrl } from "@/features/shared/lib/avatar-url"
 import { db } from "@/features/shared/lib/db/client"
 import {
   applicationRole,
@@ -12,10 +13,15 @@ import {
   passkey,
   user,
 } from "@/features/shared/lib/db/schema"
+import {
+  GROUPS_CLAIM,
+  ORGANIZATION_CLAIM,
+  ORGANIZATION_ID_CLAIM,
+  ORGANIZATION_NAME_CLAIM,
+  ROLES_CLAIM,
+} from "@/features/shared/lib/oidc-claim-names"
 import { roleGrantsIn } from "@/features/shared/lib/role-grants"
 
-// Namespaced claim names live with the provider configuration in
-// `features/auth/lib/auth.ts`, which is what emits them.
 export type ApplicationAccess = {
   organizationId: string
   organizationSlug: string
@@ -224,5 +230,99 @@ export async function resolveApplicationAccess(
     organizationName: owner.organizationName,
     roles,
     groups: [...new Set(groups.map((held) => held.key))].toSorted(),
+  }
+}
+
+export type OidcClaimUser = {
+  id: string
+  name: string
+  email?: string | null
+  emailVerified?: boolean | null
+  image?: string | null
+  locale?: unknown
+  updatedAt?: unknown
+}
+
+function splitDisplayName(name: string): {
+  given_name?: string
+  family_name?: string
+} {
+  const parts = name.split(/\s+/).filter((part) => part.length > 0)
+  if (parts.length <= 1) return {}
+
+  return {
+    given_name: parts.slice(0, -1).join(" "),
+    family_name: parts.at(-1),
+  }
+}
+
+function updatedAtSeconds(value: unknown): number | undefined {
+  if (value instanceof Date) {
+    const ms = value.getTime()
+    return Number.isFinite(ms) ? Math.floor(ms / 1000) : undefined
+  }
+  if (typeof value === "string" || typeof value === "number") {
+    const ms = new Date(value).getTime()
+    return Number.isFinite(ms) ? Math.floor(ms / 1000) : undefined
+  }
+  return undefined
+}
+
+// What every token and the userinfo response say about the member, so the three
+// cannot drift apart. Standard identity claims are emitted here too because the
+// provider's ID token omits them unless `customIdTokenClaims` supplies them.
+export function buildApplicationClaims({
+  access,
+  user: person,
+  scopes,
+  requestedClaims = [],
+}: {
+  access: ApplicationAccess
+  user: OidcClaimUser
+  scopes: readonly string[]
+  requestedClaims?: readonly string[]
+}) {
+  const scopeSet = new Set(scopes)
+  const requestedSet = new Set(requestedClaims)
+  const wants = (scope: string, ...claimNames: string[]) =>
+    scopeSet.has(scope) || claimNames.some((claim) => requestedSet.has(claim))
+
+  const splitName = splitDisplayName(person.name)
+  const updatedAt = updatedAtSeconds(person.updatedAt)
+  const hasEmail = typeof person.email === "string" && person.email.length > 0
+  const locale =
+    typeof person.locale === "string" && person.locale.length > 0
+      ? person.locale
+      : undefined
+
+  return {
+    [ORGANIZATION_CLAIM]: access.organizationSlug,
+    [ORGANIZATION_ID_CLAIM]: access.organizationId,
+    [ORGANIZATION_NAME_CLAIM]: access.organizationName,
+    ...(wants("profile", "name") ? { name: person.name } : {}),
+    ...(wants("profile", "given_name") && splitName.given_name
+      ? { given_name: splitName.given_name }
+      : {}),
+    ...(wants("profile", "family_name") && splitName.family_name
+      ? { family_name: splitName.family_name }
+      : {}),
+    ...(wants("profile", "preferred_username")
+      ? { preferred_username: person.name }
+      : {}),
+    ...(wants("profile", "picture") ? { picture: userPictureUrl(person) } : {}),
+    ...(wants("profile", "locale") && locale ? { locale } : {}),
+    ...(wants("profile", "updated_at") && updatedAt !== undefined
+      ? { updated_at: updatedAt }
+      : {}),
+    ...(wants("email", "email") && hasEmail ? { email: person.email } : {}),
+    ...(wants("email", "email_verified") && hasEmail
+      ? { email_verified: Boolean(person.emailVerified) }
+      : {}),
+    ...(wants("roles", ROLES_CLAIM, "roles")
+      ? { [ROLES_CLAIM]: access.roles, roles: access.roles }
+      : {}),
+    ...(wants("groups", GROUPS_CLAIM, "groups")
+      ? { [GROUPS_CLAIM]: access.groups, groups: access.groups }
+      : {}),
   }
 }

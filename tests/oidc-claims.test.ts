@@ -1,18 +1,28 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test"
 
 import { eq, inArray } from "drizzle-orm"
+import { headers } from "next/headers"
 
+import { GET as discoveryRoute } from "@/app/api/auth/.well-known/openid-configuration/route"
+import { POST as tokenRoute } from "@/app/api/auth/oauth2/token/route"
+import { GET as userinfoRoute } from "@/app/api/auth/oauth2/userinfo/route"
+import { GET as avatarRoute } from "@/app/api/avatar/[token]/route"
+import { auth } from "@/features/auth/lib/auth"
+import { createAvatarToken } from "@/features/shared/lib/avatar-url"
 import { db } from "@/features/shared/lib/db/client"
 import {
   applicationRole,
   applicationRoleClient,
   applicationRoleMember,
+  group,
+  groupMember,
   member,
   oauthClient,
   organization,
   user,
 } from "@/features/shared/lib/db/schema"
 import { resolveApplicationAccess } from "@/features/shared/lib/oidc-claims"
+import { actAs, forgetSessions } from "@/tests/support/request"
 
 // This is what stands between a valid Bedrock session and a token for someone
 // else's application, so it is exercised against the real database rather than
@@ -195,5 +205,386 @@ describe("when someone leaves the organization", () => {
     await expect(
       resolveApplicationAccess(memberUserId, portalClientId)
     ).rejects.toThrow(/not a member/i)
+  })
+})
+
+describe("claims emitted in ID tokens, userinfo and fallback avatars", () => {
+  const BASE = "http://localhost:3000/api/auth"
+  const REDIRECT_URI = "https://claims.example.test/callback"
+  const VERIFIER = "claims-test-verifier-0123456789-abcdefghijklmnopqrstuvwxyz"
+
+  const claimsOrgA = id("claims-org-a")
+  const claimsOrgB = id("claims-org-b")
+  const adaId = id("ada")
+  const brunoId = id("bruno")
+  const clientA = id("claims-client-a")
+  const clientB = id("claims-client-b")
+  const roleA = id("claims-role-a")
+  const roleB = id("claims-role-b")
+  const groupA = id("claims-group-a")
+  const adaUpdatedAt = new Date("2026-05-10T12:34:56.000Z")
+  const uploadedAvatarUrl =
+    "https://assets.example.test/users/ada/avatar/avatar-00000000-0000-4000-8000-000000000000.webp"
+
+  let challenge = ""
+
+  beforeAll(async () => {
+    const digest = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(VERIFIER)
+    )
+    challenge = Buffer.from(digest).toString("base64url")
+
+    const now = new Date()
+    await db.insert(user).values([
+      {
+        id: adaId,
+        name: "Ada Augusta Lovelace",
+        email: `${adaId}@example.test`,
+        emailVerified: true,
+        image: uploadedAvatarUrl,
+        locale: "de",
+        createdAt: now,
+        updatedAt: adaUpdatedAt,
+      },
+      {
+        id: brunoId,
+        name: "Bruno Mars",
+        email: `${brunoId}@example.test`,
+        emailVerified: false,
+        image: null,
+        locale: null,
+        createdAt: now,
+        updatedAt: now,
+      },
+    ])
+
+    await db.insert(organization).values([
+      {
+        id: claimsOrgA,
+        name: "Analytical Engine",
+        slug: claimsOrgA,
+        createdAt: now,
+      },
+      {
+        id: claimsOrgB,
+        name: "Other Tenant",
+        slug: claimsOrgB,
+        createdAt: now,
+      },
+    ])
+
+    for (const [clientId, org] of [
+      [clientA, claimsOrgA],
+      [clientB, claimsOrgB],
+    ] as const) {
+      // oxlint-disable-next-line no-await-in-loop
+      await db.insert(oauthClient).values({
+        id: clientId,
+        clientId,
+        name: clientId,
+        redirectUris: [REDIRECT_URI],
+        applicationType: "web",
+        tokenEndpointAuthMethod: "none",
+        grantTypes: ["authorization_code"],
+        responseTypes: ["code"],
+        skipConsent: true,
+        requirePKCE: true,
+        referenceId: org,
+        metadata: { clientId, organizationId: org },
+        createdAt: now,
+        updatedAt: now,
+      })
+    }
+
+    const adaMembership = id("ada-mem")
+    const brunoMembership = id("bruno-mem")
+    await db.insert(member).values([
+      {
+        id: adaMembership,
+        organizationId: claimsOrgA,
+        userId: adaId,
+        role: "member",
+        createdAt: now,
+      },
+      {
+        id: brunoMembership,
+        organizationId: claimsOrgB,
+        userId: brunoId,
+        role: "member",
+        createdAt: now,
+      },
+    ])
+
+    await db.insert(applicationRole).values([
+      {
+        id: roleA,
+        organizationId: claimsOrgA,
+        key: "consoleAdmin",
+        name: "Console Admin",
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        id: roleB,
+        organizationId: claimsOrgB,
+        key: "reader",
+        name: "Reader",
+        createdAt: now,
+        updatedAt: now,
+      },
+    ])
+    await db.insert(applicationRoleClient).values([
+      { roleId: roleA, clientId: clientA, createdAt: now },
+      { roleId: roleB, clientId: clientB, createdAt: now },
+    ])
+    await db.insert(applicationRoleMember).values([
+      { roleId: roleA, memberId: adaMembership, createdAt: now },
+      { roleId: roleB, memberId: brunoMembership, createdAt: now },
+    ])
+
+    await db.insert(group).values({
+      id: groupA,
+      organizationId: claimsOrgA,
+      key: "platform",
+      name: "Platform",
+      createdAt: now,
+      updatedAt: now,
+    })
+    await db.insert(groupMember).values({
+      groupId: groupA,
+      memberId: adaMembership,
+      organizationId: claimsOrgA,
+      createdAt: now,
+    })
+  })
+
+  afterAll(async () => {
+    forgetSessions([adaId, brunoId])
+    await db
+      .delete(organization)
+      .where(inArray(organization.id, [claimsOrgA, claimsOrgB]))
+    await db.delete(user).where(inArray(user.id, [adaId, brunoId]))
+  })
+
+  async function issueTokens(
+    userId: string,
+    clientId: string,
+    scope: string,
+    extraAuthorizeParams: Record<string, string> = {}
+  ) {
+    await actAs({ id: userId })
+    const authorizeUrl = new URL(`${BASE}/oauth2/authorize`)
+    for (const [key, value] of Object.entries({
+      response_type: "code",
+      client_id: clientId,
+      redirect_uri: REDIRECT_URI,
+      scope,
+      state: "claims-state",
+      code_challenge: challenge,
+      code_challenge_method: "S256",
+      ...extraAuthorizeParams,
+    })) {
+      authorizeUrl.searchParams.set(key, value)
+    }
+
+    const authorizeResponse = await auth.handler(
+      new Request(authorizeUrl, { headers: await headers() })
+    )
+    const location = new URL(
+      authorizeResponse.headers.get("location") ?? "",
+      BASE
+    )
+    const code = location.searchParams.get("code")
+    if (!code) throw new Error(`Expected code, received ${location.toString()}`)
+
+    const tokenResponse = await tokenRoute(
+      new Request(`${BASE}/oauth2/token`, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          grant_type: "authorization_code",
+          code,
+          redirect_uri: REDIRECT_URI,
+          client_id: clientId,
+          code_verifier: VERIFIER,
+        }),
+      })
+    )
+    expect(tokenResponse.status).toBe(200)
+    const tokens = (await tokenResponse.json()) as {
+      access_token: string
+      id_token: string
+    }
+    const idTokenClaims = JSON.parse(
+      Buffer.from(tokens.id_token.split(".")[1] ?? "", "base64url").toString()
+    ) as Record<string, unknown>
+
+    const userinfoResponse = await userinfoRoute(
+      new Request(`${BASE}/oauth2/userinfo`, {
+        headers: { authorization: `Bearer ${tokens.access_token}` },
+      })
+    )
+    expect(userinfoResponse.status).toBe(200)
+    const userinfo = (await userinfoResponse.json()) as Record<string, unknown>
+
+    return { idTokenClaims, userinfo }
+  }
+
+  test("advertises every supported claim in discovery", async () => {
+    const response = await discoveryRoute(
+      new Request(`${BASE}/.well-known/openid-configuration`)
+    )
+    expect(response.status).toBe(200)
+    const metadata = (await response.json()) as { claims_supported: string[] }
+
+    expect(metadata.claims_supported).toEqual(
+      expect.arrayContaining([
+        "picture",
+        "preferred_username",
+        "locale",
+        "updated_at",
+        "email",
+        "email_verified",
+        "roles",
+        "groups",
+        "urn:bedrock:organization",
+        "urn:bedrock:organization_id",
+        "urn:bedrock:organization_name",
+        "urn:bedrock:roles",
+        "urn:bedrock:groups",
+      ])
+    )
+  })
+
+  test("emits uploaded picture, profile, email, organization, roles and groups in both ID token and userinfo", async () => {
+    const { idTokenClaims, userinfo } = await issueTokens(
+      adaId,
+      clientA,
+      "openid profile email roles groups"
+    )
+
+    const expected = {
+      sub: adaId,
+      name: "Ada Augusta Lovelace",
+      given_name: "Ada Augusta",
+      family_name: "Lovelace",
+      preferred_username: "Ada Augusta Lovelace",
+      picture: uploadedAvatarUrl,
+      locale: "de",
+      email: `${adaId}@example.test`,
+      email_verified: true,
+      roles: ["consoleAdmin"],
+      "urn:bedrock:roles": ["consoleAdmin"],
+      groups: ["platform"],
+      "urn:bedrock:groups": ["platform"],
+      "urn:bedrock:organization": claimsOrgA,
+      "urn:bedrock:organization_id": claimsOrgA,
+      "urn:bedrock:organization_name": "Analytical Engine",
+    }
+
+    expect(idTokenClaims).toMatchObject(expected)
+    expect(userinfo).toMatchObject(expected)
+    expect(typeof idTokenClaims.updated_at).toBe("number")
+    expect(idTokenClaims.updated_at).toBe(userinfo.updated_at)
+  })
+
+  test("emits a signed fallback avatar URL when the account has no uploaded picture", async () => {
+    const { idTokenClaims, userinfo } = await issueTokens(
+      brunoId,
+      clientB,
+      "openid profile email"
+    )
+
+    const picture = idTokenClaims.picture
+    expect(typeof picture).toBe("string")
+    expect(picture).toBe(userinfo.picture)
+    expect(String(picture)).toMatch(
+      /^http:\/\/localhost:3000\/api\/avatar\/[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.svg$/
+    )
+    expect(String(picture)).not.toContain(brunoId)
+    expect(idTokenClaims.locale).toBeUndefined()
+    expect(idTokenClaims.email_verified).toBe(false)
+    expect(idTokenClaims.roles).toBeUndefined()
+    expect(idTokenClaims.groups).toBeUndefined()
+
+    const token = String(picture).split("/api/avatar/")[1] ?? ""
+    const svgResponse = await avatarRoute(new Request(String(picture)), {
+      params: Promise.resolve({ token }),
+    })
+    expect(svgResponse.status).toBe(200)
+    expect(svgResponse.headers.get("content-type")).toBe(
+      "image/svg+xml; charset=utf-8"
+    )
+    expect(svgResponse.headers.get("cache-control")).toBe(
+      "public, max-age=31536000, immutable"
+    )
+    expect(svgResponse.headers.get("cross-origin-resource-policy")).toBe(
+      "cross-origin"
+    )
+    expect(svgResponse.headers.get("access-control-allow-origin")).toBe("*")
+    const svg = await svgResponse.text()
+    expect(svg).toContain(">BM</text>")
+  })
+
+  test("refuses tampered avatar tokens and escapes XML characters in initials", async () => {
+    const valid = createAvatarToken({ id: "user-1", name: "<A & B>" })
+    const okResponse = await avatarRoute(
+      new Request(`http://localhost:3000/api/avatar/${valid}.svg`),
+      { params: Promise.resolve({ token: `${valid}.svg` }) }
+    )
+    expect(okResponse.status).toBe(200)
+    const svg = await okResponse.text()
+    expect(svg).toContain("&lt;&amp;")
+    expect(svg).not.toContain("<&")
+
+    const [payload, signature] = valid.split(".")
+    const tampered = `${payload}.${signature?.slice(0, -1)}${signature?.endsWith("a") ? "b" : "a"}.svg`
+    const refused = await avatarRoute(
+      new Request(`http://localhost:3000/api/avatar/${tampered}`),
+      { params: Promise.resolve({ token: tampered }) }
+    )
+    expect(refused.status).toBe(404)
+  })
+
+  test("omits profile and email claims when their scopes are absent, and honours claims.userinfo", async () => {
+    const minimal = await issueTokens(adaId, clientA, "openid")
+    expect(minimal.idTokenClaims.picture).toBeUndefined()
+    expect(minimal.idTokenClaims.email).toBeUndefined()
+    expect(minimal.idTokenClaims.name).toBeUndefined()
+    expect(minimal.userinfo.picture).toBeUndefined()
+    expect(minimal.userinfo.email).toBeUndefined()
+
+    const selective = await issueTokens(adaId, clientA, "openid", {
+      claims: JSON.stringify({
+        userinfo: { picture: null, "urn:bedrock:roles": null },
+      }),
+    })
+    expect(selective.userinfo.picture).toBe(uploadedAvatarUrl)
+    expect(selective.userinfo["urn:bedrock:roles"]).toEqual(["consoleAdmin"])
+    expect(selective.userinfo.email).toBeUndefined()
+    expect(selective.userinfo.name).toBeUndefined()
+  })
+
+  test("denies cross-tenant token issuance between the two organizations", async () => {
+    await actAs({ id: adaId })
+    const url = new URL(`${BASE}/oauth2/authorize`)
+    for (const [key, value] of Object.entries({
+      response_type: "code",
+      client_id: clientB,
+      redirect_uri: REDIRECT_URI,
+      scope: "openid profile",
+      state: "cross-tenant",
+      code_challenge: challenge,
+      code_challenge_method: "S256",
+    })) {
+      url.searchParams.set(key, value)
+    }
+
+    const response = await auth.handler(
+      new Request(url, { headers: await headers() })
+    )
+    const location = response.headers.get("location") ?? ""
+    expect(location).toBe(`/org/${claimsOrgB}/forbidden`)
   })
 })

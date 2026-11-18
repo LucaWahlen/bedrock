@@ -455,38 +455,34 @@ their Applications page.
 There is one issuer for the instance, `${BETTER_AUTH_URL}/api/auth`, with
 discovery at `/api/auth/.well-known/openid-configuration`. Changing
 `BETTER_AUTH_URL` changes the issuer, and every application has to be
-reconfigured. `sub` is the user's global id. The organization that owns the
-application is sent in `urn:bedrock:organization`. Tokens are signed with
-RS256.
+reconfigured. `sub` is the user's global id. Tokens are signed with RS256.
 
-The standard claims depend on the granted scopes:
+Every ID token, token introspection response and UserInfo response carries the
+same scope-gated claims, so relying parties that read the ID token directly see
+the same identity as those that call `/oauth2/userinfo`:
 
-- `openid` is required and identifies the global account with `sub`.
-- `profile` returns `name`, `picture`, `given_name` and `family_name` from the
-  UserInfo endpoint. Bedrock also sends `preferred_username` in the ID token,
-  access token and UserInfo response, using the account's display name.
-- `email` returns `email` and `email_verified` from UserInfo.
-- `roles` and `groups` add the corresponding namespaced claims described below
-  to the ID token, access token and UserInfo response.
+- `openid` is required and identifies the global account with `sub`, alongside
+  the owning organization in `urn:bedrock:organization` (slug),
+  `urn:bedrock:organization_id` and `urn:bedrock:organization_name`.
+- `profile` sends `name`, `given_name`, `family_name`, `preferred_username`
+  (the account's display name), `picture`, `locale` (when chosen) and
+  `updated_at`. When the account has no uploaded photo, `picture` points to a
+  signed initials avatar at `/api/avatar/<token>.svg` matching Bedrock's own
+  palette without exposing the user id.
+- `email` sends `email` and `email_verified`.
+- `roles` sends both `roles` and `urn:bedrock:roles`: the sorted keys of the
+  application roles the member holds, directly or through one of their groups,
+  that are linked to the requesting application.
+- `groups` sends both `groups` and `urn:bedrock:groups`: the sorted keys of
+  every group the member belongs to in the organization owning the application.
 
-The discovery document advertises these claims, including Bedrock's custom
-claims. Confidential clients support `client_secret_post` and
-`client_secret_basic`; new confidential applications use `client_secret_post`
-by default, and the method can be selected when registering an application.
-Choose the method the relying party supports. Public clients use `none` and
-PKCE.
+The discovery document advertises these claims, and `/oauth2/userinfo` also
+honours individual `claims.userinfo` requests for any advertised claim.
+Confidential clients support `client_secret_post` and `client_secret_basic`;
+new confidential applications use `client_secret_post` by default, and the
+method can be selected when registering an application. Choose the method the
+relying party supports. Public clients use `none` and PKCE.
 
-Two further scopes describe the member inside that organization. Both claims
-appear in the ID token, the access token and the userinfo response, and only
-when their scope was granted:
-
-- `roles` sends `urn:bedrock:roles`, the sorted keys of the application roles
-  the member holds, directly or through one of their groups, that are linked to
-  the requesting application.
-- `groups` sends `urn:bedrock:groups`, the sorted keys of every group the
-  member belongs to in the organization owning the application.
-
-Role and group keys are what applications match on, so neither can be changed
 Role and group keys are what applications match on, so neither can be changed
 once created; renaming a role or a group changes only its display name. Role
 keys are case-sensitive and preserve the exact spelling entered. They allow

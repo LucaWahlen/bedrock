@@ -14,6 +14,7 @@ export { verifyEmail } from "@/features/auth/actions/verify-email"
 export { verifyTwoFactor } from "@/features/auth/actions/verify-two-factor"
 export {
   auth,
+  OIDC_SCOPE_CLAIMS,
   OIDC_SCOPES,
   OIDC_SIGNING_ALGORITHM,
 } from "@/features/auth/lib/auth"

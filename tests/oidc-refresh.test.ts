@@ -18,6 +18,7 @@ import {
   oauthClient,
   oauthRefreshToken,
   session,
+  user,
 } from "@/features/shared/lib/db/schema"
 import {
   createFixture,
@@ -38,6 +39,7 @@ const VERIFIER = "refresh-test-verifier-0123456789-abcdefghijklmnopqrstuvwxyz"
 let fixture: Fixture
 let dave: FixtureUser
 let erin: FixtureUser
+let frank: FixtureUser
 let challenge: string
 // Owned by organization A, and one owned by B for the cross-tenant case.
 let clientA: string
@@ -89,6 +91,7 @@ beforeAll(async () => {
   fixture = await createFixture("refresh")
   dave = await fixture.createUser("dave")
   erin = await fixture.createUser("erin")
+  frank = await fixture.createUser("frank")
   clientA = `refresh-a-${fixture.suffix}`
   clientB = `refresh-b-${fixture.suffix}`
   await makeClient(clientA, fixture.orgA.id)
@@ -346,6 +349,53 @@ describe("what a refresh says", () => {
     const refused = await refresh(clientA, refreshToken)
     expect(refused.status).toBe(400)
     expect(refused.body.error).toBe("invalid_grant")
+  })
+
+  test("cannot bypass the membership check by narrowing scope to drop openid", async () => {
+    const membershipId = await addMember(fixture.orgA.id, frank.id)
+    const refreshToken = await signInWithRefresh(frank)
+
+    await db.delete(member).where(eq(member.id, membershipId))
+
+    const downscoped = await token({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: clientA,
+      scope: "offline_access",
+    })
+    expect(downscoped.status).toBe(400)
+    expect(downscoped.body.error).toBe("invalid_scope")
+  })
+
+  test("profile picture updates between fallback URL and uploaded image on refresh", async () => {
+    const membershipId = await addMember(fixture.orgA.id, frank.id)
+    await actAs(frank)
+    const initial = await exchange(
+      clientA,
+      await authorize(clientA, "openid profile roles offline_access")
+    )
+    expect(initial.status).toBe(200)
+    const firstPicture = claimsOf(initial.body.id_token).picture
+    expect(String(firstPicture)).toContain("/api/avatar/")
+
+    const customAvatar =
+      "https://assets.example.test/users/frank/avatar/avatar-11111111-1111-4111-8111-111111111111.png"
+    await db
+      .update(user)
+      .set({ image: customAvatar })
+      .where(eq(user.id, frank.id))
+
+    try {
+      const refreshed = await refresh(
+        clientA,
+        initial.body.refresh_token as string
+      )
+      expect(refreshed.status).toBe(200)
+      expect(claimsOf(refreshed.body.id_token).picture).toBe(customAvatar)
+    } finally {
+      await db.update(user).set({ image: null }).where(eq(user.id, frank.id))
+      await db.delete(member).where(eq(member.id, membershipId))
+    }
   })
 })
 

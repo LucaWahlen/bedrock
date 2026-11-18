@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl"
 import { CopyableField } from "@/features/applications/components/copyable-field"
 import type { ClientAuthMethod } from "@/features/applications/schemas/application"
 import type { OidcConfiguration } from "@/features/applications/types"
+import { Separator } from "@/features/shared/components/ui/separator"
 
 type OidcEndpointFieldsProps = {
   configuration: OidcConfiguration
@@ -74,6 +75,24 @@ export function OidcEndpointFields({
         <dt className="text-muted-foreground">{t("pkce")}</dt>
         <dd className="font-mono text-xs leading-5">S256</dd>
       </dl>
+
+      <Separator />
+
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-medium">{t("claims")}</p>
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
+          {configuration.claimsByScope.map(({ scope, claims }) => (
+            <div key={scope} className="contents">
+              <dt className="font-mono text-xs leading-5 text-muted-foreground">
+                {scope}
+              </dt>
+              <dd className="font-mono text-xs leading-5">
+                {claims.join(", ")}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   )
 }

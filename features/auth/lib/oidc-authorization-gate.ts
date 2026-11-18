@@ -33,8 +33,15 @@ function refuseWithoutOpenId(scope: unknown) {
 }
 
 // The claim callbacks refuse a token too late to tell the person why, and only
-// when one is minted at all. This settles membership before any code exists.
+// when one is minted at all. This settles membership before any code exists,
+// and keeps a refresh request from narrowing `scope` to drop `openid` (which
+// would skip the ID token and the membership check on it).
 export const oidcAuthorizationGate = createAuthMiddleware(async (ctx) => {
+  if (ctx.path === "/oauth2/token") {
+    refuseWithoutOpenId(ctx.body?.scope)
+    return
+  }
+
   const isAuthorize = ctx.path === "/oauth2/authorize"
   const isConsent = ctx.path === "/oauth2/consent" && ctx.body?.accept === true
   if (!isAuthorize && !isConsent) return

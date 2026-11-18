@@ -3,6 +3,7 @@
 import type { OidcConfiguration } from "@/features/applications/types"
 import {
   getAccessContext,
+  OIDC_SCOPE_CLAIMS,
   OIDC_SCOPES,
   OIDC_SIGNING_ALGORITHM,
 } from "@/features/auth"
@@ -28,5 +29,9 @@ export async function getOidcConfiguration(): Promise<OidcConfiguration> {
     endSession: `${issuer}/oauth2/end-session`,
     signingAlgorithm: OIDC_SIGNING_ALGORITHM,
     scopes: [...OIDC_SCOPES],
+    claimsByScope: OIDC_SCOPE_CLAIMS.map((entry) => ({
+      scope: entry.scope,
+      claims: [...entry.claims],
+    })),
   }
 }

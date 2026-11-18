@@ -21,6 +21,26 @@ import { CLIENT_ADDRESS_HEADERS } from "@/features/shared/lib/client-address"
 import { env } from "@/features/shared/lib/config/env"
 import { db } from "@/features/shared/lib/db/client"
 import { currentOAuthClientOwner } from "@/features/shared/lib/oauth-client-owner"
+import {
+  GROUPS_CLAIM,
+  OIDC_CLAIMS_SUPPORTED,
+  OIDC_SCOPE_CLAIMS,
+  ORGANIZATION_CLAIM,
+  ORGANIZATION_ID_CLAIM,
+  ORGANIZATION_NAME_CLAIM,
+  ROLES_CLAIM,
+} from "@/features/shared/lib/oidc-claim-names"
+import type { OidcClaimUser } from "@/features/shared/lib/oidc-claims"
+
+export {
+  GROUPS_CLAIM,
+  OIDC_CLAIMS_SUPPORTED,
+  OIDC_SCOPE_CLAIMS,
+  ORGANIZATION_CLAIM,
+  ORGANIZATION_ID_CLAIM,
+  ORGANIZATION_NAME_CLAIM,
+  ROLES_CLAIM,
+}
 
 export const OIDC_SCOPES = [
   "openid",
@@ -48,38 +68,6 @@ const REFRESH_TOKEN_REUSE_INTERVAL = 30
 // refused by Cloudflare Access among others.
 export const OIDC_SIGNING_ALGORITHM = "RS256"
 
-// Namespaced so they cannot collide with a claim the specification later
-// reserves, and fixed rather than derived from the issuer URL: deriving them
-// would silently rename every claim the day the deployment URL changes.
-export const ORGANIZATION_CLAIM = "urn:bedrock:organization"
-export const ROLES_CLAIM = "urn:bedrock:roles"
-export const GROUPS_CLAIM = "urn:bedrock:groups"
-
-// Imported at call time, like the access context below. A static import would
-// pull the database client into every chunk this module lands in, where the
-// bundler stubs it and leaves its exports undefined at runtime.
-async function applicationAccess(userId: string, clientId: string) {
-  const { resolveApplicationAccess } =
-    await import("@/features/shared/lib/oidc-claims")
-
-  return resolveApplicationAccess(userId, clientId)
-}
-
-// What every token and the userinfo response say about the member, so the three
-// cannot drift apart. Roles and groups each need their own scope.
-function applicationClaims(
-  access: Awaited<ReturnType<typeof applicationAccess>>,
-  scopes: readonly string[],
-  userName: string
-) {
-  return {
-    [ORGANIZATION_CLAIM]: access.organizationSlug,
-    ...(scopes.includes("profile") ? { preferred_username: userName } : {}),
-    ...(scopes.includes("roles") ? { [ROLES_CLAIM]: access.roles } : {}),
-    ...(scopes.includes("groups") ? { [GROUPS_CLAIM]: access.groups } : {}),
-  }
-}
-
 // The claim callbacks are given the client's metadata rather than its id, so
 // the id stamped there at registration is the only link back to the
 // application. Without it nothing can be scoped, so nothing is issued.
@@ -97,20 +85,25 @@ function applicationClientId(metadata?: Record<string, unknown>) {
 // one. On a refresh this is the only check there is, so it has to reach the
 // application as a refusal it understands rather than as a server fault.
 async function tokenClaims(
-  userId: string,
+  person: OidcClaimUser,
   scopes: readonly string[],
-  metadata: Record<string, unknown> | undefined,
-  userName: string
+  metadata: Record<string, unknown> | undefined
 ) {
-  const { isApplicationAccessRefused } =
-    await import("@/features/shared/lib/oidc-claims")
+  const {
+    buildApplicationClaims,
+    isApplicationAccessRefused,
+    resolveApplicationAccess,
+  } = await import("@/features/shared/lib/oidc-claims")
 
   try {
-    return applicationClaims(
-      await applicationAccess(userId, applicationClientId(metadata)),
+    return buildApplicationClaims({
+      access: await resolveApplicationAccess(
+        person.id,
+        applicationClientId(metadata)
+      ),
+      user: person,
       scopes,
-      userName
-    )
+    })
   } catch (error) {
     if (!isApplicationAccessRefused(error)) throw error
 
@@ -282,44 +275,28 @@ export const auth = betterAuth({
       allowDynamicClientRegistration: false,
       storeClientSecret: "hashed",
       advertisedMetadata: {
-        claims_supported: [
-          "sub",
-          "iss",
-          "aud",
-          "exp",
-          "nbf",
-          "iat",
-          "jti",
-          "email",
-          "email_verified",
-          "name",
-          "picture",
-          "family_name",
-          "given_name",
-          "sid",
-          "scope",
-          "azp",
-          "preferred_username",
-          ORGANIZATION_CLAIM,
-          ROLES_CLAIM,
-          GROUPS_CLAIM,
-        ],
+        claims_supported: [...OIDC_CLAIMS_SUPPORTED],
       },
       // Every claim callback refuses someone who is not a current member of the
       // organization owning the application. A refusal here stops the token,
       // which is the point: a live Bedrock session or an earlier refresh token
       // is not by itself permission to enter a tenant's application.
       customIdTokenClaims: async ({ user, scopes, metadata }) =>
-        tokenClaims(user.id, scopes, metadata, user.name),
+        tokenClaims(user, scopes, metadata),
       customAccessTokenClaims: async ({ user, scopes, metadata }) => {
         if (!user) return {}
 
-        return tokenClaims(user.id, scopes, metadata, user.name)
+        return tokenClaims(user, scopes, metadata)
       },
       // The access token names its client, which is all userinfo has to go on.
       // The membership is resolved again here rather than read from the token,
       // so a member who has since left is refused rather than described.
-      customUserInfoClaims: async ({ user, scopes, jwt: token }) => {
+      customUserInfoClaims: async ({
+        user,
+        scopes,
+        jwt: token,
+        requestedClaims,
+      }) => {
         const clientId = token.client_id ?? token.azp
 
         if (typeof clientId !== "string" || clientId.length === 0) {
@@ -329,12 +306,16 @@ export const auth = betterAuth({
           })
         }
 
+        const { buildApplicationClaims, resolveApplicationAccess } =
+          await import("@/features/shared/lib/oidc-claims")
+
         try {
-          return applicationClaims(
-            await applicationAccess(user.id, clientId),
+          return buildApplicationClaims({
+            access: await resolveApplicationAccess(user.id, clientId),
+            user,
             scopes,
-            user.name
-          )
+            requestedClaims,
+          })
         } catch (error) {
           throw new APIError("UNAUTHORIZED", {
             error: "invalid_token",

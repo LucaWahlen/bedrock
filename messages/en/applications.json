@@ -129,6 +129,7 @@
     "endSession": "Logout URL",
     "signingAlgorithm": "Signing algorithm",
     "scopes": "Scopes",
+    "claims": "Claims by scope",
     "clientAuthentication": "Client authentication",
     "pkce": "PKCE"
   },
@@ -242,7 +243,7 @@
   },
   "scopes": {
     "openid": "Confirm who you are",
-    "profile": "See your name and picture",
+    "profile": "See your name, picture and language",
     "email": "See your email address",
     "roles": "See the roles you hold in this organization",
     "groups": "See the groups you belong to in this organization",

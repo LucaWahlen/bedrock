@@ -34,6 +34,10 @@ export type OidcConfiguration = {
   endSession: string
   signingAlgorithm: string
   scopes: string[]
+  claimsByScope: Array<{
+    scope: string
+    claims: string[]
+  }>
 }
 
 export type Application = {
