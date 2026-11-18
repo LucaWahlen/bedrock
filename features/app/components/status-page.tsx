@@ -3,6 +3,7 @@ import Link from "next/link"
 import type { ReactNode } from "react"
 
 import type { Organization } from "@/features/organizations"
+import { BackgroundImage } from "@/features/shared/components/background-image"
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import { Button } from "@/features/shared/components/ui/button"
 import { ScrollArea } from "@/features/shared/components/ui/scroll-area"
@@ -100,14 +101,9 @@ export function StatusPage({
         </div>
       </ScrollArea>
       <div className="relative hidden bg-muted lg:block">
-        <Image
-          src={organization?.backgroundImage ?? env.defaultBackgroundImageUrl}
-          alt=""
-          fill
-          loading="eager"
-          sizes="50vw"
-          unoptimized
-          className="object-cover"
+        <BackgroundImage
+          src={organization?.backgroundImage}
+          fallbackSrc={env.defaultBackgroundImageUrl}
         />
       </div>
     </div>

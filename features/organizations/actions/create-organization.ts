@@ -26,7 +26,10 @@ import {
 } from "@/features/shared/lib/db/schema"
 import type { Translator } from "@/features/shared/lib/i18n/translator"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
-import { isOwnedStagedBrandingKey } from "@/features/shared/lib/storage/media"
+import {
+  isInvalidMediaError,
+  isOwnedStagedBrandingKey,
+} from "@/features/shared/lib/storage/media"
 
 const stagedMediaSchema = z.object({ key: z.string().min(1) })
 
@@ -247,6 +250,10 @@ export async function createOrganization(
           ? error.message
           : "Could not create organization",
     }).catch(() => undefined)
+
+    if (isInvalidMediaError(error)) {
+      return { success: false, error: "Invalid organization media" }
+    }
 
     return {
       success: false,

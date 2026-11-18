@@ -2,20 +2,17 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 
 import {
-  CopyObjectCommand,
   DeleteObjectCommand,
-  HeadObjectCommand,
   ListObjectsV2Command,
   PutObjectCommand,
 } from "@aws-sdk/client-s3"
 
 import { env } from "@/features/shared/lib/config/env"
 import {
-  isMediaAllowed,
-  isOwnedStagedBrandingKey,
   MEDIA_EXTENSIONS,
   type MediaKind,
 } from "@/features/shared/lib/storage/media"
+import { promoteStagedMedia } from "@/features/shared/lib/storage/promote-media"
 import {
   getObjectStorage,
   getPublicObjectUrl,
@@ -39,10 +36,6 @@ export type PromotedBranding = StagedBranding & {
   publicUrl: string
 }
 
-function encodeCopySource(bucket: string, key: string) {
-  return [bucket, ...key.split("/")].map(encodeURIComponent).join("/")
-}
-
 // Uuid'd, so replacing an organization's branding is a new object and the old
 // URL never has to be invalidated.
 const CACHE_CONTROL = "public, max-age=31536000, immutable"
@@ -50,9 +43,9 @@ const CACHE_CONTROL = "public, max-age=31536000, immutable"
 function brandingKey(
   organizationId: string,
   field: BrandingField,
-  contentType: string
+  extension: string
 ) {
-  return `organizations/${organizationId}/branding/${field}-${crypto.randomUUID()}.${MEDIA_EXTENSIONS[contentType]}`
+  return `organizations/${organizationId}/branding/${field}-${crypto.randomUUID()}.${extension}`
 }
 
 export async function uploadShippedBranding(
@@ -63,7 +56,11 @@ export async function uploadShippedBranding(
 
   return Promise.all(
     branding.map(async ({ field, file, contentType }) => {
-      const key = brandingKey(organizationId, field, contentType)
+      const key = brandingKey(
+        organizationId,
+        field,
+        MEDIA_EXTENSIONS[contentType]
+      )
 
       await storage.client.send(
         new PutObjectCommand({
@@ -85,53 +82,22 @@ export async function promoteOrganizationBranding(
   stagedBranding: StagedBranding[],
   actorUserId: string
 ) {
-  const storage = getObjectStorage()
   const promotedBranding: PromotedBranding[] = []
 
   try {
     for (const item of stagedBranding) {
-      // Restated here rather than trusted from the caller: promotion is what
-      // moves an object out of a user's own prefix into an organization's.
-      if (!isOwnedStagedBrandingKey(item.key, actorUserId)) {
-        throw new Error("Invalid organization media")
-      }
-
-      const source = await storage.client.send(
-        new HeadObjectCommand({ Bucket: storage.bucket, Key: item.key })
-      )
-      const contentType = source.ContentType?.split(";", 1)[0].trim()
-      const size = source.ContentLength
-      const mediaKind = BRANDING_MEDIA_KINDS[item.field]
-
-      if (
-        !contentType ||
-        size === undefined ||
-        !isMediaAllowed(mediaKind, { type: contentType, size })
-      ) {
-        throw new Error(`Invalid ${mediaKind} upload`)
-      }
-
-      const destinationKey = brandingKey(
-        organizationId,
-        item.field,
-        contentType
-      )
-
-      await storage.client.send(
-        new CopyObjectCommand({
-          Bucket: storage.bucket,
-          Key: destinationKey,
-          CopySource: encodeCopySource(storage.bucket, item.key),
-          MetadataDirective: "REPLACE",
-          ContentType: contentType,
-          CacheControl: CACHE_CONTROL,
-        })
-      )
+      const promoted = await promoteStagedMedia({
+        stagedKey: item.key,
+        actorUserId,
+        kind: BRANDING_MEDIA_KINDS[item.field],
+        destinationKey: (extension) =>
+          brandingKey(organizationId, item.field, extension),
+      })
 
       promotedBranding.push({
         ...item,
-        destinationKey,
-        publicUrl: getPublicObjectUrl(storage.publicUrl, destinationKey),
+        destinationKey: promoted.key,
+        publicUrl: promoted.publicUrl,
       })
     }
   } catch (error) {

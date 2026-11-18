@@ -1,6 +1,10 @@
 import { z } from "zod"
 
-import type { MediaKind } from "@/features/shared/lib/storage/media"
+import {
+  InvalidMediaError,
+  isValidMediaBytes,
+  type MediaKind,
+} from "@/features/shared/lib/storage/media"
 
 const uploadResponseSchema = z.object({
   key: z.string(),
@@ -12,7 +16,44 @@ const uploadErrorSchema = z.object({ error: z.string() })
 
 export type UploadedMedia = z.infer<typeof uploadResponseSchema>
 
+function canBrowserDecodeImage(file: File) {
+  if (typeof window === "undefined" || typeof window.Image !== "function") {
+    return Promise.resolve(true)
+  }
+
+  const objectUrl = URL.createObjectURL(file)
+  return new Promise<boolean>((resolve) => {
+    const image = new window.Image()
+    image.addEventListener(
+      "load",
+      () => {
+        resolve(
+          file.type === "image/svg+xml" ||
+            (image.naturalWidth > 0 && image.naturalHeight > 0)
+        )
+      },
+      { once: true }
+    )
+    image.addEventListener("error", () => resolve(false), { once: true })
+    image.src = objectUrl
+  }).finally(() => URL.revokeObjectURL(objectUrl))
+}
+
+export async function canDecodeMediaFile(file: File) {
+  try {
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    if (!isValidMediaBytes(file.type, bytes)) return false
+    return await canBrowserDecodeImage(file)
+  } catch {
+    return false
+  }
+}
+
 export async function uploadMedia(file: File, kind: MediaKind) {
+  if (!(await canDecodeMediaFile(file))) {
+    throw new InvalidMediaError("This image file could not be read")
+  }
+
   const presignResponse = await fetch("/api/uploads/media", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

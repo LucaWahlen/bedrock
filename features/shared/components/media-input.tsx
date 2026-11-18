@@ -7,6 +7,11 @@ import { type Ref, useEffect, useRef, useState } from "react"
 
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import { Button } from "@/features/shared/components/ui/button"
+import { canDecodeMediaFile } from "@/features/shared/lib/media-upload"
+import {
+  MAX_MEDIA_BYTES,
+  MEDIA_EXTENSIONS,
+} from "@/features/shared/lib/storage/media"
 
 interface MediaInputProps {
   id: string
@@ -74,9 +79,12 @@ export function MediaInput({
   const t = useTranslations("common.media")
   const format = useFormatter()
   const internalInputRef = useRef<HTMLInputElement>(null)
+  const selectionRequestRef = useRef(0)
   // Keyed by the file it shows, so a preview never outlives its file and a
   // revoked URL is never rendered.
   const [preview, setPreview] = useState<{ file: File; url: string }>()
+  const [failedUrl, setFailedUrl] = useState<string>()
+  const [localError, setLocalError] = useState<string>()
 
   useEffect(() => {
     if (!file) return
@@ -95,14 +103,55 @@ export function MediaInput({
     onBlur()
   }
 
+  async function chooseFile(nextFile?: File) {
+    const request = ++selectionRequestRef.current
+    setLocalError(undefined)
+
+    if (
+      nextFile &&
+      nextFile.size > 0 &&
+      nextFile.size <= MAX_MEDIA_BYTES &&
+      nextFile.type in MEDIA_EXTENSIONS
+    ) {
+      const readable = await canDecodeMediaFile(nextFile)
+      if (request !== selectionRequestRef.current) return
+      if (!readable) {
+        if (internalInputRef.current) internalInputRef.current.value = ""
+        selectFile(undefined)
+        setLocalError(t("invalid"))
+        return
+      }
+    }
+
+    selectFile(nextFile)
+  }
+
   function removeFile() {
+    selectionRequestRef.current += 1
+    setLocalError(undefined)
     if (internalInputRef.current) internalInputRef.current.value = ""
     selectFile(undefined)
   }
 
+  function clearStored() {
+    selectionRequestRef.current += 1
+    setLocalError(undefined)
+    onClear?.()
+  }
+
+  function restoreStored() {
+    selectionRequestRef.current += 1
+    setLocalError(undefined)
+    onRestore?.()
+  }
+
   const storedUrl = cleared ? undefined : (currentUrl ?? undefined)
   const shownUrl = previewUrl ?? storedUrl
+  const renderableUrl =
+    shownUrl && shownUrl !== failedUrl ? shownUrl : undefined
   const canClear = Boolean(file || (currentUrl && !cleared))
+  const displayedError = error ?? localError
+  const isInvalid = Boolean(invalid || localError)
 
   function formatFileSize(bytes: number) {
     const { value, ...options } = fileSize(bytes)
@@ -113,9 +162,14 @@ export function MediaInput({
   return (
     <div className="flex h-14 items-center gap-2">
       <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted">
-        {shownUrl ? (
+        {renderableUrl ? (
           <Image
-            src={shownUrl}
+            ref={(element) => {
+              if (element?.complete && element.naturalWidth === 0) {
+                setFailedUrl(renderableUrl)
+              }
+            }}
+            src={renderableUrl}
             alt=""
             fill
             sizes="56px"
@@ -123,6 +177,7 @@ export function MediaInput({
               previewFit === "cover" ? "object-cover" : "object-contain"
             }
             unoptimized
+            onError={() => setFailedUrl(renderableUrl)}
           />
         ) : fallbackName ? (
           <IdentityAvatar
@@ -146,8 +201,8 @@ export function MediaInput({
         tabIndex={-1}
         className="sr-only"
         disabled={disabled}
-        aria-invalid={invalid}
-        onChange={(event) => selectFile(event.target.files?.[0])}
+        aria-invalid={isInvalid}
+        onChange={(event) => void chooseFile(event.target.files?.[0])}
       />
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-center gap-2">
@@ -156,7 +211,7 @@ export function MediaInput({
             variant="outline"
             className="min-w-0 flex-1 justify-start"
             disabled={disabled}
-            aria-invalid={invalid}
+            aria-invalid={isInvalid}
             onBlur={onBlur}
             onClick={() => internalInputRef.current?.click()}
           >
@@ -174,7 +229,7 @@ export function MediaInput({
               disabled={disabled}
               aria-label={t("keep")}
               title={t("keep")}
-              onClick={onRestore}
+              onClick={restoreStored}
             >
               <Undo2 />
             </Button>
@@ -190,7 +245,7 @@ export function MediaInput({
                   file ? t("removeFile", { name: file.name }) : t("remove")
                 }
                 title={t("remove")}
-                onClick={file ? removeFile : onClear}
+                onClick={file ? removeFile : clearStored}
               >
                 <X />
               </Button>
@@ -199,13 +254,13 @@ export function MediaInput({
         </div>
         <p
           className={
-            error
+            displayedError
               ? "h-4 truncate text-xs text-destructive"
               : "h-4 truncate text-xs text-muted-foreground"
           }
-          role={error ? "alert" : undefined}
+          role={displayedError ? "alert" : undefined}
         >
-          {error ??
+          {displayedError ??
             (file
               ? formatFileSize(file.size)
               : cleared

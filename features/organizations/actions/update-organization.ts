@@ -26,7 +26,10 @@ import type {
   UpdateOrganizationResult,
 } from "@/features/organizations/types"
 import { organization } from "@/features/shared/lib/db/schema"
-import { isOwnedStagedBrandingKey } from "@/features/shared/lib/storage/media"
+import {
+  isInvalidMediaError,
+  isOwnedStagedBrandingKey,
+} from "@/features/shared/lib/storage/media"
 
 type BrandingField = "logo" | "backgroundImage" | "favicon"
 
@@ -192,6 +195,9 @@ export async function updateOrganization(
     return { success: true, slug: slug ?? current.slug }
   } catch (error) {
     await cleanupBrandingObjects(promoted.map((item) => item.destinationKey))
+    if (isInvalidMediaError(error)) {
+      return { success: false, error: "Invalid organization media" }
+    }
     // A storage fault or a slug that was taken between the check and the write
     // both land here. Neither is the caller's to read, so it is logged instead.
     console.error("Organization could not be changed", error)

@@ -1,4 +1,7 @@
+"use client"
+
 import Image from "next/image"
+import { useState } from "react"
 
 import {
   AVATAR_VARIANTS,
@@ -12,6 +15,7 @@ interface IdentityAvatarProps {
   seed: string | null
   variant: "lg" | "md" | "sm"
   eager?: boolean
+  onLogoError?: () => void
 }
 
 // `size` matches the vocabulary the avatar group styles react to.
@@ -45,7 +49,9 @@ export function IdentityAvatar({
   seed,
   variant,
   eager,
+  onLogoError,
 }: IdentityAvatarProps) {
+  const [failedLogo, setFailedLogo] = useState<string | null>(null)
   const {
     sizeClass,
     fontSize,
@@ -54,9 +60,15 @@ export function IdentityAvatar({
     eager: defaultEager,
   } = VARIANT_STYLES[variant]
 
-  if (logo) {
+  if (logo && logo !== failedLogo) {
     return (
       <Image
+        ref={(element) => {
+          if (element?.complete && element.naturalWidth === 0) {
+            setFailedLogo(logo)
+            onLogoError?.()
+          }
+        }}
         data-slot="avatar"
         data-size={size}
         src={logo}
@@ -66,6 +78,10 @@ export function IdentityAvatar({
         height={imageSize}
         loading={(eager ?? defaultEager) ? "eager" : "lazy"}
         crossOrigin="anonymous"
+        onError={() => {
+          setFailedLogo(logo)
+          onLogoError?.()
+        }}
       />
     )
   }

@@ -1,12 +1,15 @@
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
   HeadObjectCommand,
 } from "@aws-sdk/client-s3"
 
 import {
+  InvalidMediaError,
   isMediaAllowed,
   isOwnedStagedBrandingKey,
+  isValidMediaBytes,
   MEDIA_EXTENSIONS,
   type MediaKind,
 } from "@/features/shared/lib/storage/media"
@@ -43,7 +46,7 @@ export async function promoteStagedMedia({
   destinationKey,
 }: PromoteStagedMedia) {
   if (!isOwnedStagedBrandingKey(stagedKey, actorUserId)) {
-    throw new Error("Invalid media upload")
+    throw new InvalidMediaError("Invalid media upload")
   }
 
   const storage = getObjectStorage()
@@ -58,7 +61,22 @@ export async function promoteStagedMedia({
     size === undefined ||
     !isMediaAllowed(kind, { type: contentType, size })
   ) {
-    throw new Error(`Invalid ${kind} upload`)
+    await deleteStoredObjects([stagedKey])
+    throw new InvalidMediaError(`Invalid ${kind} upload`)
+  }
+
+  const object = await storage.client.send(
+    new GetObjectCommand({ Bucket: storage.bucket, Key: stagedKey })
+  )
+  const bytes = await object.Body?.transformToByteArray()
+
+  if (
+    !bytes ||
+    bytes.byteLength !== size ||
+    !isValidMediaBytes(contentType, bytes)
+  ) {
+    await deleteStoredObjects([stagedKey])
+    throw new InvalidMediaError(`Invalid ${kind} upload`)
   }
 
   const key = destinationKey(MEDIA_EXTENSIONS[contentType])

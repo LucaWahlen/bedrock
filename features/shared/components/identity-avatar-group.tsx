@@ -1,4 +1,6 @@
-import type { CSSProperties } from "react"
+"use client"
+
+import { type CSSProperties, useState } from "react"
 
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import {
@@ -63,6 +65,7 @@ export function IdentityAvatarGroup({
   items,
   total,
 }: IdentityAvatarGroupProps) {
+  const [failedLogos, setFailedLogos] = useState<Record<string, true>>({})
   const remaining = Math.max(total - items.length, 0)
 
   return (
@@ -72,10 +75,12 @@ export function IdentityAvatarGroup({
       className="*:data-[slot=avatar]:relative"
     >
       {items.map((item) => {
-        const mask = item.image ? silhouetteMask(item.image) : undefined
+        const logo =
+          item.image && !failedLogos[item.image] ? item.image : undefined
+        const mask = logo ? silhouetteMask(logo) : undefined
 
         // Only logos are wrapped, so initials keep the group's rounded ring.
-        return mask ? (
+        return mask && logo ? (
           <span
             key={item.id}
             data-slot="avatar"
@@ -88,16 +93,19 @@ export function IdentityAvatarGroup({
             />
             <IdentityAvatar
               seed={item.id}
-              logo={item.image}
+              logo={logo}
               name={item.name}
               variant="md"
+              onLogoError={() =>
+                setFailedLogos((previous) => ({ ...previous, [logo]: true }))
+              }
             />
           </span>
         ) : (
           <IdentityAvatar
             key={item.id}
             seed={item.id}
-            logo={item.image}
+            logo={logo}
             name={item.name}
             variant="md"
           />

@@ -68,7 +68,8 @@
     "keep": "Aktuelles Bild behalten",
     "remove": "Bild entfernen",
     "removeFile": "{name} entfernen",
-    "removedOnSave": "Wird beim Speichern entfernt"
+    "removedOnSave": "Wird beim Speichern entfernt",
+    "invalid": "Diese Bilddatei konnte nicht gelesen werden"
   },
   "password": {
     "show": "Passwort anzeigen",

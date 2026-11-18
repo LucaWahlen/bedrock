@@ -27,6 +27,7 @@ import { db } from "@/features/shared/lib/db/client"
 import { oauthClient } from "@/features/shared/lib/db/schema"
 import { withOAuthClientOwner } from "@/features/shared/lib/oauth-client-owner"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
+import { isInvalidMediaError } from "@/features/shared/lib/storage/media"
 
 export async function createApplication(
   input: CreateApplicationInput
@@ -174,6 +175,11 @@ export async function createApplication(
         error instanceof Error ? error.message : "Could not create application",
     }).catch(() => undefined)
 
-    return { success: false, error: t("errors.createFailed") }
+    return {
+      success: false,
+      error: isInvalidMediaError(error)
+        ? t("validation.iconInvalid")
+        : t("errors.createFailed"),
+    }
   }
 }

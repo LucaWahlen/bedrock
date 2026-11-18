@@ -15,7 +15,10 @@ import { getAccessContext } from "@/features/auth"
 import { db } from "@/features/shared/lib/db/client"
 import { user } from "@/features/shared/lib/db/schema"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
-import { isOwnedStagedBrandingKey } from "@/features/shared/lib/storage/media"
+import {
+  isInvalidMediaError,
+  isOwnedStagedBrandingKey,
+} from "@/features/shared/lib/storage/media"
 import type { ActionResult } from "@/features/shared/types"
 
 export async function updateProfile(
@@ -127,6 +130,9 @@ export async function updateProfile(
     return { success: true }
   } catch (error) {
     if (promotedKey) await deleteStoredObjects([promotedKey])
+    if (isInvalidMediaError(error)) {
+      return { success: false, error: t("errors.invalidPicture") }
+    }
     console.error("Profile could not be changed", error)
 
     await recordAuditEvent({

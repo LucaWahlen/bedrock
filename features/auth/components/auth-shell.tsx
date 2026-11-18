@@ -1,8 +1,7 @@
-import Image from "next/image"
-
 import { getAccessContext } from "@/features/auth/actions/get-access-context"
 import { LanguageSwitcher } from "@/features/auth/components/login-page/language-switcher"
 import type { LoginOrganization } from "@/features/auth/types"
+import { BackgroundImage } from "@/features/shared/components/background-image"
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import { ScrollArea } from "@/features/shared/components/ui/scroll-area"
 import { env } from "@/features/shared/lib/config/env"
@@ -56,14 +55,9 @@ export async function AuthShell({
         </div>
       </ScrollArea>
       <div className="relative hidden bg-muted lg:block">
-        <Image
-          src={organization?.backgroundImage ?? env.defaultBackgroundImageUrl}
-          alt=""
-          fill
-          loading="eager"
-          sizes="50vw"
-          unoptimized
-          className="object-cover"
+        <BackgroundImage
+          src={organization?.backgroundImage}
+          fallbackSrc={env.defaultBackgroundImageUrl}
         />
       </div>
     </div>

@@ -25,6 +25,7 @@ import { db } from "@/features/shared/lib/db/client"
 import { oauthClient } from "@/features/shared/lib/db/schema"
 import { withOAuthClientOwner } from "@/features/shared/lib/oauth-client-owner"
 import { revalidateEverywhere } from "@/features/shared/lib/revalidate"
+import { isInvalidMediaError } from "@/features/shared/lib/storage/media"
 import type { ActionResult } from "@/features/shared/types"
 
 export async function updateApplication(
@@ -76,6 +77,19 @@ export async function updateApplication(
   let unusedIconKey: string | undefined
 
   try {
+    const icon =
+      input.icon === undefined
+        ? undefined
+        : input.icon === null
+          ? null
+          : await promoteApplicationIcon(
+              organization.id,
+              input.clientId,
+              input.icon.key,
+              currentUser.id
+            )
+    unusedIconKey = icon?.key
+
     await withOAuthClientOwner(organization.id, async () =>
       auth.api.adminUpdateOAuthClient({
         headers: await headers(),
@@ -101,19 +115,6 @@ export async function updateApplication(
 
     // The plugin owns the row, so the metadata the claim callbacks depend on is
     // re-stamped rather than assumed to have survived the update.
-    const icon =
-      input.icon === undefined
-        ? undefined
-        : input.icon === null
-          ? null
-          : await promoteApplicationIcon(
-              organization.id,
-              input.clientId,
-              input.icon.key,
-              currentUser.id
-            )
-    unusedIconKey = icon?.key
-
     await db
       .update(oauthClient)
       .set({
@@ -195,7 +196,12 @@ export async function updateApplication(
         error instanceof Error ? error.message : "Could not update application",
     }).catch(() => undefined)
 
-    return { success: false, error: t("errors.updateFailed") }
+    return {
+      success: false,
+      error: isInvalidMediaError(error)
+        ? t("validation.iconInvalid")
+        : t("errors.updateFailed"),
+    }
   }
 
   revalidateEverywhere()
