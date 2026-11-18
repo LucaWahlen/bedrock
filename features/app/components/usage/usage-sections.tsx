@@ -1,7 +1,6 @@
 import { Info } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { Badge } from "@/features/shared/components/ui/badge"
 import {
   UsageActivityChart,
   UsageBarBreakdown,
@@ -49,10 +48,10 @@ export function CoverageNote({ coverage }: { coverage: UsageCoverage }) {
   if (!note) return null
 
   return (
-    <Badge variant="outline" className="h-6 text-muted-foreground">
-      <Info aria-hidden="true" />
-      {note}
-    </Badge>
+    <p className="flex w-fit max-w-full items-start gap-2 rounded-lg border px-3 py-2 text-xs text-muted-foreground">
+      <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+      <span className="min-w-0 break-words">{note}</span>
+    </p>
   )
 }
 
