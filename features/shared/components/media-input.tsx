@@ -123,7 +123,6 @@ export function MediaInput({
               previewFit === "cover" ? "object-cover" : "object-contain"
             }
             unoptimized
-            crossOrigin="anonymous"
           />
         ) : fallbackName ? (
           <IdentityAvatar

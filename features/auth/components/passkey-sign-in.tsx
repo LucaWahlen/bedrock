@@ -79,9 +79,8 @@ export function PasskeySignIn({
 
   useEffect(() => {
     let cancelled = false
-    let removeFocusRetry: (() => void) | undefined
 
-    async function offerAutofill(retryOnFocus: boolean) {
+    async function offerAutofill() {
       let options: Awaited<ReturnType<typeof getPasskeySignInOptions>>
       try {
         if (
@@ -93,26 +92,6 @@ export function PasskeySignIn({
 
         options = await getPasskeySignInOptions()
       } catch {
-        // An edge proxy (e.g. bot detection before clearance settles) or a
-        // brief network blip can reject the mount-time action; try once more
-        // when the person focuses the passkey-autofill field.
-        if (!cancelled && retryOnFocus) {
-          const onFocusIn = (event: FocusEvent) => {
-            if (
-              !(event.target instanceof HTMLInputElement) ||
-              !event.target.autocomplete.includes("webauthn")
-            ) {
-              return
-            }
-            removeFocusRetry?.()
-            void offerAutofill(false)
-          }
-          document.addEventListener("focusin", onFocusIn)
-          removeFocusRetry = () => {
-            document.removeEventListener("focusin", onFocusIn)
-            removeFocusRetry = undefined
-          }
-        }
         return
       }
       if (cancelled || !options.success) return
@@ -142,11 +121,10 @@ export function PasskeySignIn({
       }
     }
 
-    void offerAutofill(true)
+    void offerAutofill()
 
     return () => {
       cancelled = true
-      removeFocusRetry?.()
       WebAuthnAbortService.cancelCeremony()
     }
   }, [])

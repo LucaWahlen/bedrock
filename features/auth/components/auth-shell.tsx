@@ -60,6 +60,7 @@ export async function AuthShell({
           src={organization?.backgroundImage ?? env.defaultBackgroundImageUrl}
           alt=""
           fill
+          loading="eager"
           sizes="50vw"
           unoptimized
           className="object-cover"
