@@ -37,7 +37,7 @@ export const membersSearchParams = {
 export const directorySearchParams = {
   ...peopleSearchParams,
   organization: parseAsNativeArrayOf(parseAsString),
-  account: parseAsNativeArrayOf(parseAsStringLiteral(ACCOUNT_STATUSES)),
+  status: parseAsNativeArrayOf(parseAsStringLiteral(ACCOUNT_STATUSES)),
 }
 
 export const loadMembersSearchParams = createLoader(membersSearchParams)

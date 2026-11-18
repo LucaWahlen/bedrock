@@ -1,6 +1,10 @@
 import { parseAsStringLiteral } from "nuqs/server"
 
-import { ACCOUNT_NOTICES, ACCOUNT_SECTIONS } from "@/features/account/types"
+import {
+  ACCOUNT_NOTICES,
+  ACCOUNT_SECTIONS,
+  type AccountSection,
+} from "@/features/account/types"
 
 // The account dialog lives in the URL so any page can link straight into one
 // of its sections: `?account=<section>` opens it there, and an absent or
@@ -10,4 +14,11 @@ import { ACCOUNT_NOTICES, ACCOUNT_SECTIONS } from "@/features/account/types"
 export const accountSearchParams = {
   account: parseAsStringLiteral(ACCOUNT_SECTIONS),
   accountNotice: parseAsStringLiteral(ACCOUNT_NOTICES),
+}
+
+export function isAccountSection(value: unknown): value is AccountSection {
+  return (
+    typeof value === "string" &&
+    (ACCOUNT_SECTIONS as readonly string[]).includes(value)
+  )
 }

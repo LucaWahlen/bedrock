@@ -36,7 +36,7 @@ export default async function DirectoryPage({
   params,
   searchParams,
 }: DirectoryPageProps) {
-  const [{ slug }, { search, organization, account, sort, direction, page }] =
+  const [{ slug }, { search, organization, status, sort, direction, page }] =
     await Promise.all([params, loadDirectorySearchParams(searchParams)])
   const currentOrganization = await getOrganizationBySlug(slug)
   if (!currentOrganization?.isRoot) notFound()
@@ -44,7 +44,7 @@ export default async function DirectoryPage({
   const result = await getDirectory({
     search,
     organizationIds: organization,
-    statuses: account,
+    statuses: status,
     sort,
     direction,
     page: page + 1,

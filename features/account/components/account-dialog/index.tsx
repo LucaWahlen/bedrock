@@ -25,7 +25,10 @@ import {
   SecuritySection,
 } from "@/features/account/components/account-dialog/security-section"
 import { SessionsSection } from "@/features/account/components/account-dialog/sessions-section"
-import { accountSearchParams } from "@/features/account/lib/account-search-params"
+import {
+  accountSearchParams,
+  isAccountSection,
+} from "@/features/account/lib/account-search-params"
 import {
   ACCOUNT_SECTIONS,
   type AccountOverview,
@@ -60,8 +63,9 @@ export function AccountDialog() {
   const t = useTranslations("account")
   const params = useParams<{ slug: string }>()
   const organizationSlug = params?.slug ?? ""
-  const [{ account: section, accountNotice }, setQuery] =
+  const [{ account: rawSection, accountNotice }, setQuery] =
     useQueryStates(accountSearchParams)
+  const section = isAccountSection(rawSection) ? rawSection : null
   const [overview, setOverview] = useState<AccountOverview | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [sessionsVersion, setSessionsVersion] = useState(0)

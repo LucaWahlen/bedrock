@@ -2,6 +2,10 @@ import { afterAll, describe, expect, test } from "bun:test"
 
 import { eq, inArray } from "drizzle-orm"
 
+import {
+  accountSearchParams,
+  isAccountSection,
+} from "@/features/account/lib/account-search-params"
 import { userAvatarKey } from "@/features/account/lib/avatar-storage"
 import { findSoleOwnedOrganizations } from "@/features/account/lib/sole-ownership"
 import {
@@ -14,11 +18,21 @@ import type { DeviceType } from "@/features/account/types"
 import { soleOwnedOrganizations } from "@/features/account/utils/sole-ownership"
 import { describeUserAgent } from "@/features/account/utils/user-agent"
 import { navigationFor } from "@/features/app/lib/navigation"
+import { applicationsSearchParams } from "@/features/applications/lib/applications-search-params"
+import { auditLogSearchParams } from "@/features/audit/lib/audit-log-search-params"
 import { auditScopeOf } from "@/features/audit/lib/record-audit-event"
 import { emailChangeOf } from "@/features/auth/utils/email-change-token"
+import { groupsSearchParams } from "@/features/groups/lib/groups-search-params"
+import { organizationsSearchParams } from "@/features/organizations/lib/organizations-search-params"
+import {
+  directorySearchParams,
+  loadDirectorySearchParams,
+  membersSearchParams,
+} from "@/features/organizations/lib/people-search-params"
 import { db } from "@/features/shared/lib/db/client"
 import { member, organization, user } from "@/features/shared/lib/db/schema"
 import { translatorFor } from "@/features/shared/lib/i18n/translator"
+import { usageSearchParams } from "@/features/usage/lib/usage-search-params"
 
 function encodeSegment(value: unknown) {
   return Buffer.from(JSON.stringify(value)).toString("base64url")
@@ -331,6 +345,36 @@ describe("the navigation a capability set reaches", () => {
       "Health",
       "Usage",
     ])
+  })
+})
+
+describe("account dialog URL parameters", () => {
+  test("never collide with page filter parameters in nuqs", () => {
+    const reserved = new Set(Object.keys(accountSearchParams))
+    const pageSchemas = [
+      directorySearchParams,
+      membersSearchParams,
+      organizationsSearchParams,
+      applicationsSearchParams,
+      groupsSearchParams,
+      auditLogSearchParams,
+      usageSearchParams,
+    ]
+
+    for (const schema of pageSchemas) {
+      for (const key of Object.keys(schema)) {
+        expect(reserved.has(key)).toBe(false)
+      }
+    }
+  })
+
+  test("directory status filter parses independently of account sections", async () => {
+    const parsed = await loadDirectorySearchParams({ status: "active" })
+    expect(parsed.status).toEqual(["active"])
+    expect(isAccountSection("security")).toBe(true)
+    expect(isAccountSection("active")).toBe(false)
+    expect(isAccountSection(["active"])).toBe(false)
+    expect(isAccountSection(null)).toBe(false)
   })
 })
 

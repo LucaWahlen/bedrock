@@ -7,7 +7,10 @@ import { useQueryStates } from "nuqs"
 import { useEffect, useRef, useState } from "react"
 
 import { useAccountDialog } from "@/features/account/components/account-dialog/use-account-dialog"
-import { accountSearchParams } from "@/features/account/lib/account-search-params"
+import {
+  accountSearchParams,
+  isAccountSection,
+} from "@/features/account/lib/account-search-params"
 import { Button } from "@/features/shared/components/ui/button"
 
 /**
@@ -22,14 +25,15 @@ export function AccountSecurityNudge() {
   const dialog = useAccountDialog()
   const router = useRouter()
   const [{ account }] = useQueryStates(accountSearchParams)
-  const wasOpen = useRef(account !== null)
+  const open = isAccountSection(account)
+  const wasOpen = useRef(open)
 
   // Once the dialog closes, the server decides again whether a factor is
   // still missing, so a freshly added one takes the prompt away.
   useEffect(() => {
-    if (wasOpen.current && account === null) router.refresh()
-    wasOpen.current = account !== null
-  }, [account, router])
+    if (wasOpen.current && !open) router.refresh()
+    wasOpen.current = open
+  }, [open, router])
 
   if (dismissed) return null
 

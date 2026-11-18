@@ -37,7 +37,7 @@ export function DirectoryTable({ result }: DirectoryTableProps) {
   const format = useFormatter()
   const columns = useMemo(() => createDirectoryColumns(t, format), [t, format])
   const [isPending, startTransition] = useTransition()
-  const [{ search, organization, account, sort, direction, page }, setQuery] =
+  const [{ search, organization, status, sort, direction, page }, setQuery] =
     useQueryStates(directorySearchParams, { shallow: false, startTransition })
   const accountOptions: FacetOption[] = ACCOUNT_STATUSES.map((value) => ({
     value,
@@ -75,7 +75,7 @@ export function DirectoryTable({ result }: DirectoryTableProps) {
   })
 
   const hasFilters =
-    search.length > 0 || organization.length > 0 || account.length > 0
+    search.length > 0 || organization.length > 0 || status.length > 0
 
   return (
     <DataTableLayout
@@ -96,7 +96,7 @@ export function DirectoryTable({ result }: DirectoryTableProps) {
                   setQuery({
                     search: "",
                     organization: [],
-                    account: [],
+                    status: [],
                     page: 0,
                   })
               : undefined
@@ -111,9 +111,9 @@ export function DirectoryTable({ result }: DirectoryTableProps) {
           <DataTableFacetedFilter
             title={t("directory.filters.account")}
             options={accountOptions}
-            selected={account}
+            selected={status}
             onChange={(values) =>
-              setQuery({ account: values as AccountStatus[], page: 0 })
+              setQuery({ status: values as AccountStatus[], page: 0 })
             }
           />
         </DataTableToolbar>
