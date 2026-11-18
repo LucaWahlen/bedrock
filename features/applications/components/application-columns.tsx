@@ -65,7 +65,10 @@ function detailColumns<T extends Application>(
       id: "clientId",
       header: () => t("applicationsTable.columns.clientId"),
       cell: ({ row }) => (
-        <span className="font-mono text-xs text-muted-foreground">
+        <span
+          title={row.original.clientId}
+          className="block max-w-28 truncate font-mono text-xs text-muted-foreground md:max-w-none"
+        >
           {row.original.clientId}
         </span>
       ),
