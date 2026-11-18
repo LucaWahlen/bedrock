@@ -15,7 +15,7 @@ import { useParams } from "next/navigation"
 import { use, useTransition } from "react"
 import { toast } from "sonner"
 
-import { AccountDialog, setLocale, useAccountDialog } from "@/features/account"
+import { setLocale, useAccountDialog } from "@/features/account"
 import type { AccessUser } from "@/features/auth"
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import { LocaleLabel } from "@/features/shared/components/locale-flag"
@@ -79,127 +79,122 @@ export function UserMenuContent({ userPromise }: UserMenuContentProps) {
   }
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <SidebarMenuButton size="lg">
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <SidebarMenuButton size="lg">
+            <IdentityAvatar
+              logo={currentUser.image}
+              name={currentUser.name}
+              seed={currentUser.id}
+              variant="md"
+            />
+            <div className="flex flex-col truncate text-left">
+              <span className="truncate font-semibold">{currentUser.name}</span>
+              <span className="truncate text-xs text-sidebar-foreground/70">
+                {currentUser.email}
+              </span>
+            </div>
+            <ChevronsUpDown className="ml-auto" />
+          </SidebarMenuButton>
+        }
+      />
+      <DropdownMenuContent align="start" side={isMobile ? "bottom" : "right"}>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="p-0 font-normal">
+            <div className="flex items-center gap-2 px-1.5 py-1.5">
               <IdentityAvatar
                 logo={currentUser.image}
                 name={currentUser.name}
                 seed={currentUser.id}
-                variant="md"
+                variant="sm"
               />
               <div className="flex flex-col truncate text-left">
                 <span className="truncate font-semibold">
                   {currentUser.name}
                 </span>
-                <span className="truncate text-xs text-sidebar-foreground/70">
+                <span className="truncate text-xs text-muted-foreground">
                   {currentUser.email}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto" />
-            </SidebarMenuButton>
-          }
-        />
-        <DropdownMenuContent align="start" side={isMobile ? "bottom" : "right"}>
-          <DropdownMenuGroup>
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1.5 py-1.5">
-                <IdentityAvatar
-                  logo={currentUser.image}
-                  name={currentUser.name}
-                  seed={currentUser.id}
-                  variant="sm"
-                />
-                <div className="flex flex-col truncate text-left">
-                  <span className="truncate font-semibold">
-                    {currentUser.name}
-                  </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {currentUser.email}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => accountDialog.open()}>
-              <UserRoundCog />
-              {t("settings")}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          {/* One row each, however many choices they hold, so the menu does
-              not grow with every language or theme. */}
-          <DropdownMenuGroup>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="[&>svg:last-child]:ml-0">
-                <currentTheme.icon />
-                {t("theme")}
-                <span className="ml-auto pl-4 text-muted-foreground">
-                  {t(`themes.${currentTheme.value}`)}
-                </span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent className="min-w-40">
-                <DropdownMenuRadioGroup
-                  value={currentTheme.value}
-                  onValueChange={(value: Theme) => setTheme(value)}
-                >
-                  {THEMES.map((option) => (
-                    <DropdownMenuRadioItem
-                      key={option.value}
-                      value={option.value}
-                    >
-                      <option.icon />
-                      {t(`themes.${option.value}`)}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="[&>svg:last-child]:ml-0">
-                <Languages />
-                {tLanguage("label")}
-                <span className="ml-auto flex items-center gap-1.5 pl-4 text-muted-foreground">
-                  <LocaleLabel locale={locale} />
-                </span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent className="min-w-40">
-                <DropdownMenuRadioGroup
-                  value={locale}
-                  onValueChange={chooseLocale}
-                >
-                  {LOCALES.map((option) => (
-                    <DropdownMenuRadioItem
-                      key={option}
-                      value={option}
-                      disabled={changingLocale}
-                    >
-                      <LocaleLabel locale={option} />
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => {
-                window.location.href = `/org/${params?.slug}/logout`
-              }}
-            >
-              <LogOut />
-              {t("logOut")}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <AccountDialog />
-    </>
+            </div>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => accountDialog.open()}>
+            <UserRoundCog />
+            {t("settings")}
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        {/* One row each, however many choices they hold, so the menu does
+            not grow with every language or theme. */}
+        <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="[&>svg:last-child]:ml-0">
+              <currentTheme.icon />
+              {t("theme")}
+              <span className="ml-auto pl-4 text-muted-foreground">
+                {t(`themes.${currentTheme.value}`)}
+              </span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="min-w-40">
+              <DropdownMenuRadioGroup
+                value={currentTheme.value}
+                onValueChange={(value: Theme) => setTheme(value)}
+              >
+                {THEMES.map((option) => (
+                  <DropdownMenuRadioItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    <option.icon />
+                    {t(`themes.${option.value}`)}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="[&>svg:last-child]:ml-0">
+              <Languages />
+              {tLanguage("label")}
+              <span className="ml-auto flex items-center gap-1.5 pl-4 text-muted-foreground">
+                <LocaleLabel locale={locale} />
+              </span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="min-w-40">
+              <DropdownMenuRadioGroup
+                value={locale}
+                onValueChange={chooseLocale}
+              >
+                {LOCALES.map((option) => (
+                  <DropdownMenuRadioItem
+                    key={option}
+                    value={option}
+                    disabled={changingLocale}
+                  >
+                    <LocaleLabel locale={option} />
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => {
+              window.location.href = `/org/${params?.slug}/logout`
+            }}
+          >
+            <LogOut />
+            {t("logOut")}
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

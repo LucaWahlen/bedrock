@@ -52,9 +52,10 @@ const SECTION_ICONS: Record<AccountSection, LucideIcon> = {
   danger: TriangleAlert,
 }
 
-// Mounted once by the user menu and driven entirely by `?account=`, so any link
-// can open it on a section. Everything it shows comes from reads that check the
-// session again on the server.
+// Mounted once by the shell outside the sidebar (whose mobile drawer unmounts
+// while closed) and driven entirely by `?account=`, so any link or inline
+// prompt can open it on a section. Everything it shows comes from reads that
+// check the session again on the server.
 export function AccountDialog() {
   const t = useTranslations("account")
   const params = useParams<{ slug: string }>()

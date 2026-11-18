@@ -6,7 +6,7 @@ import { accountSearchParams } from "@/features/account/lib/account-search-param
 import type { AccountSection } from "@/features/account/types"
 
 // What opens the account dialog from anywhere inside the shell. The dialog
-// itself is mounted once, by the user menu, and follows the URL.
+// itself is mounted once outside the sidebar and follows the URL.
 export function useAccountDialog() {
   const [, setQuery] = useQueryStates(accountSearchParams)
 

@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 
+import { AccountDialog } from "@/features/account"
 import { OrgSwitcher } from "@/features/app/components/org-switcher"
 import { UserMenu } from "@/features/app/components/user-menu"
 import { navigationFor } from "@/features/app/lib/navigation"
@@ -101,6 +102,7 @@ export function AppSidebar({
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
+      <AccountDialog />
       {canCreateOrganization && (
         <CreateOrganizationDialog
           open={createOrganizationOpen}
