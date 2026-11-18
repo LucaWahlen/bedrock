@@ -834,7 +834,11 @@ address is a best-effort signal, never an identity.
 
 Edge rate limiting is expected for volumetric protection but is not relied upon
 for account protection: the application enforces per-account sign-in limits
-itself, because only it knows which account an attempt targets.
+itself, because only it knows which account an attempt targets. Do not enable
+bot-challenge features such as Cloudflare Bot Fight Mode on the application
+host: they reject pre-interaction Server Actions and server-to-server OIDC
+requests (`/api/auth/oauth2/token`, `userinfo`, `introspect`, `revoke`) with
+`403`.
 
 TLS is expected to end at that proxy. Nothing about security depends on the
 scheme the application sees: `BETTER_AUTH_URL` alone decides it. When it is

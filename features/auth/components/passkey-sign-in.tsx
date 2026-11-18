@@ -79,16 +79,42 @@ export function PasskeySignIn({
 
   useEffect(() => {
     let cancelled = false
+    let removeFocusRetry: (() => void) | undefined
 
-    async function offerAutofill() {
-      if (
-        !browserSupportsWebAuthn() ||
-        !(await browserSupportsWebAuthnAutofill())
-      ) {
+    async function offerAutofill(retryOnFocus: boolean) {
+      let options: Awaited<ReturnType<typeof getPasskeySignInOptions>>
+      try {
+        if (
+          !browserSupportsWebAuthn() ||
+          !(await browserSupportsWebAuthnAutofill())
+        ) {
+          return
+        }
+
+        options = await getPasskeySignInOptions()
+      } catch {
+        // An edge proxy (e.g. bot detection before clearance settles) or a
+        // brief network blip can reject the mount-time action; try once more
+        // when the person focuses the passkey-autofill field.
+        if (!cancelled && retryOnFocus) {
+          const onFocusIn = (event: FocusEvent) => {
+            if (
+              !(event.target instanceof HTMLInputElement) ||
+              !event.target.autocomplete.includes("webauthn")
+            ) {
+              return
+            }
+            removeFocusRetry?.()
+            void offerAutofill(false)
+          }
+          document.addEventListener("focusin", onFocusIn)
+          removeFocusRetry = () => {
+            document.removeEventListener("focusin", onFocusIn)
+            removeFocusRetry = undefined
+          }
+        }
         return
       }
-
-      const options = await getPasskeySignInOptions()
       if (cancelled || !options.success) return
 
       let credential: unknown
@@ -109,15 +135,18 @@ export function PasskeySignIn({
       setPending(true)
       try {
         await complete(credential, latest.current)
+      } catch {
+        if (!cancelled) latest.current.onError(latest.current.failed)
       } finally {
         if (!cancelled) setPending(false)
       }
     }
 
-    void offerAutofill()
+    void offerAutofill(true)
 
     return () => {
       cancelled = true
+      removeFocusRetry?.()
       WebAuthnAbortService.cancelCeremony()
     }
   }, [])

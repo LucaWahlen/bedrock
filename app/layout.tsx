@@ -10,11 +10,16 @@ import { Toaster } from "@/features/shared/components/ui/sonner"
 import { UnhandledErrorToast } from "@/features/shared/components/unhandled-error-toast"
 import { cn } from "@/features/shared/lib/ui/utils"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  preload: false,
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  preload: false,
 })
 
 export default async function RootLayout({
