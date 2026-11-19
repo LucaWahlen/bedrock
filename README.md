@@ -205,22 +205,46 @@ looks like the tenant it came from rather than like the platform.
 ### Notifications
 
 `features/notifications` tells people when something changes about their
-account or their memberships. Account notices wear the root organization's
-branding; membership notices wear the organization's own.
+account or their memberships, both by email and in the in-app notification
+inbox in the header. Account notices wear the root organization's branding;
+membership notices wear the organization's own.
 
 | Notice                                  | Sent to                        | When                                                     |
 | --------------------------------------- | ------------------------------ | -------------------------------------------------------- |
 | Password changed                        | The account                    | `changePassword` succeeds                                |
 | New email address requested             | The old address                | `changeEmail` succeeds; the new address appears masked   |
 | Email address changed                   | The old address                | The confirmation link is followed                        |
-| Two-factor turned on / off              | The account                    | Enrolment confirmed / two-factor disabled                |
+| Two-factor turned on / off              | The account                    | Enrolment confirmed / two-factor disabled or reset       |
 | New backup codes                        | The account                    | Backup codes regenerated                                 |
 | Passkey added / removed                 | The account                    | A passkey is registered / deleted                        |
-| Account deleted                         | The deleted address            | After the deletion commits                               |
+| Account disabled / enabled / deleted    | The account                    | Standing changed by root, or after deletion commits      |
 | New sign-in                             | The account                    | A sign-in passes the gate from an unrecognised device    |
 | Added to / removed from an organization | The member                     | Someone else adds or removes them; leaving sends nothing |
 | Role changed                            | The member                     | Someone else changes their role                          |
 | Invitation accepted                     | The inviter, if still a member | Their invitation is accepted, or settled by joining      |
+| Member joined / left                    | Organization owners and admins | Someone joins (sign-up, join, invitation) or leaves      |
+| New account registered                  | Root owners and admins         | A new user registers via sign-up or invitation           |
+| Break-glass access started              | The organization's owners      | A root administrator opens break-glass access            |
+
+The header bell opens on **Unread**. Switch to **All** to include read
+notifications. **Unread** includes older unread notices, not just those
+on the first page. Use the double checkmark to mark a notice as read without opening
+it or reloading the list. Opening it also marks it as read. **Mark all as read**
+includes notices on later pages. In **All**, the undo arrow marks a single notice
+as unread again. Notices cannot be deleted manually.
+Open **Settings → Notifications**
+(`?account=notifications`) to choose **In-app** and **Email** for each event.
+Account settings apply everywhere. Organization events use your defaults
+unless you customize them for a particular organization. When you restore
+defaults, the dialog asks for confirmation before removing that organization's
+custom settings. Other organizations are unchanged. Member joins, departures and
+new account registrations appear in-app by default, with email off.
+Critical security and break-glass emails are always sent,
+and transactional emails (password resets, email confirmations, and
+organization invitations) always send regardless of preferences. In-app
+notifications store locale-neutral facts so they render in whichever language
+the reader currently uses, hide soft-deleted organizations, and are pruned
+after 90 days by housekeeping.
 
 A device is recognised when the account signed in successfully with the same
 browser and operating system in the last 90 days (from the audit log), or has
@@ -232,8 +256,6 @@ device where that applies, and what to do if it was not you, with a link to the
 account's security settings. None carries a password, code, token or link that
 acts on the account. Notices are sent with `after()` once the change has
 committed: delivery is best effort and its failure never fails the change.
-`sendAccountDisabledNotice` and `sendAccountEnabledNotice` exist for account
-suspension but are not sent by anything yet.
 
 ## Invitations
 
@@ -641,10 +663,10 @@ bun run admin enable person@example.com
 
 Housekeeping purges organizations whose retention period has elapsed along
 with their stored media, removes invitations nobody took up, applies the audit
-retention period, removes stale rate limit counters, rolls up usage (see
-[Usage](#usage)), and removes expired sessions, OAuth access and refresh
-tokens, and verification values. Each task is independent, so one failure does
-not skip the others.
+retention period, prunes in-app notifications older than 90 days, removes
+stale rate limit counters, rolls up usage (see [Usage](#usage)), and removes
+expired sessions, OAuth access and refresh tokens, and verification values.
+Each task is independent, so one failure does not skip the others.
 
 Better Auth only deletes an expired session or token when someone presents it,
 and refresh tokens rotate on every use, so without the last task those tables
@@ -777,12 +799,15 @@ or different arguments. Conventions are in `AGENTS.md`.
 ## Tests
 
 ```bash
+docker compose exec db createdb -U postgres bedrock_test # once
+export TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/bedrock_test
+DATABASE_URL="$TEST_DATABASE_URL" bun run db:migrate
 bun run test
 ```
 
-The suite runs against the database in `DATABASE_URL` (the development
-database from `compose.yaml` by default) and removes every row it creates. It
-needs no storage or mail server.
+The suite uses a dedicated database ending in `_test`. It defaults to the
+local `bedrock_test` above and does not inherit the application's `DATABASE_URL`.
+It needs no storage or mail server.
 
 Server Actions are called directly, as real users. `tests/support/request.ts`,
 preloaded through `bunfig.toml`, stands in for the Next request: `actAs(user)`

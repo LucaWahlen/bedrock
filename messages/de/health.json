@@ -74,7 +74,8 @@
       "rateLimits": "Rate-Limit-Zähler aufräumen",
       "auditEvents": "Audit-Aufbewahrung anwenden",
       "usage": "Nutzung zusammenfassen",
-      "sessionsAndTokens": "Abgelaufene Sitzungen und Tokens entfernen"
+      "sessionsAndTokens": "Abgelaufene Sitzungen und Tokens entfernen",
+      "notifications": "Alte Benachrichtigungen bereinigen"
     }
   },
   "notices": {

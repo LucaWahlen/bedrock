@@ -1,8 +1,7 @@
-"use client"
-
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
 
+import { NotificationBell } from "@/features/notifications"
 import type { Organization } from "@/features/organizations"
 import { IdentityAvatar } from "@/features/shared/components/identity-avatar"
 import { Separator } from "@/features/shared/components/ui/separator"
@@ -40,6 +39,7 @@ export function AppHeader({ title, organization }: AppHeaderProps) {
         />
       </div>
       <h1 className="truncate text-sm font-semibold">{title}</h1>
+      <NotificationBell />
     </header>
   )
 }

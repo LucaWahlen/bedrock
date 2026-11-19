@@ -11,6 +11,7 @@ import {
   isRootAdministrator,
   rootAdministration,
 } from "@/features/auth"
+import { NotificationPreferencesSection } from "@/features/notifications"
 import {
   BreakGlassBanner,
   getOrganizationBySlug,
@@ -91,6 +92,9 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
         canCreateOrganization={isRootAdministrator(access)}
         capabilities={capabilities}
         currentOrganization={currentOrganization}
+        notificationsSection={
+          <NotificationPreferencesSection key={access.user.id} />
+        }
         organizationsPromise={organizationsPromise}
         userPromise={userPromise}
       />

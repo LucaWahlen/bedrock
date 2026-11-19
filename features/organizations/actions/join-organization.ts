@@ -6,6 +6,7 @@ import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import { getAccessContext } from "@/features/auth"
 import {
   deliverAfterResponse,
+  notifyOrganizationMemberJoined,
   sendInvitationAcceptedNotice,
   type NoticeOrganization,
   type NoticeRecipient,
@@ -62,7 +63,10 @@ export async function joinOrganization(
   // Joining settles an invitation just as accepting it would, so whoever sent
   // one is told, once this has committed.
   const accepted: {
-    notice?: { organization: NoticeOrganization; inviters: NoticeRecipient[] }
+    notice?: {
+      organization: NoticeOrganization
+      inviters: (NoticeRecipient & { id: string })[]
+    }
   } = {}
   const joined = await db.transaction(async (tx) => {
     const [current] = await tx
@@ -134,16 +138,27 @@ export async function joinOrganization(
 
   const { notice } = accepted
   if (notice) {
-    for (const inviter of notice.inviters) {
-      deliverAfterResponse(() =>
-        sendInvitationAcceptedNotice({
-          recipient: inviter,
-          organization: notice.organization,
-          invitee: currentUser,
-          role: "member",
-        })
+    deliverAfterResponse(async () => {
+      const acceptedDeliveries = await Promise.all(
+        notice.inviters.map((inviter) =>
+          sendInvitationAcceptedNotice({
+            recipient: inviter,
+            organization: notice.organization,
+            invitee: currentUser,
+            role: "member",
+          })
+        )
       )
-    }
+      const inviterIds = notice.inviters
+        .filter((_, index) => acceptedDeliveries[index])
+        .map(({ id }) => id)
+      await notifyOrganizationMemberJoined({
+        organizationId: target.id,
+        member: currentUser,
+        role: "member",
+        excludeUserIds: inviterIds,
+      })
+    })
   }
 
   revalidateEverywhere()

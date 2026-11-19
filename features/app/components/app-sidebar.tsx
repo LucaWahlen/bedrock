@@ -31,6 +31,7 @@ type AppSidebarProps = {
   canCreateOrganization: boolean
   capabilities: AppCapability[]
   currentOrganization: Organization
+  notificationsSection?: React.ReactNode
   organizationsPromise: Promise<Organization[]>
   userPromise: Promise<AccessUser>
 }
@@ -39,6 +40,7 @@ export function AppSidebar({
   canCreateOrganization,
   capabilities,
   currentOrganization,
+  notificationsSection,
   organizationsPromise,
   userPromise,
 }: AppSidebarProps) {
@@ -102,7 +104,7 @@ export function AppSidebar({
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
-      <AccountDialog />
+      <AccountDialog notificationsSection={notificationsSection} />
       {canCreateOrganization && (
         <CreateOrganizationDialog
           open={createOrganizationOpen}

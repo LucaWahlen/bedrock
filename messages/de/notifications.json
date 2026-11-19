@@ -30,6 +30,7 @@
     "signIn": "Anmelden",
     "openOrganization": "{organization} öffnen",
     "viewMembers": "Mitglieder ansehen",
+    "openDirectory": "Verzeichnis öffnen",
     "openAuditLog": "Audit-Log öffnen"
   },
   "notYouWithoutAccess": "Falls du das nicht warst, wende dich sofort an deine Administratoren.",
@@ -118,5 +119,203 @@
     "subject": "{invitee} hat deine Einladung zu {organization} angenommen",
     "body": "Hallo {name}, {invitee} ({inviteeEmail}) hat deine Einladung angenommen und ist {organization} als {role} beigetreten.",
     "guidance": "Falls du diese Person nicht eingeladen hast, überprüfe die Mitglieder von {organization}."
+  },
+  "memberJoined": {
+    "subject": "{member} ist {organization} beigetreten",
+    "body": "Hallo {name}, {member} ({memberEmail}) ist {organization} als {role} beigetreten.",
+    "guidance": "Überprüfe die Mitglieder von {organization}, falls du nicht damit gerechnet hast."
+  },
+  "memberLeft": {
+    "subject": "{member} hat {organization} verlassen",
+    "body": "Hallo {name}, {member} ({memberEmail}) hat {organization} verlassen.",
+    "guidance": "Überprüfe die Mitglieder von {organization}, falls du Zugriffe anpassen möchtest."
+  },
+  "userSignedUp": {
+    "subject": "{member} hat ein Konto bei {organization} erstellt",
+    "body": "Hallo {name}, {member} ({memberEmail}) hat ein neues Konto auf {organization} registriert.",
+    "guidance": "Öffne das Verzeichnis, um Konten auf dieser Instanz einzusehen oder zu verwalten."
+  },
+  "inbox": {
+    "markItemRead": "„{title}“ als gelesen markieren",
+    "markItemUnread": "„{title}“ als ungelesen markieren",
+    "title": "Benachrichtigungen",
+    "read": "Gelesen",
+    "unread": "Ungelesen",
+    "loading": "Benachrichtigungen werden geladen…",
+    "saving": "Benachrichtigungen werden aktualisiert…",
+    "updated": "Benachrichtigungen aktualisiert.",
+    "loadError": "Benachrichtigungen konnten nicht geladen werden.",
+    "buttonLabel": "Benachrichtigungen",
+    "buttonLabelUnread": "{count, plural, one {Benachrichtigungen (# ungelesen)} other {Benachrichtigungen (# ungelesen)}}",
+    "filters": {
+      "label": "Benachrichtigungen filtern",
+      "all": "Alle",
+      "unread": "Ungelesen"
+    },
+    "actions": {
+      "manage": "Verwalten",
+      "retry": "Erneut versuchen",
+      "loadMore": "Mehr laden",
+      "markAllRead": "Alle als gelesen markieren",
+      "markRead": "Als gelesen markieren",
+      "markUnread": "Als ungelesen markieren",
+      "remove": "Benachrichtigung entfernen",
+      "clearRead": "Gelesene löschen",
+      "openSettings": "Benachrichtigungseinstellungen",
+      "itemMenu": "Aktionen für {title}"
+    },
+    "empty": {
+      "all": "Noch keine Benachrichtigungen.",
+      "unread": "Alles gelesen."
+    },
+    "items": {
+      "password_changed": {
+        "title": "Passwort geändert",
+        "body": "{device}",
+        "bodyRevoked": "{device}. Alle anderen Sitzungen wurden beendet."
+      },
+      "email_change_requested": {
+        "title": "Änderung der E-Mail-Adresse angefordert",
+        "body": "Ein Bestätigungslink wurde an {newEmail} gesendet."
+      },
+      "email_changed": {
+        "title": "E-Mail-Adresse geändert",
+        "body": "Dein Konto verwendet jetzt {newEmail}."
+      },
+      "two_factor_enabled": {
+        "title": "Zwei-Faktor-Authentifizierung aktiviert",
+        "body": "Authenticator-Codes sind jetzt für dein Konto aktiv ({device})."
+      },
+      "two_factor_disabled": {
+        "title": "Zwei-Faktor-Authentifizierung deaktiviert"
+      },
+      "backup_codes_regenerated": {
+        "title": "Neue Backup-Codes erstellt",
+        "body": "Deine bisherigen Backup-Codes funktionieren nicht mehr."
+      },
+      "passkey_added": {
+        "title": "Passkey hinzugefügt",
+        "body": "{passkey} kann sich jetzt bei deinem Konto anmelden."
+      },
+      "passkey_removed": {
+        "title": "Passkey entfernt",
+        "body": "{passkey} wurde von deinem Konto entfernt."
+      },
+      "account_enabled": {
+        "title": "Konto aktiviert",
+        "body": "Ein Administrator hat dein Konto wieder aktiviert."
+      },
+      "new_sign_in": {
+        "title": "Neue Anmeldung",
+        "body": "{device}",
+        "bodyWithOrganization": "{device} · {organization}"
+      },
+      "member_added": {
+        "title": "Zu {organization} hinzugefügt",
+        "body": "{actor} hat dich als {role} hinzugefügt."
+      },
+      "member_role_changed": {
+        "title": "Rolle in {organization} geändert",
+        "body": "{actor} hat deine Rolle von {from} auf {to} geändert."
+      },
+      "member_removed": {
+        "title": "Aus {organization} entfernt",
+        "body": "Entfernt von {actor}."
+      },
+      "invitation_accepted": {
+        "title": "{invitee} ist {organization} beigetreten",
+        "body": "Hat deine Einladung als {role} angenommen."
+      },
+      "member_joined": {
+        "title": "{member} ist {organization} beigetreten",
+        "body": "Rolle: {role}"
+      },
+      "member_left": {
+        "title": "{member} hat {organization} verlassen"
+      },
+      "user_signed_up": {
+        "title": "{member} hat sich bei {organization} registriert"
+      },
+      "break_glass_started": {
+        "title": "Notfallzugriff auf {organization} geöffnet",
+        "body": "{actor} handelt für {minutes, number} Minuten als Owner."
+      }
+    }
+  },
+  "preferences": {
+    "title": "Benachrichtigungen",
+    "description": "Wähle, welche Ereignisse du im Posteingang oder per E-Mail sehen möchtest.",
+    "event": "Ereignis",
+    "loading": "Einstellungen werden geladen …",
+    "saved": "Änderungen gespeichert.",
+    "groups": {
+      "account": "Dein Konto",
+      "organizations": "Organisationsaktivität"
+    },
+    "scope": {
+      "label": "Organisationsauswahl",
+      "all": "Alle Organisationen",
+      "defaultHint": "Diese Standardwerte gelten, sofern du sie nicht für einzelne Organisationen anpasst.",
+      "hasOverrides": "Für diesen Kanal gibt es angepasste Organisationseinstellungen.",
+      "replaceOverrides": "Angepasste Organisationseinstellungen ersetzen",
+      "confirmReplace": "Den neuen Standard für „{event}“ ({channel}) in allen Organisationen übernehmen? Deine Anpassungen für dieses Ereignis und diesen Kanal werden entfernt.",
+      "organizationHint": "Für {name} gelten deine Standardwerte, solange du hier keinen Kanal anpasst.",
+      "custom": "Für diese Organisation angepasst",
+      "resetOrganization": "Standardwerte übernehmen",
+      "confirmOrganization": "Deine Anpassungen für {name} entfernen? Für alle Ereignisse gelten dann wieder deine Standardwerte. Andere Organisationen bleiben unverändert.",
+      "resetAll": "Alle Einstellungen zurücksetzen",
+      "confirmAll": "Benachrichtigungen für dein Konto und alle Organisationen auf die ursprünglichen Einstellungen zurücksetzen? Dabei gehen auch alle Anpassungen für einzelne Organisationen verloren."
+    },
+    "channels": {
+      "inApp": "In-App",
+      "email": "E-Mail",
+      "inAppLabel": "In-App-Benachrichtigungen für {item}",
+      "emailLabel": "E-Mail-Benachrichtigungen für {item}",
+      "alwaysSent": "Immer versendet",
+      "emailRequiredHint": "Diese Sicherheits-E-Mail lässt sich nicht ausschalten."
+    },
+    "categories": {
+      "credentials": "Anmeldung & Zugangsdaten",
+      "factors": "Zweiter Faktor & Passkeys",
+      "membership": "Deine Mitgliedschaft",
+      "activity": "Mitglieder & Einladungen",
+      "administration": "Plattform & Notfallzugriff"
+    },
+    "descriptions": {
+      "credentials": "Anmeldungen auf neuen Geräten und Änderungen an Passwort oder E-Mail-Adresse.",
+      "factors": "Änderungen an zweitem Faktor, Backup-Codes und Passkeys sowie die Freischaltung deines Kontos.",
+      "membership": "Wenn du aufgenommen wirst, eine andere Rolle erhältst oder entfernt wirst.",
+      "activity": "Wenn jemand deine Einladung annimmt, beitritt oder austritt.",
+      "administration": "Neue Konten und Notfallzugriffe auf eine Organisation."
+    },
+    "kinds": {
+      "new_sign_in": "Neue Anmeldung von unbekanntem Gerät",
+      "password_changed": "Passwort geändert",
+      "email_change_requested": "Änderung der E-Mail-Adresse angefordert",
+      "email_changed": "E-Mail-Adresse geändert",
+      "two_factor_enabled": "Zwei-Faktor-Authentifizierung aktiviert",
+      "two_factor_disabled": "Zwei-Faktor-Authentifizierung deaktiviert",
+      "backup_codes_regenerated": "Neue Backup-Codes erstellt",
+      "passkey_added": "Passkey hinzugefügt",
+      "passkey_removed": "Passkey entfernt",
+      "account_enabled": "Konto wieder aktiviert",
+      "member_added": "Zu Organisation hinzugefügt",
+      "member_role_changed": "Rolle in Organisation geändert",
+      "member_removed": "Aus Organisation entfernt",
+      "invitation_accepted": "Gesendete Einladung angenommen",
+      "member_joined": "Mitglied beigetreten",
+      "member_left": "Mitglied ausgetreten",
+      "user_signed_up": "Neues Konto registriert",
+      "break_glass_started": "Notfallzugriff geöffnet"
+    },
+    "errors": {
+      "invalidPreference": "Ungültige Benachrichtigungseinstellung",
+      "mandatoryEmail": "Wichtige Sicherheits-E-Mails können nicht deaktiviert werden",
+      "organizationKindOnly": "Diese Benachrichtigung gilt für dein gesamtes Konto",
+      "organizationDenied": "Du hast keinen Zugriff auf diese Organisation",
+      "saveFailed": "Die Einstellungen konnten nicht gespeichert werden.",
+      "loadFailed": "Deine Einstellungen konnten nicht geladen werden.",
+      "refreshFailed": "Änderungen gespeichert. Die neuen Einstellungen konnten nicht geladen werden."
+    }
   }
 }

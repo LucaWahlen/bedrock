@@ -10,6 +10,11 @@ import { auth } from "@/features/auth/lib/auth"
 import { organizationCallback } from "@/features/auth/lib/email-links"
 import { createSignUpSchema } from "@/features/auth/schemas/sign-up"
 import type { SignUpInput } from "@/features/auth/types"
+import {
+  deliverAfterResponse,
+  notifyOrganizationMemberJoined,
+  notifyUserSignedUp,
+} from "@/features/notifications"
 import { getOrganizationBySlug } from "@/features/organizations"
 import { isOpenToAnyone } from "@/features/organizations"
 import { clientAddress } from "@/features/shared/lib/client-address"
@@ -92,6 +97,7 @@ export async function signUp(
     // Self-service, so no organization authority was used to do it.
     const actor = auditActorFromUser(createdUser)
 
+    let membershipCreated = false
     const joined = await db.transaction(async (tx) => {
       const [current] = await tx
         .select({
@@ -140,6 +146,7 @@ export async function signUp(
         )
 
       if (createdMembership) {
+        membershipCreated = true
         await recordAuditEvent(
           {
             action: "organization.member_added",
@@ -157,6 +164,20 @@ export async function signUp(
       }
 
       return true
+    })
+
+    deliverAfterResponse(async () => {
+      const notifiedIds = membershipCreated
+        ? await notifyOrganizationMemberJoined({
+            organizationId: target.id,
+            member: createdUser,
+            role: "member",
+          })
+        : []
+      await notifyUserSignedUp({
+        newUser: createdUser,
+        excludeUserIds: notifiedIds,
+      })
     })
 
     // The callback carries the organization, which is how the mail knows whose

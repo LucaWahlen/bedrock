@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  Bell,
   KeyRound,
   Mail,
   MonitorSmartphone,
@@ -42,6 +43,13 @@ import {
 } from "@/features/shared/components/ui/dialog"
 import { ScrollArea } from "@/features/shared/components/ui/scroll-area"
 import { ScrollRegion } from "@/features/shared/components/ui/scroll-region"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/features/shared/components/ui/select"
 import { Skeleton } from "@/features/shared/components/ui/skeleton"
 import { cn } from "@/features/shared/lib/ui/utils"
 import type { QueryResult } from "@/features/shared/types"
@@ -52,6 +60,7 @@ const SECTION_ICONS: Record<AccountSection, LucideIcon> = {
   email: Mail,
   security: ShieldCheck,
   sessions: MonitorSmartphone,
+  notifications: Bell,
   danger: TriangleAlert,
 }
 
@@ -59,7 +68,11 @@ const SECTION_ICONS: Record<AccountSection, LucideIcon> = {
 // while closed) and driven entirely by `?account=`, so any link or inline
 // prompt can open it on a section. Everything it shows comes from reads that
 // check the session again on the server.
-export function AccountDialog() {
+export function AccountDialog({
+  notificationsSection,
+}: {
+  notificationsSection?: React.ReactNode
+}) {
   const t = useTranslations("account")
   const params = useParams<{ slug: string }>()
   const organizationSlug = params?.slug ?? ""
@@ -123,6 +136,8 @@ export function AccountDialog() {
   }
 
   const active = section ?? "profile"
+  const ActiveIcon = SECTION_ICONS[active]
+  const navRef = useRef<HTMLElement>(null)
 
   return (
     <Dialog
@@ -131,8 +146,21 @@ export function AccountDialog() {
         if (!next) close()
       }}
     >
-      <DialogContent className="flex h-[min(44rem,calc(100svh-2rem))] w-[calc(100%-2rem)] max-w-4xl flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl md:flex-row">
+      <DialogContent
+        initialFocus={() => {
+          const current = navRef.current?.querySelector<HTMLElement>(
+            '[aria-current="page"]'
+          )
+          return current?.getClientRects().length
+            ? current
+            : (navRef.current?.querySelector<HTMLElement>(
+                '[role="combobox"]'
+              ) ?? true)
+        }}
+        className="flex h-[min(44rem,calc(100svh-2rem))] w-[calc(100%-2rem)] max-w-4xl flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl md:flex-row"
+      >
         <nav
+          ref={navRef}
           aria-label={t("dialog.sectionsLabel")}
           className="flex shrink-0 flex-col gap-3 border-b bg-muted/40 p-3 md:w-56 md:border-r md:border-b-0 md:p-4"
         >
@@ -142,10 +170,31 @@ export function AccountDialog() {
               {t("dialog.description")}
             </DialogDescription>
           </div>
-          {/* Bleeds into the nav's padding so focus rings are not clipped and
-              the horizontal scrollbar on narrow screens sits below the tabs. */}
-          <ScrollRegion className="-mx-1 -mt-1 -mb-3 md:-mb-1">
-            <ul className="flex w-max min-w-full gap-1 px-1 pt-1 pb-3 md:w-full md:flex-col md:pb-1">
+          <Select
+            value={active}
+            onValueChange={(value) => {
+              if (value) void setQuery({ account: value })
+            }}
+          >
+            <SelectTrigger
+              aria-label={t("dialog.sectionsLabel")}
+              className="w-full md:hidden"
+            >
+              <SelectValue>
+                <ActiveIcon aria-hidden />
+                {t(`dialog.sections.${active}`)}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false}>
+              {ACCOUNT_SECTIONS.map((key) => (
+                <SelectItem key={key} value={key}>
+                  {t(`dialog.sections.${key}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <ScrollRegion className="-m-1 hidden md:block">
+            <ul className="flex w-full flex-col gap-1 p-1">
               {ACCOUNT_SECTIONS.map((key) => {
                 const Icon = SECTION_ICONS[key]
                 const current = key === active
@@ -173,9 +222,14 @@ export function AccountDialog() {
             </ul>
           </ScrollRegion>
         </nav>
-        <ScrollArea className="min-h-0 flex-1">
+        <ScrollArea
+          key={active}
+          className="min-h-0 min-w-0 flex-1 *:data-[slot=scroll-area-viewport]:overscroll-y-none"
+        >
           <div className="p-4 md:p-6">
-            {error ? (
+            {active === "notifications" ? (
+              notificationsSection
+            ) : error ? (
               <p className="text-sm text-destructive" role="alert">
                 {error}
               </p>

@@ -6,6 +6,7 @@ import { recordAuditEvent } from "@/features/audit"
 import { memberHasRole, splitRoles } from "@/features/auth"
 import {
   deliverAfterResponse,
+  notifyOrganizationMemberLeft,
   sendMemberRemovedNotice,
 } from "@/features/notifications"
 import { authorizeMemberMutation } from "@/features/organizations/lib/member-mutation"
@@ -120,16 +121,30 @@ export async function removeMember(
     return { success: false, error: failure }
   }
 
-  // Leaving is your own doing, so only someone removed by another hears of it.
+  // Leaving is your own doing, so you need no mail — the administrators hear
+  // of a departure instead, while someone removed by another hears of it.
   const recipient = removal.target
-  if (recipient && userId !== actorUser.id) {
-    deliverAfterResponse(() =>
-      sendMemberRemovedNotice({
-        recipient,
-        organization,
-        actorName: actorUser.name,
-      })
-    )
+  if (recipient) {
+    if (userId === actorUser.id) {
+      deliverAfterResponse(() =>
+        notifyOrganizationMemberLeft({
+          organizationId: organization.id,
+          member: {
+            id: actorUser.id,
+            name: recipient.name,
+            email: recipient.email,
+          },
+        })
+      )
+    } else {
+      deliverAfterResponse(() =>
+        sendMemberRemovedNotice({
+          recipient: { id: userId, ...recipient },
+          organization,
+          actorName: actorUser.name,
+        })
+      )
+    }
   }
 
   revalidateEverywhere()

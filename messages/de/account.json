@@ -13,6 +13,7 @@
       "email": "E-Mail",
       "security": "Sicherheit",
       "sessions": "Sitzungen",
+      "notifications": "Benachrichtigungen",
       "danger": "Gefahrenzone"
     },
     "emailChanged": "Deine E-Mail-Adresse wurde geändert"

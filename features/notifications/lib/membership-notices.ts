@@ -5,11 +5,13 @@ import {
 import {
   organizationUrl,
   sendNotice,
+  type InAppNoticeSpec,
 } from "@/features/notifications/lib/send-notice"
 import type {
   MembershipNoticeInput,
   NoticeOrganization,
   NoticeRecipient,
+  NotificationTopic,
 } from "@/features/notifications/types"
 import {
   formatNoticeTime,
@@ -39,48 +41,66 @@ type MembershipNotice = {
 }
 
 // A membership is the organization's business, so these carry its branding.
-function sendMembershipNotice(
-  kind: string,
-  {
-    recipient,
-    organization,
-    at = new Date(),
-  }: {
-    recipient: NoticeRecipient
-    organization: NoticeOrganization
-    at?: Date
-  },
+function sendMembershipNotice({
+  kind,
+  topic = "membership",
+  recipient,
+  organization,
+  at = new Date(),
+  inApp,
+  compose,
+}: {
+  kind: string
+  topic?: NotificationTopic
+  recipient: NoticeRecipient
+  organization: NoticeOrganization
+  at?: Date
+  inApp: Omit<
+    InAppNoticeSpec,
+    "organizationId" | "organizationSlug" | "createdAt"
+  >
   compose: (context: ComposeContext) => MembershipNotice
-) {
-  return sendNotice(kind, recipient, async (locale) => {
-    const t = translatorFor(locale, "notifications")
-    const notice = compose({
-      t,
-      locale,
-      name: recipient.name,
-      organization: organization.name,
-    })
-
-    return {
-      subject: notice.subject,
-      element: NoticeEmail({
-        brand: emailBrand(organization),
+}) {
+  return sendNotice({
+    kind,
+    topic,
+    recipient,
+    inApp: {
+      ...inApp,
+      organizationId: organization.id,
+      organizationSlug: organization.slug,
+      createdAt: at,
+    },
+    compose: async (locale) => {
+      const t = translatorFor(locale, "notifications")
+      const notice = compose({
+        t,
         locale,
-        preview: notice.subject,
-        heading: notice.subject,
-        paragraphs: notice.paragraphs,
-        details: [
-          { label: t("details.organization"), value: organization.name },
-          { label: t("details.when"), value: formatNoticeTime(at, locale) },
-          ...(notice.details ?? []),
-        ],
-        guidance: notice.guidance,
-        action: notice.action,
-        footer: t("email.membershipFooter", {
-          organization: organization.name,
+        name: recipient.name,
+        organization: organization.name,
+      })
+
+      return {
+        subject: notice.subject,
+        element: NoticeEmail({
+          brand: emailBrand(organization),
+          locale,
+          preview: notice.subject,
+          heading: notice.subject,
+          paragraphs: notice.paragraphs,
+          details: [
+            { label: t("details.organization"), value: organization.name },
+            { label: t("details.when"), value: formatNoticeTime(at, locale) },
+            ...(notice.details ?? []),
+          ],
+          guidance: notice.guidance,
+          action: notice.action,
+          footer: t("email.membershipFooter", {
+            organization: organization.name,
+          }),
         }),
-      }),
-    }
+      }
+    },
   })
 }
 
@@ -91,10 +111,21 @@ export function sendMemberAddedNotice({
   role,
   at,
 }: MembershipNoticeInput & { role: string }) {
-  return sendMembershipNotice(
-    "member-added",
-    { recipient, organization, at },
-    ({ t, locale, name, organization: organizationName }) => ({
+  return sendMembershipNotice({
+    kind: "member-added",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "member_added",
+      payload: {
+        organization: organization.name,
+        actor: actorName,
+        role,
+      },
+      link: { type: "organization", slug: organization.slug, path: "" },
+    },
+    compose: ({ t, locale, name, organization: organizationName }) => ({
       subject: t("memberAdded.subject", { organization: organizationName }),
       paragraphs: [
         t("memberAdded.body", {
@@ -111,8 +142,8 @@ export function sendMemberAddedNotice({
         }),
         url: organizationUrl(organization.slug),
       },
-    })
-  )
+    }),
+  })
 }
 
 export function sendMemberRoleChangedNotice({
@@ -123,10 +154,22 @@ export function sendMemberRoleChangedNotice({
   to,
   at,
 }: MembershipNoticeInput & { from: string[]; to: string }) {
-  return sendMembershipNotice(
-    "member-role-changed",
-    { recipient, organization, at },
-    ({ t, locale, name, organization: organizationName }) => ({
+  return sendMembershipNotice({
+    kind: "member-role-changed",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "member_role_changed",
+      payload: {
+        organization: organization.name,
+        actor: actorName,
+        from,
+        to,
+      },
+      link: { type: "organization", slug: organization.slug, path: "" },
+    },
+    compose: ({ t, locale, name, organization: organizationName }) => ({
       subject: t("memberRoleChanged.subject", {
         organization: organizationName,
       }),
@@ -148,8 +191,8 @@ export function sendMemberRoleChangedNotice({
         }),
         url: organizationUrl(organization.slug),
       },
-    })
-  )
+    }),
+  })
 }
 
 // Sent to every owner of the organization, whose own audit log shows the rest.
@@ -166,10 +209,26 @@ export function sendBreakGlassStartedNotice({
     Math.round((expiresAt.getTime() - at.getTime()) / 60_000)
   )
 
-  return sendMembershipNotice(
-    "break-glass-started",
-    { recipient, organization, at },
-    ({ t, locale, name, organization: organizationName }) => ({
+  return sendMembershipNotice({
+    kind: "break-glass-started",
+    topic: "break_glass",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "break_glass_started",
+      payload: {
+        organization: organization.name,
+        actor: actorName,
+        minutes,
+      },
+      link: {
+        type: "organization",
+        slug: organization.slug,
+        path: "/audit-log",
+      },
+    },
+    compose: ({ t, locale, name, organization: organizationName }) => ({
       subject: t("breakGlassStarted.subject", {
         organization: organizationName,
       }),
@@ -193,8 +252,8 @@ export function sendBreakGlassStartedNotice({
         label: t("actions.openAuditLog"),
         url: organizationUrl(organization.slug, "/audit-log"),
       },
-    })
-  )
+    }),
+  })
 }
 
 export function sendMemberRemovedNotice({
@@ -203,10 +262,20 @@ export function sendMemberRemovedNotice({
   actorName,
   at,
 }: MembershipNoticeInput) {
-  return sendMembershipNotice(
-    "member-removed",
-    { recipient, organization, at },
-    ({ t, name, organization: organizationName }) => ({
+  return sendMembershipNotice({
+    kind: "member-removed",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "member_removed",
+      payload: {
+        organization: organization.name,
+        actor: actorName,
+      },
+      link: null,
+    },
+    compose: ({ t, name, organization: organizationName }) => ({
       subject: t("memberRemoved.subject", { organization: organizationName }),
       paragraphs: [
         t("memberRemoved.body", {
@@ -218,8 +287,8 @@ export function sendMemberRemovedNotice({
       guidance: t("memberRemoved.guidance", {
         organization: organizationName,
       }),
-    })
-  )
+    }),
+  })
 }
 
 export function sendInvitationAcceptedNotice({
@@ -232,10 +301,22 @@ export function sendInvitationAcceptedNotice({
   invitee: NoticeRecipient
   role: string
 }) {
-  return sendMembershipNotice(
-    "invitation-accepted",
-    { recipient, organization, at },
-    ({ t, locale, name, organization: organizationName }) => ({
+  return sendMembershipNotice({
+    kind: "invitation-accepted",
+    topic: "invitations",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "invitation_accepted",
+      payload: {
+        organization: organization.name,
+        invitee: invitee.name,
+        role,
+      },
+      link: { type: "organization", slug: organization.slug, path: "/members" },
+    },
+    compose: ({ t, locale, name, organization: organizationName }) => ({
       subject: t("invitationAccepted.subject", {
         invitee: invitee.name,
         organization: organizationName,
@@ -256,6 +337,150 @@ export function sendInvitationAcceptedNotice({
         label: t("actions.viewMembers"),
         url: organizationUrl(organization.slug, "/members"),
       },
-    })
-  )
+    }),
+  })
+}
+
+export function sendMemberJoinedNotice({
+  recipient,
+  organization,
+  member,
+  role = "member",
+  at,
+}: Omit<MembershipNoticeInput, "actorName"> & {
+  member: NoticeRecipient
+  role?: string
+}) {
+  return sendMembershipNotice({
+    kind: "member-joined",
+    topic: "member_activity",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "member_joined",
+      payload: {
+        organization: organization.name,
+        member: member.name,
+        role,
+      },
+      link: { type: "organization", slug: organization.slug, path: "/members" },
+    },
+    compose: ({ t, locale, name, organization: organizationName }) => ({
+      subject: t("memberJoined.subject", {
+        member: member.name,
+        organization: organizationName,
+      }),
+      paragraphs: [
+        t("memberJoined.body", {
+          name,
+          member: member.name,
+          memberEmail: member.email,
+          organization: organizationName,
+          role: rolePhrase(role, locale),
+        }),
+      ],
+      guidance: t("memberJoined.guidance", {
+        organization: organizationName,
+      }),
+      action: {
+        label: t("actions.viewMembers"),
+        url: organizationUrl(organization.slug, "/members"),
+      },
+    }),
+  })
+}
+
+export function sendMemberLeftNotice({
+  recipient,
+  organization,
+  member,
+  at,
+}: Omit<MembershipNoticeInput, "actorName"> & {
+  member: NoticeRecipient
+}) {
+  return sendMembershipNotice({
+    kind: "member-left",
+    topic: "member_activity",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "member_left",
+      payload: {
+        organization: organization.name,
+        member: member.name,
+      },
+      link: { type: "organization", slug: organization.slug, path: "/members" },
+    },
+    compose: ({ t, name, organization: organizationName }) => ({
+      subject: t("memberLeft.subject", {
+        member: member.name,
+        organization: organizationName,
+      }),
+      paragraphs: [
+        t("memberLeft.body", {
+          name,
+          member: member.name,
+          memberEmail: member.email,
+          organization: organizationName,
+        }),
+      ],
+      guidance: t("memberLeft.guidance", {
+        organization: organizationName,
+      }),
+      action: {
+        label: t("actions.viewMembers"),
+        url: organizationUrl(organization.slug, "/members"),
+      },
+    }),
+  })
+}
+
+export function sendUserSignedUpNotice({
+  recipient,
+  organization,
+  newUser,
+  at,
+}: Omit<MembershipNoticeInput, "actorName"> & {
+  newUser: NoticeRecipient
+}) {
+  return sendMembershipNotice({
+    kind: "user-signed-up",
+    topic: "member_activity",
+    recipient,
+    organization,
+    at,
+    inApp: {
+      kind: "user_signed_up",
+      payload: {
+        organization: organization.name,
+        member: newUser.name,
+      },
+      link: {
+        type: "organization",
+        slug: organization.slug,
+        path: "/directory",
+      },
+    },
+    compose: ({ t, name, organization: organizationName }) => ({
+      subject: t("userSignedUp.subject", {
+        member: newUser.name,
+        organization: organizationName,
+      }),
+      paragraphs: [
+        t("userSignedUp.body", {
+          name,
+          member: newUser.name,
+          memberEmail: newUser.email,
+          organization: organizationName,
+        }),
+      ],
+      guidance: t("userSignedUp.guidance"),
+      action: {
+        label: t("actions.openDirectory"),
+        url: organizationUrl(organization.slug, "/directory"),
+      },
+    }),
+  })
 }

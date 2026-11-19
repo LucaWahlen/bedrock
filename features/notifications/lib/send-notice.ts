@@ -1,7 +1,15 @@
 import type { ReactElement } from "react"
 
-import { recipientLocale } from "@/features/notifications/actions/recipient-locale"
-import type { NoticeRecipient } from "@/features/notifications/types"
+import { recordInAppNotification } from "@/features/notifications/actions/record-in-app-notification"
+import { resolveNoticeDelivery } from "@/features/notifications/actions/resolve-notice-delivery"
+import { deliveryAuthority } from "@/features/notifications/lib/delivery-authority"
+import type {
+  NoticeRecipient,
+  NotificationKind,
+  NotificationLink,
+  NotificationPayload,
+  NotificationTopic,
+} from "@/features/notifications/types"
 import { absoluteUrl } from "@/features/shared/lib/app-url"
 import { emailLocale } from "@/features/shared/lib/email/locale"
 import { renderEmail } from "@/features/shared/lib/email/render"
@@ -20,35 +28,99 @@ export function accountSectionUrl(
   return absoluteUrl(`/org/${slug}?account=${section}`)
 }
 
+export type InAppNoticeSpec = {
+  kind: NotificationKind
+  organizationId?: string
+  organizationSlug?: string
+  payload: NotificationPayload
+  link: NotificationLink | null
+  createdAt?: Date
+}
+
 /**
- * Written in the recipient's language: the one they chose, found by
- * `accountEmail` when the notice goes to an address the account has left.
+ * Delivers a notice across the channels its recipient's preferences allow,
+ * writing the mail in their chosen language (looked up by `accountEmail` when
+ * the notice goes to an address the account has left).
  *
- * Never throws: a notice is best effort, and its failure is logged by kind
- * alone. The transport already logs its own failures without the message.
+ * In-app recording and SMTP delivery are isolated from one another so a failure
+ * in either never drops the other, and `sendNotice` itself never throws.
  */
-export async function sendNotice(
-  kind: string,
-  recipient: NoticeRecipient,
+export async function sendNotice({
+  kind,
+  topic,
+  recipient,
+  compose,
+  inApp,
+  accountEmail = recipient.email,
+}: {
+  kind: string
+  topic: NotificationTopic
+  recipient: NoticeRecipient
   compose: (
     locale: Locale
-  ) => Promise<{ subject: string; element: ReactElement }>,
-  accountEmail = recipient.email
-) {
+  ) => Promise<{ subject: string; element: ReactElement }>
+  inApp?: InAppNoticeSpec
+  accountEmail?: string
+}) {
   try {
-    const locale = await emailLocale(
-      recipient.locale ?? (await recipientLocale(accountEmail))
-    )
-    const { subject, element } = await compose(locale)
-
-    return await sendEmail({
-      to: { name: recipient.name, address: recipient.email },
-      subject,
-      ...(await renderEmail(element)),
+    const delivery = await resolveNoticeDelivery(deliveryAuthority, {
+      userId: recipient.id,
+      accountEmail,
+      preferenceKind: inApp?.kind,
+      organizationId: inApp?.organizationId,
+      organizationSlug: inApp?.organizationSlug,
     })
+
+    const recordPromise =
+      inApp && delivery.sendInApp && delivery.userId
+        ? recordInAppNotification(deliveryAuthority, {
+            userId: delivery.userId,
+            organizationId: delivery.organizationId,
+            topic,
+            kind: inApp.kind,
+            payload: inApp.payload,
+            link: inApp.link,
+            createdAt: inApp.createdAt,
+          })
+            .then(() => true)
+            .catch((error) => {
+              console.error(
+                `[notifications] ${kind} in-app notice could not be recorded`,
+                error instanceof Error ? error.message : error
+              )
+              return false
+            })
+        : Promise.resolve(false)
+
+    const mailPromise = delivery.sendEmail
+      ? (async () => {
+          try {
+            const locale = await emailLocale(
+              recipient.locale ?? delivery.locale
+            )
+            const { subject, element } = await compose(locale)
+
+            return await sendEmail({
+              to: { name: recipient.name, address: recipient.email },
+              subject,
+              ...(await renderEmail(element)),
+            })
+          } catch (error) {
+            console.error(
+              `[notifications] ${kind} notice could not be sent`,
+              error instanceof Error ? error.message : error
+            )
+            return false
+          }
+        })()
+      : Promise.resolve(false)
+
+    const [recorded, mailed] = await Promise.all([recordPromise, mailPromise])
+
+    return recorded || mailed
   } catch (error) {
     console.error(
-      `[notifications] ${kind} notice could not be sent`,
+      `[notifications] ${kind} notice could not be delivered`,
       error instanceof Error ? error.message : error
     )
     return false

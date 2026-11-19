@@ -373,7 +373,7 @@ bun run test        # needs the compose.yaml database
 bun run build
 ```
 
-`bun run test` drives real Server Actions against the development database
+`bun run test` drives real Server Actions against a dedicated test database
 through the harness in `tests/support/` (`createFixture`, `actAs`, the captured
 mail `outbox`), and every test removes the rows it creates. For authorization,
 membership, organization, storage ownership or OIDC work, add focused tests in

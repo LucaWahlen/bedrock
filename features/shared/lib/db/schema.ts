@@ -797,11 +797,105 @@ export const usageDaily = pgTable(
   ]
 )
 
+// Sparse per-kind channel overrides: a null `organizationId` overrides the
+// built-in default across every organization, and a non-null `organizationId`
+// overrides that organization alone. A null `email` or `inApp` column inherits
+// from the level above, and rows with neither override set are pruned.
+export const notificationPreference = pgTable(
+  "notification_preference",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    organizationId: text("organization_id").references(() => organization.id, {
+      onDelete: "cascade",
+    }),
+    kind: text("kind").notNull(),
+    email: boolean("email"),
+    inApp: boolean("in_app"),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("notification_preference_global_uidx")
+      .on(table.userId, table.kind)
+      .where(sql`${table.organizationId} is null`),
+    uniqueIndex("notification_preference_org_uidx")
+      .on(table.userId, table.organizationId, table.kind)
+      .where(sql`${table.organizationId} is not null`),
+    index("notification_preference_organizationId_idx").on(
+      table.organizationId
+    ),
+    check(
+      "notification_preference_nonempty_check",
+      sql`${table.email} is not null or ${table.inApp} is not null`
+    ),
+    check(
+      "notification_preference_kind_check",
+      sql`${table.kind} in ('new_sign_in', 'password_changed', 'email_change_requested', 'email_changed', 'two_factor_enabled', 'two_factor_disabled', 'backup_codes_regenerated', 'passkey_added', 'passkey_removed', 'account_enabled', 'member_added', 'member_role_changed', 'member_removed', 'invitation_accepted', 'member_joined', 'member_left', 'user_signed_up', 'break_glass_started')`
+    ),
+    check(
+      "notification_preference_org_kind_check",
+      sql`${table.organizationId} is null or ${table.kind} in ('member_added', 'member_role_changed', 'member_removed', 'invitation_accepted', 'member_joined', 'member_left', 'user_signed_up', 'break_glass_started')`
+    ),
+    check(
+      "notification_preference_mandatory_email_check",
+      sql`${table.kind} not in ('password_changed', 'email_change_requested', 'email_changed', 'two_factor_enabled', 'two_factor_disabled', 'backup_codes_regenerated', 'passkey_added', 'passkey_removed', 'account_enabled', 'break_glass_started') or ${table.email} is distinct from false`
+    ),
+  ]
+)
+
+// In-app notices kept for the account holder. `payload` carries locale-neutral
+// facts (never tokens or secrets) so the inbox renders in whichever language
+// the reader uses now; `organizationId` cascades on purge and lets reads hide
+// organizations that were deleted.
+export const notification = pgTable(
+  "notification",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    organizationId: text("organization_id").references(() => organization.id, {
+      onDelete: "cascade",
+    }),
+    topic: text("topic").notNull(),
+    kind: text("kind").notNull(),
+    payload: jsonb("payload")
+      .$type<Record<string, unknown>>()
+      .default({})
+      .notNull(),
+    link: jsonb("link").$type<Record<string, unknown>>(),
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("notification_userId_createdAt_idx").on(
+      table.userId,
+      table.createdAt
+    ),
+    index("notification_userId_unread_idx")
+      .on(table.userId)
+      .where(sql`${table.readAt} is null`),
+    index("notification_organizationId_idx").on(table.organizationId),
+    index("notification_createdAt_idx").on(table.createdAt),
+    check(
+      "notification_topic_check",
+      sql`${table.topic} in ('security', 'sign_in', 'membership', 'invitations', 'member_activity', 'break_glass')`
+    ),
+  ]
+)
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   members: many(member),
   invitations: many(invitation),
+  notifications: many(notification),
+  notificationPreferences: many(notificationPreference),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -821,6 +915,33 @@ export const accountRelations = relations(account, ({ one }) => ({
 export const organizationRelations = relations(organization, ({ many }) => ({
   members: many(member),
   invitations: many(invitation),
+  notifications: many(notification),
+  notificationPreferences: many(notificationPreference),
+}))
+
+export const notificationPreferenceRelations = relations(
+  notificationPreference,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [notificationPreference.userId],
+      references: [user.id],
+    }),
+    organization: one(organization, {
+      fields: [notificationPreference.organizationId],
+      references: [organization.id],
+    }),
+  })
+)
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+  user: one(user, {
+    fields: [notification.userId],
+    references: [user.id],
+  }),
+  organization: one(organization, {
+    fields: [notification.organizationId],
+    references: [organization.id],
+  }),
 }))
 
 export const memberRelations = relations(member, ({ one }) => ({

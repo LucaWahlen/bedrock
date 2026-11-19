@@ -77,7 +77,7 @@ export async function verifyEmail(token: string): Promise<ActionResult> {
       if (changed) {
         await noticeAccountHolder(
           {
-            user: { name: changed.name, email: change.from },
+            user: { id: changed.id, name: changed.name, email: change.from },
             memberships: verified ? memberships : [],
           },
           (notice) => sendEmailChangedNotice({ ...notice, newEmail: change.to })

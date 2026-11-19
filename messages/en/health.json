@@ -74,7 +74,8 @@
       "rateLimits": "Prune rate limit counters",
       "auditEvents": "Apply audit retention",
       "usage": "Roll up usage",
-      "sessionsAndTokens": "Remove expired sessions and tokens"
+      "sessionsAndTokens": "Remove expired sessions and tokens",
+      "notifications": "Prune old notifications"
     }
   },
   "notices": {

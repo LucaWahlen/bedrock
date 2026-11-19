@@ -2,6 +2,7 @@
 # Stands in for the Next request, mail transport and object storage before any
 # test file loads an action. See `tests/support/`.
 preload = [
+  "./tests/support/database.ts",
   "./tests/support/request.ts",
   "./tests/support/mail.ts",
   "./tests/support/storage.ts",

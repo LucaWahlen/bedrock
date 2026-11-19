@@ -8,6 +8,7 @@ export const HOUSEKEEPING_TASKS = [
   "auditEvents",
   "usage",
   "sessionsAndTokens",
+  "notifications",
 ] as const
 
 export type HousekeepingTask = (typeof HOUSEKEEPING_TASKS)[number]

@@ -21,6 +21,7 @@ export const ACCOUNT_SECTIONS = [
   "email",
   "security",
   "sessions",
+  "notifications",
   "danger",
 ] as const
 

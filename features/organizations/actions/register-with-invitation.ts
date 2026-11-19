@@ -6,6 +6,10 @@ import { headers } from "next/headers"
 
 import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import { auth } from "@/features/auth"
+import {
+  deliverAfterResponse,
+  notifyUserSignedUp,
+} from "@/features/notifications"
 import { claimInvitation } from "@/features/organizations/lib/claim-invitation"
 import { invitationRefusalMessage } from "@/features/organizations/lib/invitation-display"
 import { resolveInvitationByToken } from "@/features/organizations/lib/resolve-invitation"
@@ -131,6 +135,7 @@ export async function registerWithInvitation(
   })
 
   if (!claimed) {
+    deliverAfterResponse(() => notifyUserSignedUp({ newUser: createdUser }))
     // The account exists either way, so the person is told what they now have
     // rather than left thinking nothing happened.
     return {

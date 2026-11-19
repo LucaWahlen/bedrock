@@ -150,6 +150,7 @@ describe("housekeeping runs", () => {
       "auditEvents",
       "usage",
       "sessionsAndTokens",
+      "notifications",
     ])
     // A test task is not one of them, so it never leaks into the page.
     expect(JSON.stringify(status)).not.toContain(task)

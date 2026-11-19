@@ -18,7 +18,7 @@ export async function findInviterRecipients(
   if (ids.length === 0) return []
 
   return reader
-    .select({ name: user.name, email: user.email })
+    .select({ id: user.id, name: user.name, email: user.email })
     .from(member)
     .innerJoin(user, eq(user.id, member.userId))
     .where(

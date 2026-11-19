@@ -1,6 +1,7 @@
 import type { HousekeepingTask } from "@/features/shared/lib/housekeeping-tasks"
 import { housekeepAuditEvents } from "@/scripts/housekeeping/audit-events"
 import { housekeepInvitations } from "@/scripts/housekeeping/invitations"
+import { housekeepNotifications } from "@/scripts/housekeeping/notifications"
 import { housekeepOrganizations } from "@/scripts/housekeeping/organizations"
 import { housekeepRateLimits } from "@/scripts/housekeeping/rate-limits"
 import type { HousekeepingTaskDefinition } from "@/scripts/housekeeping/run-task"
@@ -21,4 +22,5 @@ export const TASKS: (HousekeepingTaskDefinition & {
   // end of the day.
   { name: "usage", lockKey: 5, run: () => housekeepUsage() },
   { name: "sessionsAndTokens", lockKey: 6, run: housekeepSessionsAndTokens },
+  { name: "notifications", lockKey: 7, run: housekeepNotifications },
 ]

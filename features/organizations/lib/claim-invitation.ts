@@ -3,6 +3,8 @@ import { and, eq, gt, sql } from "drizzle-orm"
 import { auditActorFromUser, recordAuditEvent } from "@/features/audit"
 import {
   deliverAfterResponse,
+  notifyOrganizationMemberJoined,
+  notifyUserSignedUp,
   sendInvitationAcceptedNotice,
   type NoticeOrganization,
   type NoticeRecipient,
@@ -39,8 +41,9 @@ export async function claimInvitation({
   // Filled in once the seat is taken, for the notice sent after commit.
   const accepted: {
     notice?: {
+      organizationId: string
       organization: NoticeOrganization
-      inviters: NoticeRecipient[]
+      inviters: (NoticeRecipient & { id: string })[]
       role: string
     }
   } = {}
@@ -121,7 +124,9 @@ export async function claimInvitation({
     )
 
     accepted.notice = {
+      organizationId: current.organizationId,
       organization: {
+        id: current.organizationId,
         name: current.organizationName,
         slug: current.organizationSlug,
         logo: current.organizationLogo,
@@ -141,16 +146,33 @@ export async function claimInvitation({
 
   const { notice } = accepted
   if (notice) {
-    for (const inviter of notice.inviters) {
-      deliverAfterResponse(() =>
-        sendInvitationAcceptedNotice({
-          recipient: inviter,
-          organization: notice.organization,
-          invitee: claimant,
-          role: notice.role,
-        })
+    deliverAfterResponse(async () => {
+      const acceptedDeliveries = await Promise.all(
+        notice.inviters.map((inviter) =>
+          sendInvitationAcceptedNotice({
+            recipient: inviter,
+            organization: notice.organization,
+            invitee: claimant,
+            role: notice.role,
+          })
+        )
       )
-    }
+      const inviterIds = notice.inviters
+        .filter((_, index) => acceptedDeliveries[index])
+        .map(({ id }) => id)
+      const notifiedIds = await notifyOrganizationMemberJoined({
+        organizationId: notice.organizationId,
+        member: claimant,
+        role: notice.role,
+        excludeUserIds: inviterIds,
+      })
+      if (via === "registration") {
+        await notifyUserSignedUp({
+          newUser: claimant,
+          excludeUserIds: [...inviterIds, ...notifiedIds],
+        })
+      }
+    })
   }
 
   return claimed

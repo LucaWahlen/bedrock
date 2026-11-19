@@ -25,7 +25,12 @@ export async function noticeAccountHolder(
 ) {
   const request = await readNoticeRequest()
   const input: AccountNoticeInput = {
-    recipient: { name: user.name, email: user.email, locale: user.locale },
+    recipient: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      locale: user.locale,
+    },
     request,
     organizationSlug: accountHomeSlug(memberships, preferredSlug),
   }

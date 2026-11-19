@@ -29,6 +29,13 @@
       "when": 1792936695549,
       "tag": "0003_break_glass_grant",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795094325505,
+      "tag": "0004_notifications",
+      "breakpoints": true
     }
   ]
 }

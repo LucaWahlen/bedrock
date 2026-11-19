@@ -30,6 +30,7 @@
     "signIn": "Sign in",
     "openOrganization": "Open {organization}",
     "viewMembers": "View members",
+    "openDirectory": "Open directory",
     "openAuditLog": "Open the audit log"
   },
   "notYouWithoutAccess": "If this wasn't you, contact your administrator right away.",
@@ -118,5 +119,203 @@
     "subject": "{invitee} accepted your invitation to {organization}",
     "body": "Hi {name}, {invitee} ({inviteeEmail}) accepted your invitation and joined {organization} as {role}.",
     "guidance": "If you did not invite them, review the members of {organization}."
+  },
+  "memberJoined": {
+    "subject": "{member} joined {organization}",
+    "body": "Hi {name}, {member} ({memberEmail}) joined {organization} as {role}.",
+    "guidance": "Review the members of {organization} if you did not expect this."
+  },
+  "memberLeft": {
+    "subject": "{member} left {organization}",
+    "body": "Hi {name}, {member} ({memberEmail}) left {organization}.",
+    "guidance": "Review the members of {organization} if you need to adjust access."
+  },
+  "userSignedUp": {
+    "subject": "{member} created a {organization} account",
+    "body": "Hi {name}, {member} ({memberEmail}) registered a new account on {organization}.",
+    "guidance": "Open the directory to review or manage accounts on this instance."
+  },
+  "inbox": {
+    "markItemRead": "Mark “{title}” as read",
+    "markItemUnread": "Mark “{title}” as unread",
+    "title": "Notifications",
+    "read": "Read",
+    "unread": "Unread",
+    "loading": "Loading notifications…",
+    "saving": "Updating notifications…",
+    "updated": "Notifications updated.",
+    "loadError": "Couldn't load notifications.",
+    "buttonLabel": "Notifications",
+    "buttonLabelUnread": "{count, plural, one {Notifications (# unread)} other {Notifications (# unread)}}",
+    "filters": {
+      "label": "Filter notifications",
+      "all": "All",
+      "unread": "Unread"
+    },
+    "actions": {
+      "manage": "Manage",
+      "retry": "Try again",
+      "loadMore": "Load more",
+      "markAllRead": "Mark all as read",
+      "markRead": "Mark as read",
+      "markUnread": "Mark as unread",
+      "remove": "Remove notification",
+      "clearRead": "Clear read",
+      "openSettings": "Notification settings",
+      "itemMenu": "Actions for {title}"
+    },
+    "empty": {
+      "all": "No notifications yet.",
+      "unread": "You're all caught up."
+    },
+    "items": {
+      "password_changed": {
+        "title": "Password changed",
+        "body": "{device}",
+        "bodyRevoked": "{device}. All other sessions were signed out."
+      },
+      "email_change_requested": {
+        "title": "Email change requested",
+        "body": "A confirmation link was sent to {newEmail}."
+      },
+      "email_changed": {
+        "title": "Email address changed",
+        "body": "Your account now uses {newEmail}."
+      },
+      "two_factor_enabled": {
+        "title": "Two-factor authentication turned on",
+        "body": "Authenticator codes are now active on your account ({device})."
+      },
+      "two_factor_disabled": {
+        "title": "Two-factor authentication turned off"
+      },
+      "backup_codes_regenerated": {
+        "title": "New backup codes created",
+        "body": "Previous backup codes for your account no longer work."
+      },
+      "passkey_added": {
+        "title": "Passkey added",
+        "body": "{passkey} can now sign in to your account."
+      },
+      "passkey_removed": {
+        "title": "Passkey removed",
+        "body": "{passkey} was removed from your account."
+      },
+      "account_enabled": {
+        "title": "Account enabled",
+        "body": "An administrator re-enabled your account."
+      },
+      "new_sign_in": {
+        "title": "New sign-in",
+        "body": "{device}",
+        "bodyWithOrganization": "{device} · {organization}"
+      },
+      "member_added": {
+        "title": "Added to {organization}",
+        "body": "{actor} added you as {role}."
+      },
+      "member_role_changed": {
+        "title": "Role changed in {organization}",
+        "body": "{actor} changed your role from {from} to {to}."
+      },
+      "member_removed": {
+        "title": "Removed from {organization}",
+        "body": "Removed by {actor}."
+      },
+      "invitation_accepted": {
+        "title": "{invitee} joined {organization}",
+        "body": "Accepted your invitation as {role}."
+      },
+      "member_joined": {
+        "title": "{member} joined {organization}",
+        "body": "Role: {role}"
+      },
+      "member_left": {
+        "title": "{member} left {organization}"
+      },
+      "user_signed_up": {
+        "title": "{member} signed up on {organization}"
+      },
+      "break_glass_started": {
+        "title": "Emergency access opened in {organization}",
+        "body": "{actor} entered as an owner for {minutes, number} minutes."
+      }
+    }
+  },
+  "preferences": {
+    "title": "Notifications",
+    "description": "Choose which events appear in your inbox or reach you by email.",
+    "event": "Event",
+    "loading": "Loading your preferences…",
+    "saved": "Changes saved.",
+    "groups": {
+      "account": "Your account",
+      "organizations": "Organization activity"
+    },
+    "scope": {
+      "label": "Organization scope",
+      "all": "All organizations",
+      "defaultHint": "Organizations use these defaults unless you customize them.",
+      "hasOverrides": "This channel has custom organization settings.",
+      "replaceOverrides": "Replace custom organization settings",
+      "confirmReplace": "Apply the new default for “{event}” ({channel}) to every organization? This removes custom settings for this event and channel.",
+      "organizationHint": "{name} uses your organization defaults unless you change a channel here.",
+      "custom": "Customized for this organization",
+      "resetOrganization": "Restore organization defaults",
+      "confirmOrganization": "Remove your custom settings for {name}? All its events will use your organization defaults again. Other organizations won’t change.",
+      "resetAll": "Reset all notification settings",
+      "confirmAll": "Reset notifications for your account and every organization to their original settings? This also removes all organization overrides."
+    },
+    "channels": {
+      "inApp": "In-app",
+      "email": "Email",
+      "inAppLabel": "In-app notifications for {item}",
+      "emailLabel": "Email notifications for {item}",
+      "alwaysSent": "Always sent",
+      "emailRequiredHint": "This security email can’t be turned off."
+    },
+    "categories": {
+      "credentials": "Sign-in & credentials",
+      "factors": "Two-factor & passkeys",
+      "membership": "Your membership",
+      "activity": "Members & invitations",
+      "administration": "Platform & emergency access"
+    },
+    "descriptions": {
+      "credentials": "New devices, password changes and email address changes.",
+      "factors": "Changes to two-factor authentication, backup codes and passkeys, plus account reactivation.",
+      "membership": "When you’re added to an organization, change roles or are removed.",
+      "activity": "When someone accepts your invitation, joins or leaves.",
+      "administration": "New accounts and emergency access to an organization."
+    },
+    "kinds": {
+      "new_sign_in": "New sign-in from unrecognized device",
+      "password_changed": "Password changed",
+      "email_change_requested": "Email change requested",
+      "email_changed": "Email address changed",
+      "two_factor_enabled": "Two-factor authentication turned on",
+      "two_factor_disabled": "Two-factor authentication turned off",
+      "backup_codes_regenerated": "New backup codes created",
+      "passkey_added": "Passkey added",
+      "passkey_removed": "Passkey removed",
+      "account_enabled": "Account re-enabled",
+      "member_added": "Added to an organization",
+      "member_role_changed": "Role changed in an organization",
+      "member_removed": "Removed from an organization",
+      "invitation_accepted": "Sent invitation accepted",
+      "member_joined": "Member joined organization",
+      "member_left": "Member left organization",
+      "user_signed_up": "New account registered",
+      "break_glass_started": "Break-glass access opened"
+    },
+    "errors": {
+      "invalidPreference": "Invalid notification preference",
+      "mandatoryEmail": "Critical security emails cannot be turned off",
+      "organizationKindOnly": "This notification applies to your whole account",
+      "organizationDenied": "You do not have access to this organization",
+      "saveFailed": "Could not save notification preferences.",
+      "loadFailed": "Could not load your notification preferences.",
+      "refreshFailed": "Changes saved, but the updated preferences could not be loaded."
+    }
   }
 }

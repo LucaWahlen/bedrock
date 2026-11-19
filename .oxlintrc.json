@@ -9,7 +9,7 @@
     "nextjs",
     "jsx-a11y"
   ],
-  "jsPlugins": ["eslint-plugin-boundaries"],
+  "jsPlugins": ["eslint-plugin-boundaries", "@shadcn/lint"],
   "categories": {
     "correctness": "error",
     "suspicious": "error"
@@ -87,6 +87,14 @@
     ]
   },
   "overrides": [
+    {
+      "files": ["features/notifications/components/notification-*.tsx"],
+      "rules": {
+        "shadcn/no-unknown-classes": "error",
+        "shadcn/no-raw-colors": "error",
+        "shadcn/no-restyle": "warn"
+      }
+    },
     {
       "files": ["scripts/**", "tests/**"],
       "rules": {
