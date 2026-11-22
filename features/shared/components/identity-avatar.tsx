@@ -77,7 +77,6 @@ export function IdentityAvatar({
         width={imageSize}
         height={imageSize}
         loading={(eager ?? defaultEager) ? "eager" : "lazy"}
-        crossOrigin="anonymous"
         onError={() => {
           setFailedLogo(logo)
           onLogoError?.()
