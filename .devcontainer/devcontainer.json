@@ -18,6 +18,8 @@
     "CONTAINER_HOST": "unix:///run/user/1000/podman/podman.sock",
     "DOCKER_HOST": "unix:///run/user/1000/podman/podman.sock"
   },
+  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+  "workspaceFolder": "${localWorkspaceFolder}",
   "runArgs": [
     "--userns=keep-id",
     "--security-opt",
